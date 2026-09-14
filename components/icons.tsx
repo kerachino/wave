@@ -85,6 +85,20 @@ export function ChatIcon({ className }: IconProps) {
   );
 }
 
+/** アプリ開発（スマホ＋パズルピース風） */
+export function AppIcon({ className }: IconProps) {
+  return (
+    <Svg className={className} title="アプリ開発">
+      <rect x="7" y="3" width="10" height="18" rx="2.5" />
+      <rect x="9.5" y="6" width="2.5" height="2.5" rx="0.8" fill="currentColor" opacity="0.9" />
+      <rect x="13" y="6" width="2.5" height="2.5" rx="0.8" />
+      <rect x="9.5" y="9.5" width="2.5" height="2.5" rx="0.8" />
+      <rect x="13" y="9.5" width="2.5" height="2.5" rx="0.8" fill="currentColor" opacity="0.9" />
+      <path d="M10.5 18h3" strokeWidth="2.2" />
+    </Svg>
+  );
+}
+
 /** チェック */
 export function CheckIcon({ className }: IconProps) {
   return (

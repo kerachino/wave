@@ -41,8 +41,7 @@ export default function ApplyPage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        eyebrow="お申し込み・ご契約"
-        title="このサイト内で、申し込みからお支払いまで"
+        title="お申し込み・ご契約"
         description="Googleログイン → 申込みフォーム → 契約条件への同意 → お支払い。お電話や郵送の手続きは不要です。"
       />
 
@@ -98,7 +97,10 @@ export default function ApplyPage() {
           <p className="mt-6 text-sm leading-7 text-ink-soft">
             その他の条件は、お見積り書およびご契約のご案内メールにて明示します。
             ご不明な点は、お申し込み前に
-            <Link href="/contact" className="font-bold text-brand hover:text-brand-deep">
+            <Link
+              href="/contact"
+              className="font-bold text-brand hover:text-brand-deep"
+            >
               お問い合わせ
             </Link>
             ください。
@@ -115,7 +117,9 @@ export default function ApplyPage() {
         />
         <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-3">
           <div className="rounded-2xl border border-brand/50 bg-white p-6 shadow-card">
-            <p className="text-sm font-bold text-midori-dark">銀行振込（現行）</p>
+            <p className="text-sm font-bold text-midori-dark">
+              銀行振込（現行）
+            </p>
             <p className="mt-3 text-sm leading-7 text-ink-soft">
               着手金（50%）を制作開始前に、残金（50%）を公開・納品後にお振り込みいただきます。
               振込先はご契約のご案内メールでお伝えします。
@@ -125,7 +129,9 @@ export default function ApplyPage() {
             <p className="rounded-full bg-brand-soft px-3 py-0.5 text-xs font-bold text-brand-deep">
               準備中
             </p>
-            <p className="mt-3 text-sm font-bold text-ink">カード決済（決済代行）</p>
+            <p className="mt-3 text-sm font-bold text-ink">
+              カード決済（決済代行）
+            </p>
             <p className="mt-2 text-sm leading-7 text-ink-soft">
               決済代行サービス（Stripe など）の導入を検討中です。
               導入が決まり次第、このページでご案内します。
@@ -141,7 +147,10 @@ export default function ApplyPage() {
         </div>
         <p className="mt-6 text-center text-sm text-ink-soft">
           特定商取引法に基づく表記は
-          <Link href="/law" className="font-bold text-brand hover:text-brand-deep">
+          <Link
+            href="/law"
+            className="font-bold text-brand hover:text-brand-deep"
+          >
             こちら
           </Link>
           をご覧ください。
@@ -150,10 +159,22 @@ export default function ApplyPage() {
 
       <Section className="bg-cream">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand to-brand-dark px-6 py-12 text-center shadow-lift sm:px-10">
-          <div aria-hidden="true" className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-40" />
-          <div aria-hidden="true" className="glow-amber pointer-events-none absolute -bottom-24 -left-12 size-56 opacity-50" />
-          <span aria-hidden="true" className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori" />
-          <span aria-hidden="true" className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80" />
+          <div
+            aria-hidden="true"
+            className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-40"
+          />
+          <div
+            aria-hidden="true"
+            className="glow-amber pointer-events-none absolute -bottom-24 -left-12 size-56 opacity-50"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80"
+          />
           <div className="relative mx-auto max-w-2xl">
             <h2 className="font-maru text-2xl font-bold tracking-tight text-white">
               申し込む前に、まだ迷っている方へ
@@ -163,10 +184,20 @@ export default function ApplyPage() {
               お申し込みの直前でも、お気軽にどうぞ。
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/contact" variant="accent" size="lg" className="flex-1">
+              <ButtonLink
+                href="/contact"
+                variant="accent"
+                size="lg"
+                className="flex-1"
+              >
                 お問い合わせする
               </ButtonLink>
-              <ButtonLink href="/price" variant="secondary" size="lg" className="flex-1">
+              <ButtonLink
+                href="/price"
+                variant="secondary"
+                size="lg"
+                className="flex-1"
+              >
                 料金と流れを見る
               </ButtonLink>
             </div>

@@ -16,7 +16,7 @@ import {
   Section,
   SectionHeading,
 } from "@/components/ui";
-import { faqs, site } from "@/lib/site";
+import { capabilities, faqs, site } from "@/lib/site";
 
 const merits = [
   {
@@ -43,7 +43,7 @@ const merits = [
   {
     icon: HouseIcon,
     title: "サイト完結",
-    body: "支払いからやり取りまでサイト内で完結。お支払は外部決済代行サービスを利用しており、安全にお支払いいただけます。",
+    body: "支払いからやり取りまでサイト内で完結。お支払は外部決済代行サービスと契約しており、安全にお支払いいただけます。",
     href: "/operator",
     chip: "bg-emerald-100 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white",
   },
@@ -242,6 +242,24 @@ export default function Home() {
             ))}
           </div>
         </div>
+      </Section>
+
+      {/* できること（説明なしの列挙） */}
+      <Section className="bg-paper">
+        <SectionHeading eyebrow="できること" title="こんなものが作れます" />
+        <ul className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-2">
+          {capabilities.map((item) => (
+            <li
+              key={item}
+              className="flex items-center gap-3 rounded-2xl border border-line bg-white px-5 py-4 text-sm font-bold text-ink shadow-card"
+            >
+              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-midori-soft text-midori-dark">
+                <CheckIcon className="size-4" />
+              </span>
+              {item}
+            </li>
+          ))}
+        </ul>
       </Section>
 
       {/* 基本プラン（付け足し・維持費は料金ページで案内） */}

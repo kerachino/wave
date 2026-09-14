@@ -46,7 +46,7 @@ export function TrialPlan() {
         </Link>
       </div>
       <p className="mt-6 text-center text-sm text-ink-soft">
-        ページ追加などの付け足しオプションと、公開後の維持費は、
+        ページ追加や自社アプリの開発などの付け足しオプションと、公開後の維持費は、
         <Link
           href="/price"
           className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"
