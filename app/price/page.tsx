@@ -4,10 +4,54 @@ import { PriceCards } from "@/components/PriceCards";
 import { ButtonLink, Card, Section, SectionHeading } from "@/components/ui";
 
 export const metadata = {
-  title: "料金プラン",
+  title: "料金プラン・制作の流れ",
   description:
-    "ホームページ制作の料金プランをご案内します。お試し5,500円〜、ライト55,000円〜、スタンダード110,000円〜。",
+    "ホームページ制作の料金プランと、申し込みから公開までの流れをご案内します。お試し5,500円〜、ライト55,000円〜、スタンダード110,000円〜。",
 };
+
+// 制作の流れ（8ステップ）
+const steps = [
+  {
+    title: "無料相談",
+    body: "メールまたはチャットで、まずはお気軽にご相談ください。作りたいものや予算のお話だけでも大丈夫です。お返事は2〜3営業日以内。",
+    note: "費用はかかりません",
+  },
+  {
+    title: "ヒアリング・お見積り",
+    body: "作りたいサイトのお話をうかがい、ページ構成・料金・スケジュールをまとめたお見積りをご提案します。ご納得いただけるまで何度でも調整OKです。",
+    note: "見積り無料",
+  },
+  {
+    title: "ご契約・お申し込み",
+    body: "サイト内のお申し込みフォームから、Googleアカウントでログインのうえ必要事項を入力していただき、契約条件に同意してお申し込みいただきます。",
+    note: "このサイトで完結",
+  },
+  {
+    title: "着手金のお支払い",
+    body: "お見積り金額の50%を着手金として銀行振込でお支払いいただきます。振込確認後、制作を開始します。（カード決済は準備中です）",
+    note: "着手金 50%",
+  },
+  {
+    title: "制作（途中確認）",
+    body: "完成前にデザインや文章の確認をお願いします。進み具合も共有しながら、2回までは無料で修正対応いたします。",
+    note: "こまめに共有",
+  },
+  {
+    title: "公開・納品",
+    body: "ご確認いただいた内容でサイトを公開し、管理に必要な資料をお渡しします。お客さまの手続きが必要な独自ドメインは、実費のみでお手伝いします。",
+    note: "Netlify で公開",
+  },
+  {
+    title: "残金のお支払い",
+    body: "サイト公開・納品後に、残り50%をお支払いいただきます。安心してご確認いただけるよう、全額前払いはお願いしていません。",
+    note: "残金 50%",
+  },
+  {
+    title: "アフターサポート",
+    body: "公開後も保守サポート費（月1,000円〜）で、小さな修正や更新、困ったときの相談を受け付けます。必要なければ任意です。",
+    note: "月1,000円〜",
+  },
+];
 
 const extraCosts = [
   ["ページ追加", "1ページ 5,000円〜（プランにより異なります）"],
@@ -20,9 +64,9 @@ export default function PricePage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        eyebrow="料金プラン"
+        eyebrow="料金・制作の流れ"
         title="納得してから、お申し込みいただけます"
-        description="最初にかかる制作費と、公開後にかかる維持費。かかるお金を、できるだけはっきりお示しします。"
+        description="最初にかかる制作費と、公開後にかかる維持費。申し込みから公開までの流れも、あわせてご案内します。"
       />
 
       {/* プラン表 */}
@@ -65,6 +109,66 @@ export default function PricePage() {
           </Card>
         </div>
       </Section>
+      {/* 制作の流れ（8ステップ） */}
+      <Section id="flow" className="bg-paper">
+        <SectionHeading
+          eyebrow="制作の流れ"
+          title="申し込みから公開まで、8つのステップ"
+          description="「どこまで進んでいるのか」がいつも分かるように、各ステップでこまめにご連絡します。"
+        />
+        <ol className="mx-auto mt-12 max-w-3xl">
+          {steps.map((step, i) => (
+            <li key={step.title} className="relative flex gap-5 pb-10 last:pb-0">
+              {/* 縦線 */}
+              {i < steps.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute left-[1.35rem] top-14 h-[calc(100%-2rem)] w-px bg-brand/30"
+                />
+              )}
+              <span className="relative z-10 grid size-11 shrink-0 place-items-center rounded-xl bg-brand font-maru text-lg font-bold text-white shadow-soft">
+                {i + 1}
+              </span>
+              <div className="flex-1 rounded-3xl border border-ink/10 bg-white p-5 shadow-sm sm:p-6">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-maru text-lg font-bold text-ink">
+                    {step.title}
+                  </h3>
+                  <span className="rounded-full bg-cream-deep px-3 py-0.5 text-xs font-bold text-brand-deep">
+                    {step.note}
+                  </span>
+                </div>
+                <p className="mt-3 text-sm leading-7 text-ink-soft">{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* かかる期間の目安 */}
+      <Section className="bg-cream">
+        <SectionHeading
+          eyebrow="かかる期間の目安"
+          title="最短2週間〜の制作"
+        />
+        <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-3">
+          {[
+            ["お試しプラン", "約2〜3週間", "1ページのシンプルなサイト"],
+            ["ライトプラン", "約3〜4週間", "3〜5ページの定番サイト"],
+            ["スタンダード", "約4〜6週間", "6ページ以上の多機能サイト"],
+          ].map(([name, time, body]) => (
+            <div key={name} className="rounded-3xl border border-ink/10 bg-white p-6 text-center shadow-sm">
+              <p className="text-sm font-bold text-brand-deep">{name}</p>
+              <p className="mt-2 font-maru text-2xl font-bold text-ink">{time}</p>
+              <p className="mt-2 text-sm leading-6 text-ink-soft">{body}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 text-center text-sm text-ink-soft">
+          内容やご連絡のタイミングによって前後します。納期はお見積りの時点でお約束します。
+        </p>
+      </Section>
+
       {/* 維持費 */}
       <Section className="bg-paper">
         <SectionHeading eyebrow="公開後にかかる費用" title="維持費は月1,000円〜" />

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { plans } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
 
-/** 料金プラン早見カード（トップ・料金ページで共通利用） */
+/** 料金プラン早見カード（料金ページで利用） */
 export function PriceCards() {
   return (
     <div className="grid items-stretch gap-6 md:grid-cols-3">

@@ -6,9 +6,7 @@ const base = site.url.replace(/\/$/, "");
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes: { path: string; priority: number }[] = [
     { path: "", priority: 1 },
-    { path: "/service", priority: 0.9 },
     { path: "/price", priority: 0.9 },
-    { path: "/flow", priority: 0.8 },
     { path: "/works", priority: 0.7 },
     { path: "/faq", priority: 0.8 },
     { path: "/contact", priority: 0.9 },

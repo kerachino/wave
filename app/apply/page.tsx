@@ -166,8 +166,8 @@ export default function ApplyPage() {
               <ButtonLink href="/contact" variant="accent" size="lg" className="flex-1">
                 お問い合わせする
               </ButtonLink>
-              <ButtonLink href="/flow" variant="secondary" size="lg" className="flex-1">
-                制作の流れを見る
+              <ButtonLink href="/price" variant="secondary" size="lg" className="flex-1">
+                料金と流れを見る
               </ButtonLink>
             </div>
           </div>

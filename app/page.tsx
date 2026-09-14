@@ -8,7 +8,7 @@ import {
   PhoneIcon,
   YenIcon,
 } from "@/components/icons";
-import { PriceCards } from "@/components/PriceCards";
+import { TrialPlan } from "@/components/TrialPlan";
 import {
   ButtonLink,
   Container,
@@ -21,7 +21,7 @@ const merits = [
   {
     icon: YenIcon,
     title: "低価格",
-    body: "相場は10〜30万円。個人事業の小回りで、お試し5,500円〜の驚きの価格に。",
+    body: "お試し5,500円〜。1人で制作するから、驚きのリーズナブル価格に。",
     href: "/price",
     chip: "bg-midori-soft text-midori-dark group-hover:bg-midori group-hover:text-ink",
   },
@@ -29,14 +29,14 @@ const merits = [
     icon: BoltIcon,
     title: "スピード制作",
     body: "最短2週間〜の納品。お店の紹介ページを、今すぐネットに載せられます。",
-    href: "/flow",
+    href: "/price",
     chip: "bg-pink-100 text-pink-500 group-hover:bg-pink-500 group-hover:text-white",
   },
   {
     icon: PhoneIcon,
     title: "スマホ対応",
     body: "お客さまの多くはスマホで見ています。どの端末でもきれいに表示。",
-    href: "/service",
+    href: "/price",
     chip: "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white",
   },
   {
@@ -82,9 +82,9 @@ export default function Home() {
                 新規受付中 / モニター募集あり
               </p>
               <h1 className="mt-6 font-maru text-[2rem] font-bold leading-[1.35] tracking-tight text-ink sm:text-4xl lg:text-[2.8rem]">
-                地域の会社のホームページ、
+                会社のホームページ、
                 <br className="sm:hidden" />
-                <span className="text-gradient">まるごとお任せ</span>ください
+                <span className="text-gradient">まるごとお任せ</span>下さい
               </h1>
               <p className="mt-5 max-w-xl text-sm leading-8 text-ink-soft sm:text-base">
                 ホームページ制作を、難しいことはすべておまかせ。
@@ -248,27 +248,16 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* 相場と価格 */}
+      {/* お試しプラン（他のプランの金額は料金ページで案内） */}
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="料金プラン"
-          title="相場は10〜30万円。個人事業の小回りで、この価格に"
-          description="広告費や人件費がかさむ会社まかせにはしません。1人で制作するから、リーズナブルな価格で「まるごと」お任せいただけます。"
+          title="まずは、お試し5,500円から"
+          description="いきなり大きなお願いは不安ですよね。まずは1ページのお試しプランで、仕上がりの早さと丁寧さを確かめてみてください。"
         />
         <div className="mt-12">
-          <PriceCards />
+          <TrialPlan />
         </div>
-        <p className="mt-8 text-center text-sm text-ink-soft">
-          公開後の維持費は月1,000円〜（保守サポート費）。ホスティングは無料、
-          独自ドメインは実費のみ。詳しくは
-          <Link
-            href="/price"
-            className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"
-          >
-            料金プランのページ
-          </Link>
-          へ。
-        </p>
       </Section>
       {/* 制作の流れ（4ステップ） */}
       <Section className="bg-cream">
@@ -330,10 +319,10 @@ export default function Home() {
         </div>
         <p className="mt-8 text-center">
           <Link
-            href="/flow"
+            href="/price"
             className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"
           >
-            詳しい流れをみる（8ステップ） →
+            詳しい流れを見る →
           </Link>
         </p>
       </Section>

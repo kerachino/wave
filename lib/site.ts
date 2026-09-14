@@ -8,16 +8,17 @@ export const site = {
   // 屋号（ブランド名）
   name: "ハトノコネクト",
   // サイトのキャッチコピー
-  tagline: "地域の会社のホームページ、まるごとお任せください",
+  tagline: "会社のホームページ、まるごとお任せください",
 
   // お問い合わせ受付（Gmail）
-  email: "hatonoconnect@gmail.com",
+  email: "hatonoconnect@outlook.com",
   // サイトURL（公開後に置き換えてください）
   url: "https://hatonoconnect.jp",
   // 返信目安
   replyTime: "2〜3営業日以内",
   // 電話対応なしの旨
-  noPhone: "電話での対応は行っておりません。メール・チャットにてご連絡ください。",
+  noPhone:
+    "電話での対応は行っておりません。メール・チャットにてご連絡ください。",
 
   // ---- 運営者情報 ----
   // 「本社」ではなく「事業所」表記（個人事業のため）
@@ -30,19 +31,17 @@ export const site = {
     // 詳細住所（※ 実際の住所に置き換えてください）
     officeDetail: "※東京都渋谷区内（詳細住所はお問い合わせ時にご案内します）",
     // 対応エリア
-    area: "東京都・神奈川県を中心に、全国対応（オンラインでの打ち合わせ）",
+    area: "茨城県守谷市を中心に全国対応（オンラインでの打ち合わせ）",
     // 連絡先メール
-    email: "hatonoconnect@gmail.com",
+    email: "hatonoconnect@outlook.com",
     // 事業開始時期（※ 実績に合わせて更新）
-    established: "2024年",
+    established: "2026年",
   },
 };
 
 // ナビゲーション（ヘッダー・フッターで共通利用）
 export const navItems = [
-  { href: "/service", label: "サービス" },
-  { href: "/price", label: "料金プラン" },
-  { href: "/flow", label: "制作の流れ" },
+  { href: "/price", label: "料金・流れ" },
   { href: "/works", label: "制作事例" },
   { href: "/faq", label: "よくある質問" },
   { href: "/contact", label: "お問い合わせ" },
@@ -105,4 +104,3 @@ export const plans = [
     featured: false,
   },
 ] as const;
-

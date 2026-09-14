@@ -23,7 +23,7 @@ export default function OperatorPage() {
     <div className="flex flex-col">
       <PageHeader
         eyebrow="運営者情報"
-        title="だれが、どこで、やっているのか"
+        title="運営者情報"
         description="はっきりお伝えできることが、何よりの安心材料だと思っています。"
       />
 
@@ -60,21 +60,6 @@ export default function OperatorPage() {
         </div>
 
         <div className="mx-auto mt-8 max-w-2xl">
-          <div className="rounded-3xl border border-ink/10 bg-cream p-6 text-sm leading-7 text-ink-soft">
-            <h2 className="font-maru text-lg font-bold text-ink">
-              「本社」ではなく「事業所」と表記しています
-            </h2>
-            <p className="mt-3">
-              当方は大規模な会社ではなく、個人事業として運営しております。
-              そのため、所在地は「本社」でなく<span className="font-bold text-ink">「事業所」</span>として
-              正確にお伝えしています。自宅住所は公表せず、お問い合わせ時に対応しております。
-            </p>
-            <p className="mt-3">
-              対応エリアは{site.operator.area}。
-              オンラインでの打ち合わせが中心のため、遠方からもご相談いただけます。
-            </p>
-          </div>
-
           <div className="mt-8 rounded-3xl border border-ink/10 bg-white p-6 text-center shadow-sm">
             <p className="text-sm font-bold text-ink">
               事業所に関するご相談はこちら

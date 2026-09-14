@@ -16,57 +16,15 @@ export default function ContactPage() {
     <div className="flex flex-col">
       <PageHeader
         eyebrow="お問い合わせ"
-        title="メール・チャットで、お気軽にどうぞ"
+        title="メール・チャットにて、ご相談受付中"
         description="24時間いつでも送信できます。お電話での対応は行っておりませんので、ご了承ください。"
       />
-
-      {/* 受付方法の3つのポイント */}
-      <Section className="bg-paper">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card">
-            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-brand-soft text-brand-deep">
-              <MailIcon className="size-6" />
-            </span>
-            <p className="mt-3 text-center text-sm font-bold text-ink">
-              メール・チャットで受付
-            </p>
-          </div>
-          <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card">
-            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-brand-soft text-brand-deep">
-              <ClockIcon className="size-6" />
-            </span>
-            <p className="mt-3 text-center text-sm font-bold text-ink">
-              返信目安：{site.replyTime}
-            </p>
-          </div>
-          <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card">
-            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-brand-soft text-brand-deep">
-              <ChatIcon className="size-6" />
-            </span>
-            <p className="mt-3 text-center text-sm font-bold text-ink">
-              24時間いつでも送信OK
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 flex items-start gap-3 rounded-2xl bg-cream-deep p-4 text-sm leading-7 text-ink-soft">
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ink text-white text-xs font-bold">
-            注意
-          </span>
-          <p>
-            <span className="font-bold text-ink">電話での対応は行っておりません。</span>
-            メールフォームまたはチャットにてご連絡ください。
-            返信は{site.replyTime}を目安としています。
-          </p>
-        </div>
-      </Section>
 
       {/* メールフォーム */}
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="メールでのお問い合わせ"
           title="お問い合わせフォーム"
-          description="項目は4つだけ。お気軽にお送りください。"
         />
         <div className="mx-auto mt-8 max-w-2xl rounded-3xl border border-ink/10 bg-white p-8 shadow-sm">
           <ContactForm />
@@ -97,7 +55,10 @@ export default function ContactPage() {
       <Section className="bg-paper py-12">
         <p className="text-center text-sm text-ink-soft">
           運営：{site.name}（{site.operator.office}）／
-          <Link href="/operator" className="font-bold text-brand hover:text-brand-deep">
+          <Link
+            href="/operator"
+            className="font-bold text-brand hover:text-brand-deep"
+          >
             運営者情報はこちら
           </Link>
         </p>
