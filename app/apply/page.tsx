@@ -76,9 +76,18 @@ export default function ApplyPage() {
                   <span className="text-base font-bold text-ink">
                     {term.title}
                   </span>
-                  <span className="text-xl text-brand group-open:rotate-180">
-                    ▾
-                  </span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="size-5 shrink-0 text-brand transition-transform group-open:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
                 </summary>
                 <p className="border-t border-ink/5 bg-cream/50 px-5 py-4 text-sm leading-7 text-ink-soft">
                   {term.body}
@@ -105,7 +114,7 @@ export default function ApplyPage() {
           description="お申し込み確定後、担当者よりお支払い方法と口座情報をご案内します。"
         />
         <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-3">
-          <div className="rounded-3xl border border-midori border-ink/10 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-brand/50 bg-white p-6 shadow-card">
             <p className="text-sm font-bold text-midori-dark">銀行振込（現行）</p>
             <p className="mt-3 text-sm leading-7 text-ink-soft">
               着手金（50%）を制作開始前に、残金（50%）を公開・納品後にお振り込みいただきます。

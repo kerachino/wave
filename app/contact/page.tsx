@@ -23,21 +23,25 @@ export default function ContactPage() {
       {/* 受付方法の3つのポイント */}
       <Section className="bg-paper">
         <div className="grid gap-4 sm:grid-cols-3">
-          <div className="rounded-3xl border border-ink/10 bg-white p-5 shadow-sm">
-            <MailIcon className="mx-auto size-9 text-brand" />
+          <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card">
+            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-brand-soft text-brand-deep">
+              <MailIcon className="size-6" />
+            </span>
             <p className="mt-3 text-center text-sm font-bold text-ink">
               メール・チャットで受付
             </p>
           </div>
-          <div className="rounded-3xl border border-ink/10 bg-white p-5 shadow-sm">
-            <ClockIcon className="mx-auto size-9 text-midori" />
+          <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card">
+            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-brand-soft text-brand-deep">
+              <ClockIcon className="size-6" />
+            </span>
             <p className="mt-3 text-center text-sm font-bold text-ink">
               返信目安：{site.replyTime}
             </p>
           </div>
-          <div className="rounded-3xl border border-ink/10 bg-white p-5 shadow-sm">
-            <span className="mx-auto grid size-9 place-items-center rounded-full bg-brand-soft text-xl">
-              ⌚
+          <div className="rounded-2xl border border-line bg-white p-6 text-center shadow-card">
+            <span className="mx-auto grid size-12 place-items-center rounded-xl bg-brand-soft text-brand-deep">
+              <ChatIcon className="size-6" />
             </span>
             <p className="mt-3 text-center text-sm font-bold text-ink">
               24時間いつでも送信OK

@@ -71,7 +71,7 @@ export default function FlowPage() {
                   className="absolute left-[1.35rem] top-14 h-[calc(100%-2rem)] w-px bg-brand/30"
                 />
               )}
-              <span className="relative z-10 grid size-11 shrink-0 place-items-center rounded-2xl bg-brand font-maru text-lg font-bold text-white shadow-md">
+              <span className="relative z-10 grid size-11 shrink-0 place-items-center rounded-xl bg-brand font-maru text-lg font-bold text-white shadow-soft">
                 {i + 1}
               </span>
               <div className="flex-1 rounded-3xl border border-ink/10 bg-white p-5 shadow-sm sm:p-6">

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HouseIcon } from "@/components/icons";
 import { PageHeader } from "@/components/PageHeader";
 import { ButtonLink, Section, SectionHeading } from "@/components/ui";
 
@@ -62,10 +63,10 @@ export default function WorksPage() {
           {[0, 1, 2].map((n) => (
             <div
               key={n}
-              className="rounded-3xl border-2 border-dashed border-ink/20 bg-white p-8 text-center"
+              className="rounded-2xl border border-dashed border-ink/15 bg-cream/60 p-8 text-center"
             >
-              <div className="mx-auto grid size-20 place-items-center rounded-full bg-cream-deep text-2xl">
-                🏠
+              <div className="mx-auto grid size-16 place-items-center rounded-2xl bg-white text-ink-mute shadow-card">
+                <HouseIcon className="size-7" />
               </div>
               <p className="mt-4 font-maru text-base font-bold text-ink-mute">
                 あなたのお店・会社の番です

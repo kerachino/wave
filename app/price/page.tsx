@@ -93,8 +93,8 @@ export default function PricePage() {
       {/* 別途費用 */}
       <Section className="bg-cream">
         <SectionHeading eyebrow="別途費用" title="プランに含まれないもの" />
-        <div className="mt-8 overflow-x-auto">
-          <table className="w-full min-w-[32rem] border-collapse rounded-2xl bg-white shadow-sm">
+        <div className="mt-8 overflow-x-auto rounded-2xl border border-line bg-white shadow-card">
+          <table className="w-full min-w-[32rem] border-collapse">
             <thead>
               <tr className="border-b border-ink/10 text-left">
                 <th className="px-5 py-4 text-sm font-bold text-ink">項目</th>

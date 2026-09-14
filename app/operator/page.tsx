@@ -30,7 +30,7 @@ export default function OperatorPage() {
       <Section className="bg-paper">
         <div className="mx-auto max-w-2xl overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-sm">
           <div className="flex items-center gap-4 bg-cream px-6 py-5">
-            <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-brand text-2xl text-white font-bold">
+            <span className="grid size-16 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-midori to-brand-deep font-maru text-2xl font-bold text-white shadow-soft">
               鳩
             </span>
             <div>
