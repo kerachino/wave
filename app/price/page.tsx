@@ -87,14 +87,14 @@ export default function PricePage() {
         <div className="mx-auto mt-8 max-w-3xl">
           <Card className="p-6">
             <p className="text-sm leading-7 text-ink-soft">
-              基本プランは、初めての実績づくりのための
+              基本プランは、
               <span className="font-bold text-ink">モニター価格</span>です。
               以下の条件をご了承のうえお申し込みください。
             </p>
             <ul className="mt-4 space-y-2.5">
               {[
-                "モニター期間中は、制作したサイトを「制作事例」として掲載させていただきます",
-                "公開後のクチコミ・口コミへのご協力をお願いします",
+                "制作したサイトを「制作事例」として掲載させていただきます",
+                "公開後のクチコミ・アンケートへのご協力をお願いします",
                 "お申し込み状況により、お断りする場合があります",
                 "先着順の受付となります",
               ].map((item) => (
@@ -111,36 +111,6 @@ export default function PricePage() {
             </ul>
           </Card>
         </div>
-      </Section>
-
-      {/* かかる期間の目安 */}
-      <Section className="bg-cream">
-        <SectionHeading eyebrow="かかる期間の目安" title="最短2週間〜の制作" />
-        <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-3">
-          {[
-            ["基本プラン（1ページ）", "約2〜3週間", "まずは1ページを公開"],
-            ["3〜5ページ", "約3〜4週間", "ページ追加を組み合わせた定番サイト"],
-            [
-              "6ページ以上・機能追加",
-              "約4〜6週間",
-              "フォーム・ブログなどを付け足した場合",
-            ],
-          ].map(([name, time, body]) => (
-            <div
-              key={name}
-              className="rounded-3xl border border-ink/10 bg-white p-6 text-center shadow-sm"
-            >
-              <p className="text-sm font-bold text-brand-deep">{name}</p>
-              <p className="mt-2 font-maru text-2xl font-bold text-ink">
-                {time}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-ink-soft">{body}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-6 text-center text-sm text-ink-soft">
-          内容やご連絡のタイミングによって前後します。納期はお見積りの時点でお約束します。
-        </p>
       </Section>
 
       {/* 維持費：重要事項のため分かりやすく大きく */}

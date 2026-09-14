@@ -38,9 +38,6 @@ export function PriceCards() {
             </li>
           ))}
         </ul>
-        <p className="mx-auto mt-4 max-w-2xl rounded-xl bg-midori-soft px-4 py-2.5 text-xs leading-6 text-midori-dark">
-          ※ {basePlan.monitorNote} ／ 先着順のため、お断りする場合があります。
-        </p>
         <Link
           href="/apply"
           className="mx-auto mt-6 block w-full max-w-md rounded-xl bg-brand px-5 py-3.5 text-center text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"

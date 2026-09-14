@@ -7,28 +7,22 @@ import {
   FiCalendar,
   FiCheck,
   FiChevronDown,
-  FiClock,
-  FiEdit3,
+  FiDollarSign,
   FiHelpCircle,
   FiImage,
   FiLayers,
   FiLink,
   FiMail,
-  FiMapPin,
   FiMessageSquare,
   FiMonitor,
   FiPackage,
   FiPenTool,
   FiPhone,
-  FiPlus,
   FiSend,
-  FiShoppingBag,
-  FiStar,
   FiTarget,
   FiTool,
   FiUser,
   FiUsers,
-  FiDollarSign,
 } from "react-icons/fi";
 import { CheckIcon } from "@/components/icons";
 import {
@@ -104,49 +98,6 @@ const iconChip =
 const sectionTitleClass =
   "mt-6 flex items-center gap-2 border-b border-line pb-2 text-xs font-bold tracking-wider text-brand-deep";
 
-/** 選択肢ごとのアイコン（なければ汎用アイコン） */
-function iconForOption(label: string, fallback: IconType): IconType {
-  if (label.includes("飲食") || label.includes("カフェ")) return FiShoppingBag;
-  if (label.includes("美容") || label.includes("サロン")) return FiStar;
-  if (label.includes("クリニック") || label.includes("整体")) return FiPlus;
-  if (label.includes("士業") || label.includes("コンサル")) return FiBriefcase;
-  if (label.includes("教室") || label.includes("スクール")) return FiEdit3;
-  if (label.includes("小売") || label.includes("EC")) return FiShoppingBag;
-  if (label.includes("不動産")) return FiMapPin;
-  if (label.includes("建設") || label.includes("製造")) return FiTool;
-  if (label.includes("IT")) return FiMonitor;
-  if (label.includes("NPO") || label.includes("団体")) return FiUsers;
-  if (label.includes("集客") || label.includes("予約")) return FiTarget;
-  if (label.includes("採用")) return FiUsers;
-  if (label.includes("売りたい") || label.includes("商品")) return FiShoppingBag;
-  if (label.includes("発信") || label.includes("ブログ") || label.includes("お知らせ")) return FiMessageSquare;
-  if (label.includes("問い合わせ")) return FiMail;
-  if (label.includes("トップページ")) return FiMonitor;
-  if (label.includes("メニュー") || label.includes("料金表")) return FiLayers;
-  if (label.includes("会社概要") || label.includes("プロフィール")) return FiBriefcase;
-  if (label.includes("アクセス") || label.includes("店舗情報")) return FiMapPin;
-  if (label.includes("ギャラリー") || label.includes("実績")) return FiImage;
-  if (label.includes("1ページ")) return FiLayers;
-  if (label.includes("2〜3") || label.includes("4〜5") || label.includes("6ページ")) return FiLayers;
-  if (label.includes("ポップ") || label.includes("ナチュラル") || label.includes("シンプル") || label.includes("ビジネス") || label.includes("スタイリッシュ")) return FiPenTool;
-  if (label.includes("おまかせ")) return FiStar;
-  if (label.includes("文章")) return FiEdit3;
-  if (label.includes("写真")) return FiImage;
-  if (label.includes("ロゴ") || label.includes("画像")) return FiImage;
-  if (label.includes("デザイン")) return FiPenTool;
-  if (label.includes("ドメイン") || label.includes("サーバー")) return FiLink;
-  if (label.includes("サポート") || label.includes("更新")) return FiTool;
-  if (label.includes("チラシ") || label.includes("パンフ")) return FiLayers;
-  if (label.includes("原稿")) return FiEdit3;
-  if (label.includes("参考")) return FiLink;
-  if (label.includes("特になし")) return FiHelpCircle;
-  if (label.includes("未定") || label.includes("相談")) return FiHelpCircle;
-  if (label.includes("なるべく早く") || label.includes("1ヶ月") || label.includes("2〜3ヶ月") || label.includes("急がない")) return FiClock;
-  if (label.includes("1万円") || label.includes("1〜3万") || label.includes("3〜5万") || label.includes("5万円")) return FiDollarSign;
-  if (label.includes("制作の相談")) return FiEdit3;
-  return fallback;
-}
-
 /** ラベル行（アイコン＋見出し） */
 function FieldLabel({
   icon: Icon,
@@ -165,75 +116,64 @@ function FieldLabel({
   );
 }
 
-/** ピル型の単一選択（ラジオ・アイコン付き） */
+/** ピル型の単一選択（ラジオ） */
 function PillRadio({
   name,
   options,
   value,
   onChange,
-  fallbackIcon = FiCheck,
 }: {
   name: string;
   options: readonly string[];
   value: string;
   onChange: (value: string) => void;
-  fallbackIcon?: IconType;
 }) {
   return (
     <div className="mt-2 flex flex-wrap gap-2">
-      {options.map((option) => {
-        const OptionIcon = iconForOption(option, fallbackIcon);
-        return (
-          <label
-            key={option}
-            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${
-              value === option
-                ? "border-brand bg-brand-soft text-brand-deep"
-                : "border-line bg-white text-ink-soft hover:border-brand/40"
-            }`}
-          >
-            <input
-              type="radio"
-              name={name}
-              value={option}
-              checked={value === option}
-              onChange={(e) => onChange(e.target.value)}
-              className="sr-only"
-            />
-            <OptionIcon className="size-3.5 shrink-0" aria-hidden="true" />
-            {option}
-          </label>
-        );
-      })}
+      {options.map((option) => (
+        <label
+          key={option}
+          className={`cursor-pointer rounded-full border px-4 py-2 text-xs font-bold transition-colors ${
+            value === option
+              ? "border-brand bg-brand-soft text-brand-deep"
+              : "border-line bg-white text-ink-soft hover:border-brand/40"
+          }`}
+        >
+          <input
+            type="radio"
+            name={name}
+            value={option}
+            checked={value === option}
+            onChange={(e) => onChange(e.target.value)}
+            className="sr-only"
+          />
+          {option}
+        </label>
+      ))}
     </div>
   );
 }
 
-/** ピル型の複数選択（チェックボックス・アイコン付き） */
+/** ピル型の複数選択（チェックボックス） */
 function PillCheckbox({
   name,
   options,
   values,
   onToggle,
-  fallbackIcon = FiCheck,
 }: {
   name: string;
   options: readonly string[];
   values: string[];
   onToggle: (value: string) => void;
-  fallbackIcon?: IconType;
 }) {
   return (
     <div className="mt-2 flex flex-wrap gap-2">
       {options.map((option) => {
         const checked = values.includes(option);
-        const OptionIcon = checked
-          ? FiCheck
-          : iconForOption(option, fallbackIcon);
         return (
           <label
             key={option}
-            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-4 py-2 text-xs font-bold transition-colors ${
               checked
                 ? "border-brand bg-brand-soft text-brand-deep"
                 : "border-line bg-white text-ink-soft hover:border-brand/40"
@@ -247,7 +187,7 @@ function PillCheckbox({
               onChange={() => onToggle(option)}
               className="sr-only"
             />
-            <OptionIcon className="size-3.5 shrink-0" aria-hidden="true" />
+            {checked && <FiCheck className="size-3.5 shrink-0" aria-hidden="true" />}
             {option}
           </label>
         );

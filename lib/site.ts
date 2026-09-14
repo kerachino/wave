@@ -79,8 +79,7 @@ export const contactInquiryTypes = [
   },
 ] as const;
 
-export type ContactInquiryTypeId =
-  (typeof contactInquiryTypes)[number]["id"];
+export type ContactInquiryTypeId = (typeof contactInquiryTypes)[number]["id"];
 
 export const contactIndustryOptions = [
   "飲食店",
@@ -216,31 +215,30 @@ export const addons = [
   },
   {
     id: "photo",
-    name: "写真撮影・画像調整",
-    price: "1回 10,000円〜",
-    description:
-      "出張・人数により変動します。お手持ち写真の補正は基本プラン内で対応します。",
+    name: "素材用意・画像調整",
+    price: "1回 5,000円〜",
+    description: "数枚程度であれば基本プラン内で対応します。",
   },
   {
     id: "blog",
     name: "ブログ・お知らせ更新機能",
-    price: "10,000円〜",
+    price: "5,000円〜",
     description:
-      "自分で更新できるお知らせ欄・ブログ・実績ページなどを追加します。",
+      "データベースを利用し、自分で更新できるお知らせ欄・ブログ・実績ページなどを追加します。",
   },
   {
     id: "app-dev",
     name: "自社アプリの開発",
-    price: "＋5,000円",
+    price: "5,000円～",
     description:
       "自社アプリの開発・連携のご相談も承ります。ホームページと合わせたご提案が可能です。内容によりお見積りします。",
   },
   {
-    id: "revision",
-    name: "修正3回目以降（大きな修正）",
-    price: "1回 3,000円〜",
+    id: "mo",
+    name: "モニター条件への不同意",
+    price: "1,000円",
     description:
-      "制作中の大きな修正は2回まで無料、小さな修正は5回ほど無料。大きな修正の3回目以降はこちらで対応します。",
+      "制作させていただいたホームページは、実績として掲載させていただく場合がございます。その他アンケートへのご協力等が必須となりますので、モニター条件に同意いただけない場合は、こちらのオプションが追加となります。",
   },
 ] as const;
 
@@ -252,12 +250,12 @@ export const planExamples = [
   },
   {
     name: "3ページの定番サイト",
-    total: "17,500円〜",
+    total: "17,500円",
     breakdown: "基本7,500円 ＋ ページ追加2ページ分",
   },
   {
     name: "5ページ＋フォーム付き",
-    total: "30,500円〜",
+    total: "30,500円",
     breakdown: "基本7,500円 ＋ ページ追加4ページ分 ＋ フォーム設置",
   },
 ] as const;
