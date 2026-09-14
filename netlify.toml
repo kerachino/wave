@@ -1,0 +1,21 @@
+# ============================================================
+# Netlify デプロイ設定（Next.js App Router）
+# 注意: Netlify のダッシュボード（Site settings > Build & deploy）でも
+#       以下の設定が正しく反映されているか確認してください。
+#
+# 参考: 環境変数はダッシュボード（Site settings > Environment variables）
+#       に .env.local と同じ内容（SMTP_* / CONTACT_EMAIL / NEXT_PUBLIC_FIREBASE_*）を
+#       登録してください。
+# ============================================================
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  # Next.js 16 は Node 20 以上が必要
+  NODE_VERSION = "20"
+
+# Next.js ランナー（App Router / API Routes を Netlify 上で動作させる）
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
