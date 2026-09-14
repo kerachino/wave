@@ -1,20 +1,88 @@
 "use client";
 
 import { useState } from "react";
+import type { IconType } from "react-icons";
+import {
+  FiBriefcase,
+  FiCalendar,
+  FiCheck,
+  FiChevronDown,
+  FiClock,
+  FiEdit3,
+  FiHelpCircle,
+  FiImage,
+  FiLayers,
+  FiLink,
+  FiMail,
+  FiMapPin,
+  FiMessageSquare,
+  FiMonitor,
+  FiPackage,
+  FiPenTool,
+  FiPhone,
+  FiPlus,
+  FiSend,
+  FiShoppingBag,
+  FiStar,
+  FiTarget,
+  FiTool,
+  FiUser,
+  FiUsers,
+  FiDollarSign,
+} from "react-icons/fi";
 import { CheckIcon } from "@/components/icons";
+import {
+  contactBudgetOptions,
+  contactColorOptions,
+  contactDeadlineOptions,
+  contactIndustryOptions,
+  contactInquiryTypes,
+  type ContactInquiryTypeId,
+  contactNeededPagesOptions,
+  contactPageCountOptions,
+  contactPreparedOptions,
+  contactPurposeOptions,
+  contactRequestOptions,
+} from "@/lib/site";
 
 type FormState = {
+  inquiryType: ContactInquiryTypeId | "";
   company: string;
   name: string;
   email: string;
+  phone: string;
+  industry: string;
+  purpose: string;
+  target: string;
+  neededPages: string[];
+  pageCount: string;
+  color: string;
+  requests: string[];
+  prepared: string[];
+  budget: string;
+  deadline: string;
+  referenceUrl: string;
   message: string;
   _spam: string;
 };
 
 const initial: FormState = {
+  inquiryType: "",
   company: "",
   name: "",
   email: "",
+  phone: "",
+  industry: "",
+  purpose: "",
+  target: "",
+  neededPages: [],
+  pageCount: "",
+  color: "",
+  requests: [],
+  prepared: [],
+  budget: "",
+  deadline: "",
+  referenceUrl: "",
   message: "",
   _spam: "",
 };
@@ -27,7 +95,168 @@ const labelClass = "block text-sm font-medium text-ink";
 const requiredBadge =
   "ml-1 inline-block rounded-md bg-brand-soft px-1.5 py-0.5 align-middle text-[11px] font-semibold leading-4 text-brand-deep";
 
-/** お問い合わせフォーム（メール送信 /api/contact） */
+const optionalBadge =
+  "ml-1 inline-block rounded-md bg-ink/5 px-1.5 py-0.5 align-middle text-[11px] font-semibold leading-4 text-ink-soft";
+
+const iconChip =
+  "grid size-6 shrink-0 place-items-center rounded-full bg-brand-soft text-brand-deep";
+
+const sectionTitleClass =
+  "mt-6 flex items-center gap-2 border-b border-line pb-2 text-xs font-bold tracking-wider text-brand-deep";
+
+/** 選択肢ごとのアイコン（なければ汎用アイコン） */
+function iconForOption(label: string, fallback: IconType): IconType {
+  if (label.includes("飲食") || label.includes("カフェ")) return FiShoppingBag;
+  if (label.includes("美容") || label.includes("サロン")) return FiStar;
+  if (label.includes("クリニック") || label.includes("整体")) return FiPlus;
+  if (label.includes("士業") || label.includes("コンサル")) return FiBriefcase;
+  if (label.includes("教室") || label.includes("スクール")) return FiEdit3;
+  if (label.includes("小売") || label.includes("EC")) return FiShoppingBag;
+  if (label.includes("不動産")) return FiMapPin;
+  if (label.includes("建設") || label.includes("製造")) return FiTool;
+  if (label.includes("IT")) return FiMonitor;
+  if (label.includes("NPO") || label.includes("団体")) return FiUsers;
+  if (label.includes("集客") || label.includes("予約")) return FiTarget;
+  if (label.includes("採用")) return FiUsers;
+  if (label.includes("売りたい") || label.includes("商品")) return FiShoppingBag;
+  if (label.includes("発信") || label.includes("ブログ") || label.includes("お知らせ")) return FiMessageSquare;
+  if (label.includes("問い合わせ")) return FiMail;
+  if (label.includes("トップページ")) return FiMonitor;
+  if (label.includes("メニュー") || label.includes("料金表")) return FiLayers;
+  if (label.includes("会社概要") || label.includes("プロフィール")) return FiBriefcase;
+  if (label.includes("アクセス") || label.includes("店舗情報")) return FiMapPin;
+  if (label.includes("ギャラリー") || label.includes("実績")) return FiImage;
+  if (label.includes("1ページ")) return FiLayers;
+  if (label.includes("2〜3") || label.includes("4〜5") || label.includes("6ページ")) return FiLayers;
+  if (label.includes("ポップ") || label.includes("ナチュラル") || label.includes("シンプル") || label.includes("ビジネス") || label.includes("スタイリッシュ")) return FiPenTool;
+  if (label.includes("おまかせ")) return FiStar;
+  if (label.includes("文章")) return FiEdit3;
+  if (label.includes("写真")) return FiImage;
+  if (label.includes("ロゴ") || label.includes("画像")) return FiImage;
+  if (label.includes("デザイン")) return FiPenTool;
+  if (label.includes("ドメイン") || label.includes("サーバー")) return FiLink;
+  if (label.includes("サポート") || label.includes("更新")) return FiTool;
+  if (label.includes("チラシ") || label.includes("パンフ")) return FiLayers;
+  if (label.includes("原稿")) return FiEdit3;
+  if (label.includes("参考")) return FiLink;
+  if (label.includes("特になし")) return FiHelpCircle;
+  if (label.includes("未定") || label.includes("相談")) return FiHelpCircle;
+  if (label.includes("なるべく早く") || label.includes("1ヶ月") || label.includes("2〜3ヶ月") || label.includes("急がない")) return FiClock;
+  if (label.includes("1万円") || label.includes("1〜3万") || label.includes("3〜5万") || label.includes("5万円")) return FiDollarSign;
+  if (label.includes("制作の相談")) return FiEdit3;
+  return fallback;
+}
+
+/** ラベル行（アイコン＋見出し） */
+function FieldLabel({
+  icon: Icon,
+  children,
+}: {
+  icon: IconType;
+  children: React.ReactNode;
+}) {
+  return (
+    <span className="flex items-center gap-2 text-sm font-medium text-ink">
+      <span className={iconChip}>
+        <Icon className="size-3.5" />
+      </span>
+      {children}
+    </span>
+  );
+}
+
+/** ピル型の単一選択（ラジオ・アイコン付き） */
+function PillRadio({
+  name,
+  options,
+  value,
+  onChange,
+  fallbackIcon = FiCheck,
+}: {
+  name: string;
+  options: readonly string[];
+  value: string;
+  onChange: (value: string) => void;
+  fallbackIcon?: IconType;
+}) {
+  return (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {options.map((option) => {
+        const OptionIcon = iconForOption(option, fallbackIcon);
+        return (
+          <label
+            key={option}
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${
+              value === option
+                ? "border-brand bg-brand-soft text-brand-deep"
+                : "border-line bg-white text-ink-soft hover:border-brand/40"
+            }`}
+          >
+            <input
+              type="radio"
+              name={name}
+              value={option}
+              checked={value === option}
+              onChange={(e) => onChange(e.target.value)}
+              className="sr-only"
+            />
+            <OptionIcon className="size-3.5 shrink-0" aria-hidden="true" />
+            {option}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
+/** ピル型の複数選択（チェックボックス・アイコン付き） */
+function PillCheckbox({
+  name,
+  options,
+  values,
+  onToggle,
+  fallbackIcon = FiCheck,
+}: {
+  name: string;
+  options: readonly string[];
+  values: string[];
+  onToggle: (value: string) => void;
+  fallbackIcon?: IconType;
+}) {
+  return (
+    <div className="mt-2 flex flex-wrap gap-2">
+      {options.map((option) => {
+        const checked = values.includes(option);
+        const OptionIcon = checked
+          ? FiCheck
+          : iconForOption(option, fallbackIcon);
+        return (
+          <label
+            key={option}
+            className={`inline-flex cursor-pointer items-center gap-1.5 rounded-full border px-3.5 py-2 text-xs font-bold transition-colors ${
+              checked
+                ? "border-brand bg-brand-soft text-brand-deep"
+                : "border-line bg-white text-ink-soft hover:border-brand/40"
+            }`}
+          >
+            <input
+              type="checkbox"
+              name={name}
+              value={option}
+              checked={checked}
+              onChange={() => onToggle(option)}
+              className="sr-only"
+            />
+            <OptionIcon className="size-3.5 shrink-0" aria-hidden="true" />
+            {option}
+          </label>
+        );
+      })}
+    </div>
+  );
+}
+
+/** お問い合わせフォーム（メール送信 /api/contact）。種別ごとに項目を切り替える */
 export function ContactForm() {
   const [form, setForm] = useState<FormState>(initial);
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">(
@@ -35,8 +264,20 @@ export function ContactForm() {
   );
   const [errorMessage, setErrorMessage] = useState("");
 
-  function update<K extends keyof FormState>(key: K, value: string) {
+  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function toggleInList(
+    key: "neededPages" | "requests" | "prepared",
+    option: string,
+  ) {
+    setForm((f) => ({
+      ...f,
+      [key]: f[key].includes(option)
+        ? f[key].filter((v) => v !== option)
+        : [...f[key], option],
+    }));
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -61,7 +302,9 @@ export function ContactForm() {
       setForm(initial);
     } catch {
       setStatus("error");
-      setErrorMessage("通信エラーが発生しました。時間をおいて再度お試しください。");
+      setErrorMessage(
+        "通信エラーが発生しました。時間をおいて再度お試しください。",
+      );
     }
   }
 
@@ -103,9 +346,63 @@ export function ContactForm() {
         aria-hidden="true"
       />
 
+      {/* STEP 1：何の問い合わせか（必須） */}
+      <div>
+        <FieldLabel icon={FiHelpCircle}>
+          何についてのお問い合わせですか{" "}
+          <span className={requiredBadge}>必須</span>
+        </FieldLabel>
+        <div className="mt-2 grid gap-2 sm:grid-cols-2">
+          {contactInquiryTypes.map((type) => {
+            const selected = form.inquiryType === type.id;
+            return (
+              <label
+                key={type.id}
+                className={`cursor-pointer rounded-2xl border p-4 transition-all ${
+                  selected
+                    ? "border-brand bg-brand-soft/50 shadow-card ring-2 ring-brand/20"
+                    : "border-line bg-white hover:border-brand/40"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="contact-inquiry-type"
+                  value={type.id}
+                  checked={selected}
+                  onChange={(e) =>
+                    update(
+                      "inquiryType",
+                      e.target.value as ContactInquiryTypeId,
+                    )
+                  }
+                  className="sr-only"
+                />
+                <span className="flex items-center gap-2 text-sm font-bold text-ink">
+                  <span
+                    className={`grid size-5 shrink-0 place-items-center rounded-full border-2 ${
+                      selected
+                        ? "border-brand bg-brand text-white"
+                        : "border-line"
+                    }`}
+                  >
+                    {selected && <CheckIcon className="size-3" />}
+                  </span>
+                  {type.label}
+                </span>
+                <span className="mt-1 block pl-7 text-xs leading-5 text-ink-soft">
+                  {type.description}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
       <div>
         <label htmlFor="contact-company" className={labelClass}>
-          会社名・事業所名 <span className={requiredBadge}>必須</span>
+          <FieldLabel icon={FiBriefcase}>
+            会社名・事業所名 <span className={requiredBadge}>必須</span>
+          </FieldLabel>
         </label>
         <input
           id="contact-company"
@@ -122,7 +419,9 @@ export function ContactForm() {
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className={labelClass}>
-            お名前 <span className={requiredBadge}>必須</span>
+            <FieldLabel icon={FiUser}>
+              お名前 <span className={requiredBadge}>必須</span>
+            </FieldLabel>
           </label>
           <input
             id="contact-name"
@@ -137,7 +436,9 @@ export function ContactForm() {
         </div>
         <div>
           <label htmlFor="contact-email" className={labelClass}>
-            メールアドレス <span className={requiredBadge}>必須</span>
+            <FieldLabel icon={FiMail}>
+              メールアドレス <span className={requiredBadge}>必須</span>
+            </FieldLabel>
           </label>
           <input
             id="contact-email"
@@ -153,8 +454,218 @@ export function ContactForm() {
       </div>
 
       <div>
+        <label htmlFor="contact-phone" className={labelClass}>
+          <FieldLabel icon={FiPhone}>
+            電話番号 <span className={optionalBadge}>任意</span>
+          </FieldLabel>
+        </label>
+        <input
+          id="contact-phone"
+          type="tel"
+          autoComplete="tel"
+          className={`mt-2 ${inputClass}`}
+          placeholder="例）090-0000-0000（連絡が取りやすい場合のみ）"
+          value={form.phone}
+          onChange={(e) => update("phone", e.target.value)}
+        />
+      </div>
+
+      {/* ご希望の内容：制作の相談・見積もり依頼（任意） */}
+      {form.inquiryType === "consult" && (
+        <fieldset className="rounded-2xl border border-line bg-cream/50 p-5 sm:p-6">
+          <legend className="px-2 text-sm font-bold text-ink">
+            作りたい内容について <span className={optionalBadge}>任意</span>
+          </legend>
+          <p className="text-xs leading-6 text-ink-soft">
+            分かる範囲でお選びください。分からない場合は空欄のままで大丈夫です。
+          </p>
+
+          {/* 1. お店・会社について */}
+          <p className={sectionTitleClass}>
+            <FiBriefcase className="size-4" aria-hidden="true" />
+            1. お店・会社について
+          </p>
+          <div className="mt-4">
+            <label htmlFor="contact-industry" className={labelClass}>
+              <FieldLabel icon={FiBriefcase}>業種</FieldLabel>
+            </label>
+            <div className="relative mt-2">
+              <select
+                id="contact-industry"
+                className={`${inputClass} appearance-none pr-10`}
+                value={form.industry}
+                onChange={(e) => update("industry", e.target.value)}
+              >
+                <option value="">選択してください（任意）</option>
+                {contactIndustryOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+              <FiChevronDown
+                className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-ink-mute"
+                aria-hidden="true"
+              />
+            </div>
+          </div>
+
+          {/* 2. サイトの目的 */}
+          <p className={sectionTitleClass}>
+            <FiTarget className="size-4" aria-hidden="true" />
+            2. サイトの目的
+          </p>
+          <div className="mt-4">
+            <FieldLabel icon={FiMonitor}>Webサイトの用途</FieldLabel>
+            <PillRadio
+              name="contact-purpose"
+              options={contactPurposeOptions}
+              value={form.purpose}
+              onChange={(v) => update("purpose", v)}
+              fallbackIcon={FiMonitor}
+            />
+          </div>
+          <div className="mt-4">
+            <label htmlFor="contact-target" className={labelClass}>
+              <FieldLabel icon={FiUsers}>
+                ターゲット像（来てほしいお客さま）
+              </FieldLabel>
+            </label>
+            <input
+              id="contact-target"
+              type="text"
+              className={`mt-2 ${inputClass}`}
+              placeholder="例）近所の子育て世代、30代の女性など"
+              value={form.target}
+              onChange={(e) => update("target", e.target.value)}
+            />
+          </div>
+
+          {/* 3. ページ構成 */}
+          <p className={sectionTitleClass}>
+            <FiLayers className="size-4" aria-hidden="true" />
+            3. ページ構成
+          </p>
+          <div className="mt-4">
+            <FieldLabel icon={FiLayers}>
+              必要なページ（複数選択できます）
+            </FieldLabel>
+            <PillCheckbox
+              name="contact-needed-pages"
+              options={contactNeededPagesOptions}
+              values={form.neededPages}
+              onToggle={(v) => toggleInList("neededPages", v)}
+              fallbackIcon={FiLayers}
+            />
+          </div>
+          <div className="mt-4">
+            <FieldLabel icon={FiPackage}>ページ数・枚数の目安</FieldLabel>
+            <PillRadio
+              name="contact-page-count"
+              options={contactPageCountOptions}
+              value={form.pageCount}
+              onChange={(v) => update("pageCount", v)}
+              fallbackIcon={FiPackage}
+            />
+          </div>
+
+          {/* 4. デザイン */}
+          <p className={sectionTitleClass}>
+            <FiPenTool className="size-4" aria-hidden="true" />
+            4. デザイン
+          </p>
+          <div className="mt-4">
+            <FieldLabel icon={FiPenTool}>サイトの色・雰囲気</FieldLabel>
+            <PillRadio
+              name="contact-color"
+              options={contactColorOptions}
+              value={form.color}
+              onChange={(v) => update("color", v)}
+              fallbackIcon={FiPenTool}
+            />
+          </div>
+          <div className="mt-4">
+            <label htmlFor="contact-reference-url" className={labelClass}>
+              <FieldLabel icon={FiLink}>
+                参考にしたいサイトのURL
+              </FieldLabel>
+            </label>
+            <input
+              id="contact-reference-url"
+              type="url"
+              inputMode="url"
+              className={`mt-2 ${inputClass}`}
+              placeholder="例）https://example.com（あれば）"
+              value={form.referenceUrl}
+              onChange={(e) => update("referenceUrl", e.target.value)}
+            />
+          </div>
+
+          {/* 5. 素材・作業分担 */}
+          <p className={sectionTitleClass}>
+            <FiImage className="size-4" aria-hidden="true" />
+            5. 素材・作業分担
+          </p>
+          <div className="mt-4">
+            <FieldLabel icon={FiTool}>
+              対応してもらいたいこと（複数選択できます）
+            </FieldLabel>
+            <PillCheckbox
+              name="contact-requests"
+              options={contactRequestOptions}
+              values={form.requests}
+              onToggle={(v) => toggleInList("requests", v)}
+              fallbackIcon={FiTool}
+            />
+          </div>
+          <div className="mt-4">
+            <FieldLabel icon={FiPackage}>
+              用意しているもの（複数選択できます）
+            </FieldLabel>
+            <PillCheckbox
+              name="contact-prepared"
+              options={contactPreparedOptions}
+              values={form.prepared}
+              onToggle={(v) => toggleInList("prepared", v)}
+              fallbackIcon={FiPackage}
+            />
+          </div>
+
+          {/* 6. 予算・時期 */}
+          <p className={sectionTitleClass}>
+            <FiDollarSign className="size-4" aria-hidden="true" />
+            6. 予算・時期
+          </p>
+          <div className="mt-4 grid gap-5 sm:grid-cols-2">
+            <div>
+              <FieldLabel icon={FiDollarSign}>ご予算の目安</FieldLabel>
+              <PillRadio
+                name="contact-budget"
+                options={contactBudgetOptions}
+                value={form.budget}
+                onChange={(v) => update("budget", v)}
+                fallbackIcon={FiDollarSign}
+              />
+            </div>
+            <div>
+              <FieldLabel icon={FiCalendar}>ご希望の時期</FieldLabel>
+              <PillRadio
+                name="contact-deadline"
+                options={contactDeadlineOptions}
+                value={form.deadline}
+                onChange={(v) => update("deadline", v)}
+                fallbackIcon={FiCalendar}
+              />
+            </div>
+          </div>
+        </fieldset>
+      )}
+
+      <div>
         <label htmlFor="contact-message" className={labelClass}>
-          ご相談内容 <span className={requiredBadge}>必須</span>
+          <FieldLabel icon={FiMessageSquare}>
+            ご相談内容 <span className={requiredBadge}>必須</span>
+          </FieldLabel>
         </label>
         <textarea
           id="contact-message"
@@ -180,8 +691,9 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
       >
+        <FiSend className="size-4" aria-hidden="true" />
         {status === "sending" ? "送信中..." : "送信する"}
       </button>
 
@@ -192,4 +704,3 @@ export function ContactForm() {
     </form>
   );
 }
-

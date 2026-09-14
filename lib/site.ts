@@ -64,6 +64,114 @@ export const capabilities = [
   "自社アプリの開発",
 ] as const;
 
+// ---- お問い合わせフォームの選択肢（一元管理） ----
+// 最初に選ぶ「何の問い合わせか」。
+export const contactInquiryTypes = [
+  {
+    id: "consult",
+    label: "制作の相談・見積もり依頼",
+    description: "新しくホームページやアプリを作りたい方",
+  },
+  {
+    id: "other",
+    label: "その他のお問い合わせ",
+    description: "上記に当てはまらない内容",
+  },
+] as const;
+
+export type ContactInquiryTypeId =
+  (typeof contactInquiryTypes)[number]["id"];
+
+export const contactIndustryOptions = [
+  "飲食店",
+  "カフェ・喫茶店",
+  "美容室・サロン",
+  "クリニック・整体",
+  "士業・コンサル",
+  "教室・スクール",
+  "小売・EC",
+  "不動産",
+  "建設・工務店",
+  "製造業",
+  "IT・サービス業",
+  "NPO・団体",
+  "その他",
+] as const;
+
+export const contactPurposeOptions = [
+  "お店・会社の紹介",
+  "集客・予約を増やしたい",
+  "採用したい",
+  "商品を売りたい",
+  "情報発信（ブログ・お知らせ）",
+  "お問い合わせを受けたい",
+  "まだ決まっていない・相談したい",
+] as const;
+
+export const contactNeededPagesOptions = [
+  "トップページ",
+  "お知らせ・ブログ",
+  "メニュー・料金表",
+  "会社概要・プロフィール",
+  "アクセス・店舗情報",
+  "お問い合わせページ",
+  "採用ページ",
+  "ギャラリー・実績紹介",
+] as const;
+
+export const contactPageCountOptions = [
+  "1ページ",
+  "2〜3ページ",
+  "4〜5ページ",
+  "6ページ以上",
+  "未定・相談したい",
+] as const;
+
+export const contactColorOptions = [
+  "おまかせ",
+  "明るい・ポップ",
+  "落ち着いた・シンプル",
+  "かっちり・ビジネス風",
+  "やさしい・ナチュラル",
+  "クール・スタイリッシュ",
+] as const;
+
+// 対応してもらいたいこと（複数選択）
+export const contactRequestOptions = [
+  "文章の作成",
+  "写真の用意・撮影",
+  "画像・ロゴの作成",
+  "デザインの提案",
+  "ドメイン・サーバーの設定",
+  "公開後の更新サポート",
+] as const;
+
+// 用意しているもの（複数選択）
+export const contactPreparedOptions = [
+  "ロゴ",
+  "写真",
+  "文章（原稿）",
+  "ドメイン",
+  "チラシ・パンフレット",
+  "参考サイト",
+  "特になし・相談したい",
+] as const;
+
+export const contactBudgetOptions = [
+  "1万円以内",
+  "1〜3万円",
+  "3〜5万円",
+  "5万円以上",
+  "未定・相談したい",
+] as const;
+
+export const contactDeadlineOptions = [
+  "なるべく早く",
+  "1ヶ月以内",
+  "2〜3ヶ月以内",
+  "急がない・相談したい",
+] as const;
+
 // ---- 料金（基本プラン＋付け足し形式で一元管理） ----
 export const basePlan = {
   id: "basic",
