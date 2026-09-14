@@ -11,10 +11,6 @@ export function TrialPlan() {
           aria-hidden="true"
           className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-midori via-sky-400 to-brand"
         />
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-midori-soft px-3.5 py-1 text-xs font-bold text-midori-dark">
-          <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
-          {basePlan.priceNote}
-        </span>
         <h3 className="mt-4 font-maru text-2xl font-bold text-ink sm:text-3xl">
           {basePlan.name}
         </h3>
@@ -46,7 +42,7 @@ export function TrialPlan() {
         </Link>
       </div>
       <p className="mt-6 text-center text-sm text-ink-soft">
-        ページ追加や自社アプリの開発などの付け足しオプションと、公開後の維持費は、
+        ページ追加や自社アプリの開発などの付け足しオプションと、公開後の維持費（月1,000円〜／お支払いがない場合はサイトを公開できません）は、
         <Link
           href="/price"
           className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"

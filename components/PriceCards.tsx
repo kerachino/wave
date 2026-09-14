@@ -15,9 +15,6 @@ export function PriceCards() {
         <span className="absolute left-1/2 top-4 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand to-sky-500 px-4 py-1 text-xs font-bold text-white shadow-soft">
           まずはここから
         </span>
-        <p className="mt-6 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3.5 py-1 text-xs font-bold text-brand-deep">
-          {basePlan.priceNote}
-        </p>
         <h3 className="mt-3 font-maru text-2xl font-bold text-ink sm:text-3xl">
           {basePlan.name} {basePlan.price}
           <span className="text-base font-bold text-ink-soft">（税込）</span>
@@ -49,7 +46,7 @@ export function PriceCards() {
       {/* 付け足しオプション */}
       <div>
         <h3 className="text-center font-maru text-xl font-bold text-ink">
-          必要なものだけ付け足しできます
+          必要なものだけ付け足し
         </h3>
         <p className="mt-2 text-center text-sm leading-7 text-ink-soft">
           基本プラン7,500円に、以下を組み合わせます。金額はお見積りで確定します。

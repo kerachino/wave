@@ -7,7 +7,7 @@ import { maintenance } from "@/lib/site";
 export const metadata = {
   title: "料金プラン・制作の流れ",
   description:
-    "ホームページ制作は基本プラン7,500円（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（任意）。申し込みから公開までの流れもご案内します。",
+    "ホームページ制作は基本プラン7,500円（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（サイトの公開に必要・お支払いがない場合は公開できません）。申し込みから公開までの流れもご案内します。",
 };
 
 // 制作の流れ（8ステップ）
@@ -49,30 +49,25 @@ const steps = [
   },
   {
     title: "アフターサポート",
-    body: "公開後も保守サポート費（月1,000円〜）で、小さな修正や更新、困ったときの相談を受け付けます。必要なければ任意です。",
+    body: "公開後も保守サポート費（月1,000円〜）で、小さな修正や更新、困ったときの相談を受け付けます。維持費は公開に必要な費用のため、お支払いがない場合はサイトを公開できません。",
     note: "月1,000円〜",
   },
 ];
 
 const extraCosts: [string, string][] = [
-  ["独自ドメイン（使う場合のみ）", "年間1,000円前後の実費"],
+  ["独自ドメイン（使う場合のみ）", "年間1,500円前後の実費"],
 ];
 
 export default function PricePage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        title="料金・制作の流れ"
+        title="料金"
         description="詳しくはお見積りでご案内します。まずは無料相談で、作りたいサイトと予算をお聞かせください。"
       />
 
       {/* プラン表 */}
       <Section className="bg-paper">
-        <SectionHeading
-          eyebrow="制作費"
-          title="基本プラン7,500円＋付け足し形式"
-          description="まずは基本プラン7,500円（税込）。足りない分だけ、必要なものを付け足せます。合計はお見積りで確定します。"
-        />
         <div className="mt-10">
           <PriceCards />
         </div>
@@ -95,6 +90,7 @@ export default function PricePage() {
               {[
                 "制作したサイトを「制作事例」として掲載させていただきます",
                 "公開後のクチコミ・アンケートへのご協力をお願いします",
+                "サイトの公開には、公開後の維持費（月1,000円〜）のお支払いが必要です",
                 "お申し込み状況により、お断りする場合があります",
                 "先着順の受付となります",
               ].map((item) => (
@@ -115,13 +111,6 @@ export default function PricePage() {
 
       {/* 維持費：重要事項のため分かりやすく大きく */}
       <Section className="bg-paper">
-        <SectionHeading
-          eyebrow="★ 公開後にかかる費用（重要）"
-          title={`維持費は${maintenance.price}だけ`}
-        />
-        <p className="mx-auto mt-4 max-w-3xl text-center text-sm leading-8 text-ink-soft">
-          {maintenance.lead}
-        </p>
         <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-3xl border-2 border-brand/60 bg-white shadow-lift">
           <div className="bg-gradient-to-r from-brand to-sky-500 px-6 py-6 text-center sm:px-10">
             <p className="text-xs font-bold tracking-[0.2em] text-white/80">
@@ -129,9 +118,6 @@ export default function PricePage() {
             </p>
             <p className="mt-1 font-maru text-3xl font-bold text-white sm:text-4xl">
               保守サポート費 {maintenance.price}
-            </p>
-            <p className="mt-2 text-xs leading-6 text-white/80">
-              加入しなくてもサイトはそのまま使えます
             </p>
           </div>
           <ul className="grid gap-3 p-6 sm:grid-cols-3 sm:p-8">
@@ -165,36 +151,6 @@ export default function PricePage() {
             </p>
           </div>
         </div>
-      </Section>
-
-      {/* 別途費用 */}
-      <Section className="bg-cream">
-        <SectionHeading eyebrow="別途費用" title="プランに含まれないもの" />
-        <div className="mt-8 overflow-x-auto rounded-2xl border border-line bg-white shadow-card">
-          <table className="w-full min-w-[32rem] border-collapse">
-            <thead>
-              <tr className="border-b border-ink/10 text-left">
-                <th className="px-5 py-4 text-sm font-bold text-ink">項目</th>
-                <th className="px-5 py-4 text-sm font-bold text-ink">
-                  費用の目安
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {extraCosts.map(([name, price]) => (
-                <tr key={name} className="border-b border-ink/5 last:border-0">
-                  <td className="px-5 py-4 text-sm font-medium text-ink">
-                    {name}
-                  </td>
-                  <td className="px-5 py-4 text-sm text-ink-soft">{price}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-4 text-center text-sm text-ink-soft">
-          いずれもお見積りの時点で、金額を明確にお伝えします。
-        </p>
       </Section>
 
       {/* お支払い */}

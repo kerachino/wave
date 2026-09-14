@@ -462,7 +462,6 @@ export function ContactForm() {
               options={contactPurposeOptions}
               value={form.purpose}
               onChange={(v) => update("purpose", v)}
-              fallbackIcon={FiMonitor}
             />
           </div>
           <div className="mt-4">
@@ -495,7 +494,6 @@ export function ContactForm() {
               options={contactNeededPagesOptions}
               values={form.neededPages}
               onToggle={(v) => toggleInList("neededPages", v)}
-              fallbackIcon={FiLayers}
             />
           </div>
           <div className="mt-4">
@@ -505,7 +503,6 @@ export function ContactForm() {
               options={contactPageCountOptions}
               value={form.pageCount}
               onChange={(v) => update("pageCount", v)}
-              fallbackIcon={FiPackage}
             />
           </div>
 
@@ -521,7 +518,6 @@ export function ContactForm() {
               options={contactColorOptions}
               value={form.color}
               onChange={(v) => update("color", v)}
-              fallbackIcon={FiPenTool}
             />
           </div>
           <div className="mt-4">
@@ -555,7 +551,6 @@ export function ContactForm() {
               options={contactRequestOptions}
               values={form.requests}
               onToggle={(v) => toggleInList("requests", v)}
-              fallbackIcon={FiTool}
             />
           </div>
           <div className="mt-4">
@@ -567,7 +562,6 @@ export function ContactForm() {
               options={contactPreparedOptions}
               values={form.prepared}
               onToggle={(v) => toggleInList("prepared", v)}
-              fallbackIcon={FiPackage}
             />
           </div>
 
@@ -584,7 +578,6 @@ export function ContactForm() {
                 options={contactBudgetOptions}
                 value={form.budget}
                 onChange={(v) => update("budget", v)}
-                fallbackIcon={FiDollarSign}
               />
             </div>
             <div>
@@ -594,7 +587,6 @@ export function ContactForm() {
                 options={contactDeadlineOptions}
                 value={form.deadline}
                 onChange={(v) => update("deadline", v)}
-                fallbackIcon={FiCalendar}
               />
             </div>
           </div>
