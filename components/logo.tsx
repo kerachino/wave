@@ -4,7 +4,7 @@ import { site } from "@/lib/site";
 export function LogoMark({ className = "" }: { className?: string }) {
   return (
     <span
-      className={`inline-grid shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-midori to-brand-deep text-white shadow-soft ${className}`}
+      className={`inline-grid shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-brand to-brand-deep text-white shadow-soft ${className}`}
     >
       <svg
         viewBox="0 0 48 48"
@@ -34,6 +34,8 @@ export function LogoMark({ className = "" }: { className?: string }) {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+        {/* 玄関（イエローの点） */}
+        <circle className="fill-midori" cx="24" cy="26.5" r="1.8" />
       </svg>
     </span>
   );

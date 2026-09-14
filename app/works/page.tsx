@@ -79,21 +79,27 @@ export default function WorksPage() {
         </div>
       </Section>
 
-      <Section className="bg-ink py-16">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-maru text-2xl font-bold text-white">
-            あなたのサイトを、最初の事例にしませんか
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-white/80">
-            お試し5,500円〜で、事例掲載にご協力いただけるお店・会社さまを募集しています。
-          </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/contact" variant="primary" size="lg" className="flex-1">
-              まずは相談する
-            </ButtonLink>
-            <ButtonLink href="/price" variant="secondary" size="lg" className="flex-1">
-              料金プランを見る
-            </ButtonLink>
+      <Section className="bg-paper">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand to-brand-dark px-6 py-12 text-center shadow-lift sm:px-10">
+          <div aria-hidden="true" className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-40" />
+          <div aria-hidden="true" className="glow-amber pointer-events-none absolute -bottom-24 -left-12 size-56 opacity-50" />
+          <span aria-hidden="true" className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori" />
+          <span aria-hidden="true" className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80" />
+          <div className="relative mx-auto max-w-2xl">
+            <h2 className="font-maru text-2xl font-bold tracking-tight text-white">
+              あなたのサイトを、最初の事例にしませんか
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-white/75">
+              お試し5,500円〜で、事例掲載にご協力いただけるお店・会社さまを募集しています。
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink href="/contact" variant="accent" size="lg" className="flex-1">
+                まずは相談する
+              </ButtonLink>
+              <ButtonLink href="/price" variant="secondary" size="lg" className="flex-1">
+                料金プランを見る
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </Section>

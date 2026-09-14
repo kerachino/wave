@@ -13,7 +13,15 @@ export function PageHeader({
 }) {
   return (
     <div className="relative overflow-hidden border-b border-line bg-cream">
-      <div aria-hidden="true" className="grid-fade pointer-events-none absolute inset-0" />
+      <div aria-hidden="true" className="dots pointer-events-none absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="glow-strong pointer-events-none absolute -top-24 right-[-6%] size-72 opacity-40"
+      />
+      <div
+        aria-hidden="true"
+        className="glow-amber pointer-events-none absolute -top-20 left-[-4%] size-56 opacity-40"
+      />
       <Container className="relative py-14 sm:py-16">
         <nav aria-label="パンくず" className="flex items-center gap-1.5 text-xs text-ink-mute">
           <Link href="/" className="transition-colors hover:text-brand">

@@ -53,11 +53,11 @@ export function SectionHeading({
     >
       {eyebrow && (
         <p
-          className={`inline-flex items-center gap-2 text-xs font-bold tracking-[0.22em] text-brand ${
+          className={`inline-flex items-center gap-2 rounded-full bg-brand-soft px-3.5 py-1 text-xs font-bold tracking-[0.16em] text-brand ${
             center ? "justify-center" : ""
           }`}
         >
-          <span aria-hidden="true" className="size-1.5 rounded-full bg-brand" />
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
           {eyebrow}
         </p>
       )}
@@ -83,22 +83,25 @@ export function ButtonLink({
 }: {
   href: string;
   children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost";
+  variant?: "primary" | "secondary" | "ghost" | "accent" | "dark";
   size?: "md" | "lg";
   className?: string;
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-xl font-bold transition-all duration-200";
+    "inline-flex items-center justify-center gap-2 rounded-full font-bold transition-all duration-200 active:scale-[0.98]";
   const sizes = {
     md: "px-6 py-3 text-sm",
     lg: "px-7 py-3.5 text-[15px]",
   };
   const variants = {
     primary:
-      "bg-brand text-white shadow-soft hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-lift",
+      "bg-brand text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] hover:-translate-y-0.5 hover:bg-brand-dark",
     secondary:
       "bg-white text-ink shadow-card ring-1 ring-line hover:-translate-y-0.5 hover:text-brand-dark hover:ring-brand/40",
     ghost: "text-brand hover:text-brand-dark",
+    accent:
+      "bg-midori text-ink shadow-[0_12px_26px_-10px_rgb(251_191_36_/_0.6)] hover:-translate-y-0.5 hover:brightness-105",
+    dark: "bg-white/10 text-white ring-1 ring-white/20 backdrop-blur hover:-translate-y-0.5 hover:bg-white/15",
   };
   return (
     <Link
@@ -110,7 +113,7 @@ export function ButtonLink({
   );
 }
 
-/** カード（ヘアライン境界＋控えめな影） */
+/** カード（大きな角丸でポップに） */
 export function Card({
   className = "",
   children,
@@ -120,7 +123,7 @@ export function Card({
 }) {
   return (
     <div
-      className={`rounded-2xl border border-line bg-white shadow-card ${className}`}
+      className={`rounded-3xl border border-line bg-white shadow-card ${className}`}
     >
       {children}
     </div>

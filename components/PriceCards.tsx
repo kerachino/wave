@@ -9,16 +9,22 @@ export function PriceCards() {
       {plans.map((plan) => (
         <div
           key={plan.id}
-          className={`relative flex flex-col rounded-2xl border bg-white p-7 transition-all duration-200 hover:-translate-y-1 ${
+          className={`relative flex flex-col rounded-3xl border-2 bg-white p-7 transition-all duration-200 hover:-translate-y-1 ${
             plan.featured
-              ? "border-brand/50 shadow-lift"
+              ? "border-brand/60 shadow-lift"
               : "border-line shadow-card hover:shadow-soft"
           }`}
         >
           {plan.featured && (
-            <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-brand px-3.5 py-1 text-xs font-bold text-white shadow-soft">
-              おすすめ
-            </span>
+            <>
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1.5 rounded-t-[1.4rem] bg-gradient-to-r from-brand via-sky-400 to-midori"
+              />
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand to-sky-500 px-4 py-1 text-xs font-bold text-white shadow-soft">
+                おすすめ
+              </span>
+            </>
           )}
           <h3 className="text-sm font-bold tracking-wide text-ink-soft">
             {plan.name}

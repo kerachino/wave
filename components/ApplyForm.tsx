@@ -150,7 +150,7 @@ export function ApplyForm() {
           </div>
           {loggedIn && (
             <p className="mt-3 flex items-center gap-2 rounded-xl bg-midori-soft px-4 py-3 text-sm font-bold text-midori-dark">
-              <span className="grid size-5 place-items-center rounded-full bg-midori text-white text-xs">
+              <span className="grid size-5 place-items-center rounded-full bg-midori text-[10px] text-ink">
                 ✓
               </span>
               Googleでログイン済み（{user?.email ?? "メールアドレス取得済み"}）
@@ -303,7 +303,7 @@ export function ApplyForm() {
               type="button"
               onClick={() => setStep(2)}
               disabled={!form.company.trim() || !form.name.trim() || !form.email.trim() || !form.plan}
-              className="w-full rounded-xl bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              className="w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               内容の確認へ →
             </button>
@@ -368,7 +368,7 @@ export function ApplyForm() {
               type="button"
               onClick={submit}
               disabled={!form.agree || sendStatus === "sending"}
-              className="w-full rounded-xl bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {sendStatus === "sending" ? "申し込んでいます..." : "この内容で申し込む"}
             </button>
@@ -414,7 +414,7 @@ export function ApplyForm() {
           <div className="mt-8 flex flex-col gap-3 text-center">
             <Link
               href="/contact"
-              className="w-full rounded-xl bg-brand px-6 py-3.5 text-center text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
+              className="w-full rounded-full bg-brand px-6 py-3.5 text-center text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
             >
               ご質問はお問い合わせへ
             </Link>

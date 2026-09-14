@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, Zen_Kaku_Gothic_New } from "next/font/google";
+import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -12,10 +12,10 @@ const notoSans = Noto_Sans_JP({
   weight: ["400", "500", "700"],
 });
 
-const display = Zen_Kaku_Gothic_New({
+const display = M_PLUS_Rounded_1c({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "700", "900"],
+  weight: ["500", "700", "800"],
 });
 
 export const metadata: Metadata = {

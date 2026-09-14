@@ -1,14 +1,14 @@
 @import "tailwindcss";
 
 /* ============================================================
-   デザインシステム：Modern Emerald（白 × スレート × エメラルド）
-   （和紙×深緑×セリフから、ミニマルで洗練されたモダンデザインへ刷新）
+   デザインシステム：Pop Blue（明るい背景 × 青 × ポップ）
+   （明るく・青をテーマに・堅苦しくならじゆるい雰囲気へ）
    ------------------------------------------------------------
    トークン名と色の対応（内部トークン名は旧名称のまま値を変更）
-   - brand 系 …… プライマリ（エメラルド）
-   - ink 系 ………… 本文・見出し（スレートの墨色）
-   - paper / cream … 背景（ホワイト / 薄スレート）
-   - midori 系 …… アクセント（エメラルドに統一）
+   - brand 系 …… プライマリ（ポップブルー）
+   - ink 系 ………… 本文・見出し（ほぼ黒のスレート）
+   - paper / cream … 背景（ホワイト / ごく薄いブルー）
+   - midori 系 …… アクセント（ひまわりイエロー）
    ============================================================ */
 
 :root {
@@ -24,29 +24,29 @@
 }
 
 @theme {
-  /* プライマリ（エメラルド） */
-  --color-brand: #059669;
-  --color-brand-dark: #047857;
-  --color-brand-deep: #065f46;
-  --color-brand-soft: #ecfdf5;
+  /* プライマリ（ポップブルー） */
+  --color-brand: #2563eb;
+  --color-brand-dark: #1d4ed8;
+  --color-brand-deep: #1e3a8a;
+  --color-brand-soft: #dbeafe;
 
   /* テキスト（スレート） */
   --color-ink: #0f172a;
   --color-ink-soft: #475569;
   --color-ink-mute: #94a3b8;
 
-  /* 背景（ホワイト / 薄スレート） */
+  /* 背景（ホワイト / ごく薄いブルー） */
   --color-paper: #ffffff;
-  --color-cream: #f8fafc;
-  --color-cream-deep: #eef2f6;
+  --color-cream: #f2f7ff;
+  --color-cream-deep: #e2ecfd;
 
-  /* アクセント（エメラルド） */
-  --color-midori: #10b981;
-  --color-midori-dark: #047857;
-  --color-midori-soft: #d1fae5;
+  /* アクセント（ひまわりイエロー） */
+  --color-midori: #fbbf24;
+  --color-midori-dark: #b45309;
+  --color-midori-soft: #fef3c7;
 
   /* 境界線と影 */
-  --color-line: #e2e8f0;
+  --color-line: #dbe4f5;
   --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05);
   --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.05),
     0 12px 32px -16px rgb(15 23 42 / 0.16);
@@ -74,46 +74,110 @@ h3 {
   color: #ffffff;
 }
 
-/* 上下へフェードアウトする微細グリッド背景（ヒーロー・ページヘッダー） */
-.grid-fade {
-  background-image: linear-gradient(
-      to right,
-      rgb(15 23 42 / 0.04) 1px,
-      transparent 1px
-    ),
-    linear-gradient(to bottom, rgb(15 23 42 / 0.04) 1px, transparent 1px);
-  background-size: 54px 54px;
-  -webkit-mask-image: radial-gradient(
-    ellipse 90% 80% at 50% 0%,
-    black 40%,
-    transparent 100%
+/* ポップな水玉模様（明るい背景用） */
+.dots {
+  background-image: radial-gradient(
+    rgb(37 99 235 / 0.1) 1.5px,
+    transparent 1.5px
   );
-  mask-image: radial-gradient(
-    ellipse 90% 80% at 50% 0%,
-    black 40%,
-    transparent 100%
-  );
+  background-size: 18px 18px;
 }
 
-/* グラデーションテキスト（エメラルド → ティール） */
+/* グラデーションテキスト（ブルー → シアン） */
 .text-gradient {
   background-image: linear-gradient(
     110deg,
-    var(--color-brand) 15%,
-    #0d9488 85%
+    #2563eb 10%,
+    #0ea5e9 55%,
+    #06b6d4 90%
   );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-/* 柔らかい放射グロー（ダークセクションやヒーローの装飾） */
+/* 柔らかい放射グロー（明るい背景の装飾） */
 .glow-soft {
   background: radial-gradient(
     closest-side,
-    rgb(16 185 129 / 0.22),
+    rgb(37 99 235 / 0.16),
     transparent 70%
   );
+}
+
+/* 濃いめの放射グロー（ブルーのblob） */
+.glow-strong {
+  background: radial-gradient(
+    closest-side,
+    rgb(37 99 235 / 0.32),
+    transparent 70%
+  );
+}
+
+/* ひまわりイエローのblob */
+.glow-amber {
+  background: radial-gradient(
+    closest-side,
+    rgb(251 191 36 / 0.4),
+    transparent 70%
+  );
+}
+
+/* ピンクのblob（ポップな差し色） */
+.glow-pink {
+  background: radial-gradient(
+    closest-side,
+    rgb(244 114 182 / 0.28),
+    transparent 70%
+  );
+}
+
+/* シール風のオフセット影（ポップの要） */
+.shadow-pop {
+  box-shadow: 5px 5px 0 0 rgb(15 23 42 / 0.85);
+}
+.shadow-pop-sm {
+  box-shadow: 3px 3px 0 0 rgb(15 23 42 / 0.85);
+}
+
+/* 明るいグラデーションテキスト（青系の暗い面用） */
+.text-gradient-bright {
+  background-image: linear-gradient(
+    110deg,
+    #93c5fd 5%,
+    #60a5fa 40%,
+    #38bdf8 95%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* オーロラのように回転するグラデーション（CTAカードの装飾） */
+.aurora {
+  background: conic-gradient(
+    from 0deg at 50% 50%,
+    rgb(37 99 235 / 0.5),
+    rgb(14 165 233 / 0.45),
+    rgb(251 191 36 / 0.4),
+    rgb(59 130 246 / 0.45),
+    rgb(37 99 235 / 0.5)
+  );
+  filter: blur(72px);
+  animation: aurora-spin 26s linear infinite;
+}
+@keyframes aurora-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* モーション低減設定への配慮 */
+@media (prefers-reduced-motion: reduce) {
+  .aurora,
+  .animate-ping {
+    animation: none;
+  }
 }
 
 /* アコーディオン回答などの出現アニメーション */

@@ -144,19 +144,25 @@ export default function PricePage() {
         </div>
       </Section>
 
-      <Section className="bg-ink py-16">
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-maru text-2xl font-bold text-white">どのプランにするか、迷ったら</h2>
-          <p className="mt-3 text-sm leading-7 text-white/80">
-            無料相談で、作りたいサイトと予算をお聞かせください。ぴったりのプランをご提案します。
-          </p>
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/contact" variant="primary" size="lg" className="flex-1">
-              無料で相談する
-            </ButtonLink>
-            <ButtonLink href="/apply" variant="secondary" size="lg" className="flex-1">
-              お申し込みへ
-            </ButtonLink>
+      <Section className="bg-cream">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand to-brand-dark px-6 py-12 text-center shadow-lift sm:px-10">
+          <div aria-hidden="true" className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-40" />
+          <div aria-hidden="true" className="glow-amber pointer-events-none absolute -bottom-24 -left-12 size-56 opacity-50" />
+          <span aria-hidden="true" className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori" />
+          <span aria-hidden="true" className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80" />
+          <div className="relative mx-auto max-w-2xl">
+            <h2 className="font-maru text-2xl font-bold tracking-tight text-white">どのプランにするか、迷ったら</h2>
+            <p className="mt-3 text-sm leading-7 text-white/75">
+              無料相談で、作りたいサイトと予算をお聞かせください。ぴったりのプランをご提案します。
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink href="/contact" variant="accent" size="lg" className="flex-1">
+                無料で相談する
+              </ButtonLink>
+              <ButtonLink href="/apply" variant="secondary" size="lg" className="flex-1">
+                お申し込みへ
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </Section>
