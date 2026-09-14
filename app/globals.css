@@ -212,4 +212,11 @@ summary:focus-visible {
   scrollbar-color: var(--color-line) transparent;
 }
 
+/* アンカーリンク（ページ内ナビ）のスクロールを滑らかに（動作低減設定では無効） */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 

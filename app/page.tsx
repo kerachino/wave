@@ -152,7 +152,7 @@ export default function Home() {
                 <div className="p-5 sm:p-6">
                   <div className="rounded-xl bg-gradient-to-br from-brand-soft via-white to-white p-5 ring-1 ring-line">
                     <p className="text-[10px] font-bold tracking-widest text-brand">
-                      〇〇商店 様 公式サイト
+                      〇〇商店 公式サイト
                     </p>
                     <div className="mt-2.5 space-y-1.5">
                       <div className="h-2.5 w-3/4 rounded-full bg-ink/80" />
@@ -266,8 +266,8 @@ export default function Home() {
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="料金プラン"
-          title="まずは、基本プラン7,500円から"
-          description="いきなり大きなお願いは不安ですよね。まずは1ページの基本プランでお試し。足りない分は後から付け足せます。"
+          title="まずは、基本プランから"
+          description="まずは1ページの基本プランでお試し。足りない分は後から付け足すこともできます。"
         />
         <div className="mt-12">
           <TrialPlan />
@@ -284,7 +284,6 @@ export default function Home() {
             {
               title: "無料相談",
               body: "メール・チャットで、まずはお気軽に。価格や納期の相談だけでもOKです。",
-              note: "費用はかかりません",
             },
             {
               title: "ヒアリング・お見積り",
@@ -293,13 +292,12 @@ export default function Home() {
             },
             {
               title: "ご契約・制作",
-              body: "サイト内でお申し込み後、着手金（50%）のお支払い確認後に制作を開始。進み具合を共有します。",
-              note: "着手金 50%",
+              body: "サイト内でお申し込み後、着手金（50%）のお支払い確認後に制作を開始します。",
             },
             {
               title: "確認・公開",
-              body: "完成前にデザインや文章を確認。修正対応後に公開し、残金（50%）は公開後のお支払いです。サイトの公開には、公開後の維持費（月1,000円〜）のお支払いが必要です。",
-              note: "残金は公開後",
+              body: "修正後の最終確認をいただき、残金（50%）のお支払い確認後に公開します。なお、サイトの公開を維持するには、月1,000円〜が必要です。",
+              note: "大きな修正は2回まで無料",
             },
           ].map((step, i) => (
             <div
@@ -310,9 +308,6 @@ export default function Home() {
                 <p className="grid size-10 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white shadow-pop-sm">
                   {i + 1}
                 </p>
-                <span className="rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold text-brand-deep">
-                  STEP{i + 1}
-                </span>
               </div>
               <h3 className="mt-4 font-maru text-lg font-bold text-ink">
                 {step.title}

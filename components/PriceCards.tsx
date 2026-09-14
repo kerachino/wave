@@ -10,9 +10,9 @@ export function PriceCards() {
       <div className="relative overflow-hidden rounded-3xl border-2 border-brand/60 bg-white p-7 text-center shadow-lift sm:p-9">
         <span
           aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand via-sky-400 to-midori"
+          className="absolute inset-x-0 top-0 h-1.5 rounded-t-3xl bg-gradient-to-r from-brand via-sky-400 to-midori"
         />
-        <span className="absolute left-1/2 top-4 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand to-sky-500 px-4 py-1 text-xs font-bold text-white shadow-soft">
+        <span className="inline-block rounded-full bg-gradient-to-r from-brand to-sky-500 px-4 py-1 text-xs font-bold text-white shadow-soft">
           まずはここから
         </span>
         <h3 className="mt-3 font-maru text-2xl font-bold text-ink sm:text-3xl">

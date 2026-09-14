@@ -61,7 +61,9 @@ export function SectionHeading({
           {eyebrow}
         </p>
       )}
-      <h2 className="mt-3 font-maru text-2xl font-bold tracking-tight leading-snug text-ink sm:text-3xl">
+      <h2
+        className={`${eyebrow ? "mt-3 " : ""}font-maru text-2xl font-bold tracking-tight leading-snug text-ink sm:text-3xl`}
+      >
         {title}
       </h2>
       {description && (
