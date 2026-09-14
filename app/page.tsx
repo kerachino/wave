@@ -8,6 +8,7 @@ import {
   PhoneIcon,
   YenIcon,
 } from "@/components/icons";
+import { FaqAccordion } from "@/components/FaqAccordion";
 import { TrialPlan } from "@/components/TrialPlan";
 import {
   ButtonLink,
@@ -15,13 +16,13 @@ import {
   Section,
   SectionHeading,
 } from "@/components/ui";
-import { site } from "@/lib/site";
+import { faqs, site } from "@/lib/site";
 
 const merits = [
   {
     icon: YenIcon,
     title: "低価格",
-    body: "基本プラン5,500円。1人で制作するから、驚きのリーズナブル価格に。",
+    body: "基本プラン5,500円。コストを削減し、低価格での提供を実現。",
     href: "/price",
     chip: "bg-midori-soft text-midori-dark group-hover:bg-midori group-hover:text-ink",
   },
@@ -35,14 +36,14 @@ const merits = [
   {
     icon: PhoneIcon,
     title: "スマホ対応",
-    body: "お客さまの多くはスマホで見ています。どの端末でもきれいに表示。",
+    body: "標準でスマホ対応。どの端末でもきれいに表示。",
     href: "/price",
     chip: "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white",
   },
   {
     icon: HouseIcon,
-    title: "地域密着",
-    body: "難しい専門用語は使わず、あなたの町の強い味方として最後まで伴走。",
+    title: "サイト完結",
+    body: "支払いからやり取りまでサイト内で完結。お支払は外部決済代行サービスを利用しており、安全にお支払いいただけます。",
     href: "/operator",
     chip: "bg-emerald-100 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white",
   },
@@ -212,9 +213,8 @@ export default function Home() {
       {/* 4つの魅力 */}
       <Section className="bg-cream">
         <SectionHeading
-          eyebrow="はとのコネクトの4つの魅力"
-          title="この町の会社の味方になる、4つの理由"
-          description="難しいことはぜんぶおまかせ。はじめやすさと、あとに残る安心を大事にしています。"
+          title="選ばれる理由"
+          description="難しいことはぜんぶおまかせ。はじめやすさと、頼んで良かったと思われるものに。"
         />
         <div className="relative mt-12">
           <div
@@ -223,9 +223,8 @@ export default function Home() {
           />
           <div className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {merits.map((merit) => (
-              <Link
+              <div
                 key={merit.title}
-                href={merit.href}
                 className="group rounded-3xl border border-line bg-white p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:border-brand/40 hover:shadow-soft"
               >
                 <span
@@ -239,10 +238,7 @@ export default function Home() {
                 <p className="mt-2 text-sm leading-7 text-ink-soft">
                   {merit.body}
                 </p>
-                <p className="mt-4 text-xs font-bold text-brand transition-colors group-hover:text-brand-dark">
-                  詳しく見る →
-                </p>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
@@ -253,7 +249,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="料金プラン"
           title="まずは、基本プラン5,500円から"
-          description="いきなり大きなお願いは不安ですよね。まずは1ページの基本プランで、仕上がりの早さと丁寧さを確かめてみてください。足りない分は後から付け足せます。"
+          description="いきなり大きなお願いは不安ですよね。まずは1ページの基本プランでお試し。足りない分は後から付け足せます。"
         />
         <div className="mt-12">
           <TrialPlan />
@@ -263,8 +259,8 @@ export default function Home() {
       <Section className="bg-cream">
         <SectionHeading
           eyebrow="制作の流れ"
-          title="申し込んでから公開まで、シンプルに4ステップ"
-          description="途中の進み具合もこまめに共有します。わからないことはいつでもメール・チャットでどうぞ。"
+          title="申し込みから公開までの流れ"
+          description="ご不明な点はメール・チャットでご相談ください。"
         />
         <div className="mt-12 grid gap-5 md:grid-cols-4">
           {[
@@ -279,6 +275,10 @@ export default function Home() {
             [
               "ご契約・制作",
               "サイト内でお申し込みいただき、着手金のお支払いのあと制作開始です。",
+            ],
+            [
+              "修正",
+              "完成前にデザインや文章の確認をお願いします。進み具合も共有しながら、3回までは無料で修正対応いたします。",
             ],
             [
               "公開・納品",
@@ -317,45 +317,17 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <p className="mt-8 text-center">
-          <Link
-            href="/price"
-            className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"
-          >
-            詳しい流れを見る →
-          </Link>
-        </p>
       </Section>
 
-      {/* よくある質問へのご案内 */}
-      <Section className="bg-paper">
+      {/* よくある質問（メインページ内のセクション） */}
+      <Section id="faq" className="bg-paper scroll-mt-20">
         <SectionHeading
           eyebrow="よくあるご質問"
           title="「いくら？」「原稿がないけど大丈夫？」"
           description="申し込む前に気になることを、先にまとめてお答えしています。"
         />
-        <div className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            "費用はいくらかかるの？",
-            "原稿がなくても大丈夫？",
-            "公開後の更新はどうするの？",
-            "支払い方法は？",
-            "独自ドメインは必要？",
-          ].map((q) => (
-            <Link
-              key={q}
-              href="/faq"
-              className="group flex items-center justify-between gap-2 rounded-xl border border-line bg-white px-5 py-4 text-sm font-medium text-ink shadow-card transition-all hover:border-brand/40 hover:shadow-soft"
-            >
-              {q}
-              <span
-                aria-hidden="true"
-                className="text-ink-mute transition-all group-hover:translate-x-0.5 group-hover:text-brand"
-              >
-                →
-              </span>
-            </Link>
-          ))}
+        <div className="mx-auto mt-10 max-w-3xl">
+          <FaqAccordion items={[...faqs]} />
         </div>
       </Section>
 

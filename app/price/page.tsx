@@ -81,7 +81,10 @@ export default function PricePage() {
 
       {/* 基本プランの条件 */}
       <Section className="bg-cream">
-        <SectionHeading eyebrow="基本プランについて" title="基本5,500円の条件" />
+        <SectionHeading
+          eyebrow="基本プランについて"
+          title="基本5,500円の条件"
+        />
         <div className="mx-auto mt-8 max-w-3xl">
           <Card className="p-6">
             <p className="text-sm leading-7 text-ink-soft">
@@ -96,7 +99,10 @@ export default function PricePage() {
                 "お申し込み状況により、お断りする場合があります",
                 "先着順の受付となります",
               ].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm leading-6 text-ink-soft">
+                <li
+                  key={item}
+                  className="flex items-start gap-3 text-sm leading-6 text-ink-soft"
+                >
                   <span className="mt-1 grid size-5 shrink-0 place-items-center rounded-full bg-brand-soft text-xs text-brand-deep">
                     ✓
                   </span>
@@ -107,57 +113,28 @@ export default function PricePage() {
           </Card>
         </div>
       </Section>
-      {/* 制作の流れ（8ステップ） */}
-      <Section id="flow" className="bg-paper">
-        <SectionHeading
-          eyebrow="制作の流れ"
-          title="申し込みから公開まで、8つのステップ"
-          description="「どこまで進んでいるのか」がいつも分かるように、各ステップでこまめにご連絡します。"
-        />
-        <ol className="mx-auto mt-12 max-w-3xl">
-          {steps.map((step, i) => (
-            <li key={step.title} className="relative flex gap-5 pb-10 last:pb-0">
-              {/* 縦線 */}
-              {i < steps.length - 1 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute left-[1.35rem] top-14 h-[calc(100%-2rem)] w-px bg-brand/30"
-                />
-              )}
-              <span className="relative z-10 grid size-11 shrink-0 place-items-center rounded-xl bg-brand font-maru text-lg font-bold text-white shadow-soft">
-                {i + 1}
-              </span>
-              <div className="flex-1 rounded-3xl border border-ink/10 bg-white p-5 shadow-sm sm:p-6">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-maru text-lg font-bold text-ink">
-                    {step.title}
-                  </h3>
-                  <span className="rounded-full bg-cream-deep px-3 py-0.5 text-xs font-bold text-brand-deep">
-                    {step.note}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-7 text-ink-soft">{step.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </Section>
 
       {/* かかる期間の目安 */}
       <Section className="bg-cream">
-        <SectionHeading
-          eyebrow="かかる期間の目安"
-          title="最短2週間〜の制作"
-        />
+        <SectionHeading eyebrow="かかる期間の目安" title="最短2週間〜の制作" />
         <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-3">
           {[
             ["基本プラン（1ページ）", "約2〜3週間", "まずは1ページを公開"],
             ["3〜5ページ", "約3〜4週間", "ページ追加を組み合わせた定番サイト"],
-            ["6ページ以上・機能追加", "約4〜6週間", "フォーム・ブログなどを付け足した場合"],
+            [
+              "6ページ以上・機能追加",
+              "約4〜6週間",
+              "フォーム・ブログなどを付け足した場合",
+            ],
           ].map(([name, time, body]) => (
-            <div key={name} className="rounded-3xl border border-ink/10 bg-white p-6 text-center shadow-sm">
+            <div
+              key={name}
+              className="rounded-3xl border border-ink/10 bg-white p-6 text-center shadow-sm"
+            >
               <p className="text-sm font-bold text-brand-deep">{name}</p>
-              <p className="mt-2 font-maru text-2xl font-bold text-ink">{time}</p>
+              <p className="mt-2 font-maru text-2xl font-bold text-ink">
+                {time}
+              </p>
               <p className="mt-2 text-sm leading-6 text-ink-soft">{body}</p>
             </div>
           ))}
@@ -195,17 +172,23 @@ export default function PricePage() {
                 className="rounded-2xl bg-cream p-5 text-left"
               >
                 <p className="text-sm font-bold text-ink">{item.title}</p>
-                <p className="mt-2 text-xs leading-6 text-ink-soft">{item.body}</p>
+                <p className="mt-2 text-xs leading-6 text-ink-soft">
+                  {item.body}
+                </p>
               </li>
             ))}
           </ul>
           <div className="space-y-3 border-t border-line bg-cream/60 px-6 py-6 sm:px-8">
             <p className="flex items-start gap-2 text-sm leading-7 text-ink-soft">
-              <span aria-hidden="true" className="mt-1 text-midori-dark">✓</span>
+              <span aria-hidden="true" className="mt-1 text-midori-dark">
+                ✓
+              </span>
               {maintenance.hosting}
             </p>
             <p className="flex items-start gap-2 text-sm leading-7 text-ink-soft">
-              <span aria-hidden="true" className="mt-1 text-midori-dark">✓</span>
+              <span aria-hidden="true" className="mt-1 text-midori-dark">
+                ✓
+              </span>
               {maintenance.domain}
             </p>
             <p className="rounded-xl bg-white px-4 py-3 text-xs leading-6 text-ink-soft ring-1 ring-line">
@@ -223,13 +206,17 @@ export default function PricePage() {
             <thead>
               <tr className="border-b border-ink/10 text-left">
                 <th className="px-5 py-4 text-sm font-bold text-ink">項目</th>
-                <th className="px-5 py-4 text-sm font-bold text-ink">費用の目安</th>
+                <th className="px-5 py-4 text-sm font-bold text-ink">
+                  費用の目安
+                </th>
               </tr>
             </thead>
             <tbody>
               {extraCosts.map(([name, price]) => (
                 <tr key={name} className="border-b border-ink/5 last:border-0">
-                  <td className="px-5 py-4 text-sm font-medium text-ink">{name}</td>
+                  <td className="px-5 py-4 text-sm font-medium text-ink">
+                    {name}
+                  </td>
                   <td className="px-5 py-4 text-sm text-ink-soft">{price}</td>
                 </tr>
               ))}
@@ -249,11 +236,15 @@ export default function PricePage() {
             <h3 className="font-maru text-lg font-bold text-ink">支払い方法</h3>
             <ul className="mt-3 space-y-2 text-sm leading-7 text-ink-soft">
               <li className="flex items-center gap-2">
-                <span className="rounded bg-midori-soft px-2 py-0.5 text-xs font-bold text-midori-dark">振込</span>
+                <span className="rounded bg-midori-soft px-2 py-0.5 text-xs font-bold text-midori-dark">
+                  振込
+                </span>
                 銀行振込（現行）
               </li>
               <li className="flex items-center gap-2">
-                <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-bold text-brand-deep">準備中</span>
+                <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-bold text-brand-deep">
+                  準備中
+                </span>
                 クレジットカード決済（決済代行サービス導入後に開始）
               </li>
             </ul>
@@ -271,20 +262,44 @@ export default function PricePage() {
 
       <Section className="bg-cream">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand to-brand-dark px-6 py-12 text-center shadow-lift sm:px-10">
-          <div aria-hidden="true" className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-40" />
-          <div aria-hidden="true" className="glow-amber pointer-events-none absolute -bottom-24 -left-12 size-56 opacity-50" />
-          <span aria-hidden="true" className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori" />
-          <span aria-hidden="true" className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80" />
+          <div
+            aria-hidden="true"
+            className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-40"
+          />
+          <div
+            aria-hidden="true"
+            className="glow-amber pointer-events-none absolute -bottom-24 -left-12 size-56 opacity-50"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80"
+          />
           <div className="relative mx-auto max-w-2xl">
-            <h2 className="font-maru text-2xl font-bold tracking-tight text-white">付け足し内容で迷ったら</h2>
+            <h2 className="font-maru text-2xl font-bold tracking-tight text-white">
+              付け足し内容で迷ったら
+            </h2>
             <p className="mt-3 text-sm leading-7 text-white/75">
               無料相談で、作りたいサイトと予算をお聞かせください。必要な付け足しだけをご提案します。
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="/contact" variant="accent" size="lg" className="flex-1">
+              <ButtonLink
+                href="/contact"
+                variant="accent"
+                size="lg"
+                className="flex-1"
+              >
                 無料で相談する
               </ButtonLink>
-              <ButtonLink href="/apply" variant="secondary" size="lg" className="flex-1">
+              <ButtonLink
+                href="/apply"
+                variant="secondary"
+                size="lg"
+                className="flex-1"
+              >
                 お申し込みへ
               </ButtonLink>
             </div>
