@@ -26,7 +26,7 @@ export function GoogleLoginButton({
       <button
         type="button"
         disabled
-        className="flex w-full items-center justify-center gap-3 rounded-2xl border border-ink/15 bg-cream px-5 py-4 text-sm font-bold text-ink-mute"
+        className="flex w-full items-center justify-center gap-3 rounded-xl border border-line bg-cream px-5 py-4 text-sm font-bold text-ink-mute"
       >
         <GoogleIcon />
         Googleログインは準備中です
@@ -54,7 +54,7 @@ export function GoogleLoginButton({
       type="button"
       onClick={handleLogin}
       disabled={loading}
-      className="flex w-full items-center justify-center gap-3 rounded-2xl border border-ink/15 bg-white px-5 py-4 text-sm font-bold text-ink shadow-sm transition-colors hover:bg-cream disabled:opacity-60"
+      className="flex w-full items-center justify-center gap-3 rounded-xl border border-line bg-white px-5 py-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-cream/70 disabled:opacity-60"
     >
       {loading ? (
         <span className="animate-pulse">ログイン中...</span>

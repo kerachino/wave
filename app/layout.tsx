@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, Zen_Maru_Gothic } from "next/font/google";
+import { Noto_Sans_JP, Zen_Kaku_Gothic_New } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -12,10 +12,10 @@ const notoSans = Noto_Sans_JP({
   weight: ["400", "500", "700"],
 });
 
-const zenMaru = Zen_Maru_Gothic({
-  variable: "--font-maru-gothic",
+const display = Zen_Kaku_Gothic_New({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["500", "700"],
+  weight: ["500", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ja"
-      className={`${notoSans.variable} ${zenMaru.variable} h-full scroll-smooth antialiased`}
+      className={`${notoSans.variable} ${display.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Header />

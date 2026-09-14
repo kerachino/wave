@@ -11,7 +11,7 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/10 bg-paper/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-line/80 bg-white/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" onClick={() => setOpen(false)} aria-label="トップページへ">
           <Logo />
@@ -25,19 +25,25 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+                className={`relative rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   active
-                    ? "bg-brand-soft text-brand-deep"
-                    : "text-ink-soft hover:bg-cream hover:text-ink"
+                    ? "text-ink"
+                    : "text-ink-soft hover:text-ink"
                 }`}
               >
                 {item.label}
+                {active && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-brand"
+                  />
+                )}
               </Link>
             );
           })}
           <Link
             href="/contact"
-            className="brand-sheen ml-3 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:bg-brand-dark"
+            className="ml-3 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
           >
             無料で相談する
           </Link>
@@ -49,7 +55,7 @@ export function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="メニューを開閉"
-          className="grid size-10 place-items-center rounded-xl text-ink lg:hidden"
+          className="grid size-10 place-items-center rounded-xl text-ink transition-colors hover:bg-cream lg:hidden"
         >
           <svg
             viewBox="0 0 24 24"
@@ -78,7 +84,7 @@ export function Header() {
       {/* モバイルメニュー */}
       {open && (
         <nav
-          className="border-t border-ink/10 bg-paper px-4 pb-6 pt-3 lg:hidden"
+          className="border-t border-line bg-white/95 px-4 pb-6 pt-3 backdrop-blur-xl lg:hidden"
           aria-label="モバイルメニュー"
         >
           <div className="flex flex-col">
@@ -89,8 +95,10 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className={`rounded-xl px-4 py-3 text-base font-medium ${
-                    active ? "bg-brand-soft text-brand-deep" : "text-ink"
+                  className={`rounded-xl px-4 py-3 text-base font-medium transition-colors ${
+                    active
+                      ? "bg-cream font-semibold text-ink"
+                      : "text-ink hover:bg-cream"
                   }`}
                 >
                   {item.label}
@@ -101,13 +109,13 @@ export function Header() {
               <Link
                 href="/contact"
                 onClick={() => setOpen(false)}
-                className="brand-sheen rounded-full bg-brand px-5 py-3 text-center text-sm font-bold text-white"
+                className="rounded-xl bg-brand px-5 py-3 text-center text-sm font-bold text-white shadow-soft"
               >
                 無料で相談する
               </Link>
               <a
                 href={`mailto:${site.email}`}
-                className="rounded-full border border-ink/15 px-5 py-3 text-center text-sm font-bold text-ink"
+                className="rounded-xl border border-line bg-white px-5 py-3 text-center text-sm font-bold text-ink"
               >
                 メールで相談する
               </a>
@@ -118,3 +126,4 @@ export function Header() {
     </header>
   );
 }
+

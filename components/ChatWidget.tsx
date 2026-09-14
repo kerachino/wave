@@ -101,7 +101,7 @@ export function ChatWidget() {
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "チャットを閉じる" : "チャットを開く"}
-        className="fixed bottom-5 right-5 z-50 grid size-14 place-items-center rounded-full bg-brand text-white shadow-xl transition-transform hover:scale-105 hover:bg-brand-dark"
+        className="fixed bottom-5 right-5 z-50 grid size-14 place-items-center rounded-full bg-brand text-white shadow-lift ring-4 ring-brand/15 transition-all hover:scale-105 hover:bg-brand-dark"
       >
         {open ? (
           <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -116,7 +116,7 @@ export function ChatWidget() {
       </button>
       {/* チャットパネル */}
       {open && (
-        <div className="fixed bottom-24 right-5 z-50 flex h-[28rem] w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-2xl">
+        <div className="fixed bottom-24 right-5 z-50 flex h-[28rem] w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-lift">
           <div className="flex items-center gap-3 bg-ink px-5 py-4 text-white">
             <span className="relative flex size-3">
               <span className="absolute inline-flex h-full w-full rounded-full bg-midori opacity-40" />
@@ -139,7 +139,7 @@ export function ChatWidget() {
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-cream px-4 py-4">
+          <div ref={scrollRef} className="scrollbar-thin flex-1 space-y-3 overflow-y-auto bg-cream px-4 py-4">
             {!isFirebaseConfigured ? (
               <div className="rounded-2xl bg-white p-4 text-sm leading-6 text-ink-soft shadow-sm">
                 チャット機能はただいま準備中です。
@@ -178,13 +178,13 @@ export function ChatWidget() {
                 onChange={(e) => setText(e.target.value)}
                 placeholder="メッセージを入力"
                 disabled={view.status !== "ready" || sending}
-                className="flex-1 rounded-full border border-ink/15 bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-mute focus:border-brand focus:outline-none"
+                className="flex-1 rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-mute focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
               />
               <button
                 type="submit"
                 disabled={view.status !== "ready" || sending || !text.trim()}
                 aria-label="送信"
-                className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white transition-colors hover:bg-brand-dark disabled:opacity-40"
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white shadow-soft transition-colors hover:bg-brand-dark disabled:opacity-40"
               >
                 <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
                   <path d="M3.4 20.4l17.5-8.4L3.4 3.6 3.3 10l12.5 2-12.5 2z" />

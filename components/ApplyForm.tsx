@@ -33,7 +33,7 @@ const initial: FormState = {
 const steps = ["ログイン", "申込み情報", "内容確認", "完了・お支払い"];
 
 const inputClass =
-  "w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink placeholder:text-ink-mute focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30";
+  "w-full rounded-xl border border-line bg-white px-4 py-3 text-sm text-ink shadow-card transition-shadow placeholder:text-ink-mute focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10";
 const labelClass = "block text-sm font-medium text-ink";
 
 export function ApplyForm() {
@@ -104,17 +104,17 @@ export function ApplyForm() {
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-ink/10 bg-white shadow-md">
+    <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-soft">
       {/* ステップ表示 */}
       <div className="flex items-center gap-2 border-b border-ink/10 bg-cream px-5 py-4">
         {steps.map((label, i) => (
           <div key={label} className="flex items-center gap-2 last:mr-0">
             <span
-              className={`grid size-8 shrink-0 place-items-center rounded-full text-sm font-bold ${
+              className={`grid size-8 shrink-0 place-items-center rounded-full text-sm font-bold transition-colors ${
                 i < step
-                  ? "bg-midori text-white"
+                  ? "bg-brand-soft text-brand-dark ring-1 ring-brand/30"
                   : i === step
-                    ? "bg-brand text-white"
+                    ? "bg-brand text-white shadow-card"
                     : "bg-cream-deep text-ink-mute"
               }`}
             >
@@ -268,10 +268,10 @@ export function ApplyForm() {
                     key={plan.id}
                     type="button"
                     onClick={() => update("plan", plan.name)}
-                    className={`rounded-2xl border px-3 py-3 text-left ${
+                    className={`rounded-xl border px-3 py-3 text-left transition-all ${
                       form.plan === plan.name
-                        ? "border-brand bg-brand-soft text-ink ring-2 ring-brand"
-                        : "border-ink/15 bg-white text-ink"
+                        ? "border-brand bg-brand-soft ring-2 ring-brand/40"
+                        : "border-line bg-white hover:border-brand/40"
                     }`}
                   >
                     <span className="block text-xs font-bold text-brand-deep">{plan.name}</span>
@@ -303,7 +303,7 @@ export function ApplyForm() {
               type="button"
               onClick={() => setStep(2)}
               disabled={!form.company.trim() || !form.name.trim() || !form.email.trim() || !form.plan}
-              className="brand-sheen w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+              className="w-full rounded-xl bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
             >
               内容の確認へ →
             </button>
@@ -360,7 +360,7 @@ export function ApplyForm() {
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="w-full rounded-full border border-ink/15 px-6 py-3.5 text-sm font-bold text-ink transition-colors hover:border-brand hover:text-brand sm:w-auto"
+              className="w-full rounded-xl border border-line bg-white px-6 py-3.5 text-sm font-bold text-ink transition-colors hover:border-brand/40 hover:text-brand-dark sm:w-auto"
             >
               ← 入力に戻る
             </button>
@@ -368,7 +368,7 @@ export function ApplyForm() {
               type="button"
               onClick={submit}
               disabled={!form.agree || sendStatus === "sending"}
-              className="brand-sheen w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full rounded-xl bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {sendStatus === "sending" ? "申し込んでいます..." : "この内容で申し込む"}
             </button>
@@ -378,7 +378,7 @@ export function ApplyForm() {
       {/* ステップ4：完了・お支払い */}
       {step === 3 && (
         <div className="px-6 py-10 sm:px-8">
-          <p className="mx-auto grid size-16 place-items-center rounded-full bg-midori text-3xl text-white">✓</p>
+          <p className="mx-auto grid size-16 place-items-center rounded-full bg-brand text-2xl text-white shadow-soft">✓</p>
           <h2 className="mt-6 text-center font-maru text-2xl font-bold text-ink">
             お申し込みを受け付けました
           </h2>
@@ -414,7 +414,7 @@ export function ApplyForm() {
           <div className="mt-8 flex flex-col gap-3 text-center">
             <Link
               href="/contact"
-              className="brand-sheen w-full rounded-full bg-brand px-6 py-3.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-brand-dark"
+              className="w-full rounded-xl bg-brand px-6 py-3.5 text-center text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
             >
               ご質問はお問い合わせへ
             </Link>

@@ -11,49 +11,46 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="space-y-3">
+    <div className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-white shadow-card">
       {items.map((item, i) => {
         const open = openIndex === i;
         return (
-          <div
-            key={i}
-            className="overflow-hidden rounded-2xl border border-ink/10 bg-white shadow-sm"
-          >
+          <div key={i}>
             <button
               type="button"
               onClick={() => setOpenIndex(open ? null : i)}
               aria-expanded={open}
-              className="flex w-full items-center gap-4 px-5 py-4 text-left"
+              className="flex w-full items-center gap-4 px-5 py-5 text-left transition-colors hover:text-brand-dark sm:px-6"
             >
-              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand-soft font-maru text-sm font-bold text-brand-deep">
-                Q
-              </span>
-              <span className="flex-1 text-sm font-bold leading-6 text-ink sm:text-base">
+              <span
+                className={`flex-1 text-sm font-bold leading-7 transition-colors sm:text-[15px] ${
+                  open ? "text-brand-dark" : "text-ink"
+                }`}
+              >
                 {item.q}
               </span>
-              <svg
-                viewBox="0 0 24 24"
-                className={`size-5 shrink-0 text-brand transition-transform ${
-                  open ? "rotate-180" : ""
-                }`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <span
                 aria-hidden="true"
+                className={`grid size-6 shrink-0 place-items-center rounded-full transition-colors ${
+                  open ? "bg-brand text-white" : "bg-cream-deep text-ink-soft"
+                }`}
               >
-                <path d="M6 9l6 6 6-6" />
-              </svg>
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                >
+                  <path d="M5 12h14" />
+                  <path d={open ? "" : "M12 5v14"} />
+                </svg>
+              </span>
             </button>
             {open && (
-              <div className="border-t border-ink/5 bg-cream/50 px-5 py-4">
-                <div className="flex gap-3">
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-midori-soft font-maru text-sm font-bold text-midori-dark">
-                    A
-                  </span>
-                  <p className="text-sm leading-7 text-ink-soft">{item.a}</p>
-                </div>
+              <div className="animate-fade-up px-5 pb-6 sm:px-6">
+                <p className="text-sm leading-8 text-ink-soft">{item.a}</p>
               </div>
             )}
           </div>
@@ -62,3 +59,4 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
     </div>
   );
 }
+
