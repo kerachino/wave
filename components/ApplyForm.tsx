@@ -5,7 +5,7 @@ import { useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { type User } from "firebase/auth";
 import { isFirebaseConfigured, db } from "@/lib/firebase";
-import { plans, site } from "@/lib/site";
+import { addons, basePlan, site } from "@/lib/site";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 
 type FormState = {
@@ -14,6 +14,7 @@ type FormState = {
   email: string;
   phone: string;
   plan: string;
+  addons: string[];
   note: string;
   agree: boolean;
   _spam: string;
@@ -24,7 +25,8 @@ const initial: FormState = {
   name: "",
   email: "",
   phone: "",
-  plan: "",
+  plan: basePlan.name,
+  addons: [],
   note: "",
   agree: false,
   _spam: "",
@@ -48,6 +50,15 @@ export function ApplyForm() {
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((f) => ({ ...f, [key]: value }));
+  }
+
+  function toggleAddon(name: string) {
+    setForm((f) => ({
+      ...f,
+      addons: f.addons.includes(name)
+        ? f.addons.filter((a) => a !== name)
+        : [...f.addons, name],
+    }));
   }
 
   function handleLoginSuccess(loginUser: User) {
@@ -87,6 +98,7 @@ export function ApplyForm() {
             email: form.email,
             phone: form.phone,
             plan: form.plan,
+            addons: form.addons,
             note: form.note,
             createdAt: serverTimestamp(),
           });
@@ -258,28 +270,61 @@ export function ApplyForm() {
               />
             </div>
             <div>
-              <label htmlFor="apply-plan" className={labelClass}>
-                希望プラン{" "}
+              <p id="apply-plan" className={labelClass}>
+                基本プラン{" "}
                 <span className="ml-1 rounded bg-brand-soft px-1.5 py-0.5 text-xs text-brand-deep">必須</span>
-              </label>
-              <div className="mt-2 grid gap-4 sm:grid-cols-3">
-                {plans.map((plan) => (
-                  <button
-                    key={plan.id}
-                    type="button"
-                    onClick={() => update("plan", plan.name)}
-                    className={`rounded-xl border px-3 py-3 text-left transition-all ${
-                      form.plan === plan.name
-                        ? "border-brand bg-brand-soft ring-2 ring-brand/40"
-                        : "border-line bg-white hover:border-brand/40"
-                    }`}
-                  >
-                    <span className="block text-xs font-bold text-brand-deep">{plan.name}</span>
-                    <span className="mt-1 block text-sm font-bold">{plan.price}</span>
-                    <span className="mt-0.5 block text-[10px] text-ink-mute">{plan.priceNote}</span>
-                  </button>
-                ))}
+              </p>
+              <div className="mt-2 rounded-xl border border-brand bg-brand-soft/50 px-4 py-3">
+                <p className="text-sm font-bold text-ink">
+                  {basePlan.name} {basePlan.price}
+                  <span className="ml-1 text-xs font-normal text-ink-soft">（税込）</span>
+                </p>
+                <p className="mt-1 text-xs leading-6 text-ink-soft">
+                  すべてのお申し込みに含まれます。1ページ制作・スマホ対応付き。
+                </p>
               </div>
+            </div>
+            <div>
+              <p className={labelClass}>
+                付け足しオプション{" "}
+                <span className="ml-1 rounded bg-midori-soft px-1.5 py-0.5 text-xs text-midori-dark">任意・複数選択OK</span>
+              </p>
+              <div className="mt-2 grid gap-3 sm:grid-cols-2">
+                {addons.map((addon) => {
+                  const selected = form.addons.includes(addon.name);
+                  return (
+                    <button
+                      key={addon.id}
+                      type="button"
+                      onClick={() => toggleAddon(addon.name)}
+                      aria-pressed={selected}
+                      className={`rounded-xl border px-3 py-3 text-left transition-all ${
+                        selected
+                          ? "border-brand bg-brand-soft ring-2 ring-brand/40"
+                          : "border-line bg-white hover:border-brand/40"
+                      }`}
+                    >
+                      <span className="flex items-center gap-2 text-xs font-bold text-ink">
+                        <span
+                          aria-hidden="true"
+                          className={`grid size-4 shrink-0 place-items-center rounded border text-[10px] ${
+                            selected
+                              ? "border-brand bg-brand text-white"
+                              : "border-line bg-white text-transparent"
+                          }`}
+                        >
+                          ✓
+                        </span>
+                        {addon.name}
+                      </span>
+                      <span className="mt-1 block text-sm font-bold text-brand-deep">{addon.price}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-xs leading-6 text-ink-mute">
+                正式な合計金額はヒアリング後のお見積りで確定します。
+              </p>
             </div>
             <div>
               <label htmlFor="apply-note" className={labelClass}>
@@ -327,7 +372,8 @@ export function ApplyForm() {
               ["お名前", form.name],
               ["メールアドレス", form.email],
               ["電話番号", form.phone || "（未入力）"],
-              ["希望プラン", form.plan],
+              ["基本プラン", form.plan],
+              ["付け足しオプション", form.addons.length > 0 ? form.addons.join(" ／ ") : "なし（基本プランのみ）"],
               ["ご要望・補足", form.note || "（なし）"],
             ].map(([label, value]) => (
               <div key={label} className="flex justify-between gap-4 border-b border-ink/10 py-3">

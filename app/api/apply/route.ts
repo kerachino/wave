@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import { site } from "@/lib/site";
+import { addons, basePlan, site } from "@/lib/site";
 
-const PLANS = ["お試しプラン", "ライトプラン", "スタンダードプラン"];
+const PLAN_NAMES: string[] = [basePlan.name];
+const ADDON_NAMES: string[] = addons.map((a) => a.name);
 
 const SMTP = {
   host: process.env.SMTP_HOST,
@@ -32,12 +33,13 @@ export async function POST(request: Request) {
     );
   }
 
-  const { company, name, email, phone, plan, note, _spam } = (body ?? {}) as {
+  const { company, name, email, phone, plan, addons: selectedAddons, note, _spam } = (body ?? {}) as {
     company?: unknown;
     name?: unknown;
     email?: unknown;
     phone?: unknown;
     plan?: unknown;
+    addons?: unknown;
     note?: unknown;
     _spam?: unknown;
   };
@@ -59,9 +61,12 @@ export async function POST(request: Request) {
   if (typeof email !== "string" || !validateEmail(email)) {
     errors.push("メールアドレスの形式が正しくありません。");
   }
-  if (typeof plan !== "string" || !PLANS.includes(plan)) {
-    errors.push("希望プランを選択してください。");
+  if (typeof plan !== "string" || !PLAN_NAMES.includes(plan)) {
+    errors.push("基本プランを選択してください。");
   }
+  const addonList = Array.isArray(selectedAddons)
+    ? selectedAddons.filter((a): a is string => typeof a === "string" && ADDON_NAMES.includes(a))
+    : [];
 
   if (errors.length > 0) {
     return NextResponse.json(
@@ -85,6 +90,7 @@ export async function POST(request: Request) {
   const emailText = String(email).trim();
   const phoneText = typeof phone === "string" ? phone.trim() : "";
   const planText = String(plan);
+  const addonText = addonList.length > 0 ? addonList.join(" ／ ") : "なし（基本プランのみ）";
   const noteText = typeof note === "string" ? note.trim() : "";
 
   const transcript =
@@ -95,7 +101,8 @@ export async function POST(request: Request) {
     `お名前　　　　　：${nameText}\n` +
     `メールアドレス　：${emailText}\n` +
     `電話番号　　　　：${phoneText || "（未入力）"}\n` +
-    `希望プラン　　　：${planText}\n` +
+    `基本プラン　　　：${planText}\n` +
+    `付け足し　　　　：${addonText}\n` +
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
     (noteText ? `【ご要望・補足】\n${noteText}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` : "");
 

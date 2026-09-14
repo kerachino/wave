@@ -21,7 +21,7 @@ const merits = [
   {
     icon: YenIcon,
     title: "低価格",
-    body: "お試し5,500円〜。1人で制作するから、驚きのリーズナブル価格に。",
+    body: "基本プラン5,500円。1人で制作するから、驚きのリーズナブル価格に。",
     href: "/price",
     chip: "bg-midori-soft text-midori-dark group-hover:bg-midori group-hover:text-ink",
   },
@@ -114,7 +114,7 @@ export default function Home() {
               {/* 数字で見る安心 */}
               <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
                 {[
-                  ["お試し料金", "5,500円〜"],
+                  ["基本料金", "5,500円"],
                   ["最短納期", "2週間〜"],
                   ["返信目安", "2〜3営業日"],
                 ].map(([label, value]) => (
@@ -248,12 +248,12 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* お試しプラン（他のプランの金額は料金ページで案内） */}
+      {/* 基本プラン（付け足し・維持費は料金ページで案内） */}
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="料金プラン"
-          title="まずは、お試し5,500円から"
-          description="いきなり大きなお願いは不安ですよね。まずは1ページのお試しプランで、仕上がりの早さと丁寧さを確かめてみてください。"
+          title="まずは、基本プラン5,500円から"
+          description="いきなり大きなお願いは不安ですよね。まずは1ページの基本プランで、仕上がりの早さと丁寧さを確かめてみてください。足りない分は後から付け足せます。"
         />
         <div className="mt-12">
           <TrialPlan />

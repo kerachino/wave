@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { CheckIcon } from "@/components/icons";
-import { plans } from "@/lib/site";
+import { basePlan } from "@/lib/site";
 
-/** お試しプランだけを紹介するカード（トップページ専用。他のプランは料金ページで案内） */
+/** 基本プランを紹介するカード（トップページ専用。付け足しは料金ページで案内） */
 export function TrialPlan() {
-  const trial = plans.find((plan) => plan.id === "trial") ?? plans[0];
-
   return (
     <div className="mx-auto max-w-2xl">
       <div className="relative overflow-hidden rounded-3xl border-2 border-line bg-white p-7 text-center shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-soft sm:p-9">
@@ -15,19 +13,20 @@ export function TrialPlan() {
         />
         <span className="inline-flex items-center gap-1.5 rounded-full bg-midori-soft px-3.5 py-1 text-xs font-bold text-midori-dark">
           <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
-          {trial.priceNote}
+          {basePlan.priceNote}
         </span>
         <h3 className="mt-4 font-maru text-2xl font-bold text-ink sm:text-3xl">
-          {trial.name}
+          {basePlan.name}
         </h3>
         <p className="mt-3 font-maru text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-          {trial.price}
+          {basePlan.price}
+          <span className="text-base font-bold text-ink-soft">（税込）</span>
         </p>
         <p className="mt-4 border-t border-line pt-4 text-sm leading-7 text-ink-soft">
-          {trial.description}
+          {basePlan.description}
         </p>
         <ul className="mx-auto mt-5 grid max-w-md gap-2.5 text-left sm:grid-cols-2">
-          {trial.features.map((feature) => (
+          {basePlan.features.map((feature) => (
             <li
               key={feature}
               className="flex items-start gap-2.5 text-sm text-ink-soft"
@@ -43,11 +42,11 @@ export function TrialPlan() {
           href="/apply"
           className="mt-7 block w-full rounded-xl bg-midori px-5 py-3.5 text-center text-sm font-bold text-ink shadow-soft transition-all hover:-translate-y-0.5 hover:brightness-105"
         >
-          {trial.cta}
+          {basePlan.cta}
         </Link>
       </div>
       <p className="mt-6 text-center text-sm text-ink-soft">
-        ライトプラン・スタンダードプランの料金は、
+        ページ追加などの付け足しオプションと、公開後の維持費は、
         <Link
           href="/price"
           className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"

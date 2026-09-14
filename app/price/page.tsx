@@ -2,11 +2,12 @@ import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { PriceCards } from "@/components/PriceCards";
 import { ButtonLink, Card, Section, SectionHeading } from "@/components/ui";
+import { maintenance } from "@/lib/site";
 
 export const metadata = {
   title: "料金プラン・制作の流れ",
   description:
-    "ホームページ制作の料金プランと、申し込みから公開までの流れをご案内します。お試し5,500円〜、ライト55,000円〜、スタンダード110,000円〜。",
+    "ホームページ制作は基本プラン5,500円（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（任意）。申し込みから公開までの流れもご案内します。",
 };
 
 // 制作の流れ（8ステップ）
@@ -53,11 +54,8 @@ const steps = [
   },
 ];
 
-const extraCosts = [
-  ["ページ追加", "1ページ 5,000円〜（プランにより異なります）"],
-  ["原稿作成", "1ページ 3,000円〜（目安）"],
-  ["写真撮影", "1回 10,000円〜（出張・人数により異なります）"],
-  ["修正（2回目以降）", "1回 3,000円〜（プランにより異なります）"],
+const extraCosts: [string, string][] = [
+  ["独自ドメイン（使う場合のみ）", "年間1,000円前後の実費"],
 ];
 
 export default function PricePage() {
@@ -73,21 +71,21 @@ export default function PricePage() {
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="制作費"
-          title="3つのプランからお選びいただけます"
-          description="プランはあくまで目安です。ページ数や機能に合わせて、お見積りで柔軟に調整します。"
+          title="基本プラン5,500円＋付け足し形式"
+          description="まずは基本プラン5,500円（税込）。足りない分だけ、必要なものを付け足せます。合計はお見積りで確定します。"
         />
         <div className="mt-10">
           <PriceCards />
         </div>
       </Section>
 
-      {/* お試しプランの条件 */}
+      {/* 基本プランの条件 */}
       <Section className="bg-cream">
-        <SectionHeading eyebrow="お試しプランについて" title="お試し5,500円〜の条件" />
+        <SectionHeading eyebrow="基本プランについて" title="基本5,500円の条件" />
         <div className="mx-auto mt-8 max-w-3xl">
           <Card className="p-6">
             <p className="text-sm leading-7 text-ink-soft">
-              お試しプランは、初めての実績づくりのための
+              基本プランは、初めての実績づくりのための
               <span className="font-bold text-ink">モニター価格</span>です。
               以下の条件をご了承のうえお申し込みください。
             </p>
@@ -153,9 +151,9 @@ export default function PricePage() {
         />
         <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-3">
           {[
-            ["お試しプラン", "約2〜3週間", "1ページのシンプルなサイト"],
-            ["ライトプラン", "約3〜4週間", "3〜5ページの定番サイト"],
-            ["スタンダード", "約4〜6週間", "6ページ以上の多機能サイト"],
+            ["基本プラン（1ページ）", "約2〜3週間", "まずは1ページを公開"],
+            ["3〜5ページ", "約3〜4週間", "ページ追加を組み合わせた定番サイト"],
+            ["6ページ以上・機能追加", "約4〜6週間", "フォーム・ブログなどを付け足した場合"],
           ].map(([name, time, body]) => (
             <div key={name} className="rounded-3xl border border-ink/10 bg-white p-6 text-center shadow-sm">
               <p className="text-sm font-bold text-brand-deep">{name}</p>
@@ -169,28 +167,51 @@ export default function PricePage() {
         </p>
       </Section>
 
-      {/* 維持費 */}
+      {/* 維持費：重要事項のため分かりやすく大きく */}
       <Section className="bg-paper">
-        <SectionHeading eyebrow="公開後にかかる費用" title="維持費は月1,000円〜" />
-        <div className="mx-auto mt-8 grid max-w-4xl gap-6 md:grid-cols-2">
-          <Card className="p-6">
-            <h3 className="font-maru text-lg font-bold text-ink">保守サポート費 月1,000円〜</h3>
-            <p className="mt-2 text-sm leading-7 text-ink-soft">
-              サイト公開後より、以下のサポートをお受けいただけます。
+        <SectionHeading
+          eyebrow="★ 公開後にかかる費用（重要）"
+          title={`維持費は${maintenance.price}だけ`}
+        />
+        <p className="mx-auto mt-4 max-w-3xl text-center text-sm leading-8 text-ink-soft">
+          {maintenance.lead}
+        </p>
+        <div className="mx-auto mt-8 max-w-3xl overflow-hidden rounded-3xl border-2 border-brand/60 bg-white shadow-lift">
+          <div className="bg-gradient-to-r from-brand to-sky-500 px-6 py-6 text-center sm:px-10">
+            <p className="text-xs font-bold tracking-[0.2em] text-white/80">
+              {maintenance.priceNote}
             </p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-7 text-ink-soft">
-              <li>小さな修正・更新の対応（月に1回程度）</li>
-              <li>セキュリティや表示の確認</li>
-              <li>困ったときの相談</li>
-            </ul>
-          </Card>
-          <Card className="p-6">
-            <h3 className="font-maru text-lg font-bold text-ink">ホスティング・ドメイン</h3>
-            <p className="mt-2 text-sm leading-7 text-ink-soft">
-              サイトを置くサーバー（Netlify）は無料です。
-              独自ドメインをお使いの場合のみ、年間費用（年1,000円前後）が実費でかかります。
+            <p className="mt-1 font-maru text-3xl font-bold text-white sm:text-4xl">
+              保守サポート費 {maintenance.price}
             </p>
-          </Card>
+            <p className="mt-2 text-xs leading-6 text-white/80">
+              加入しなくてもサイトはそのまま使えます
+            </p>
+          </div>
+          <ul className="grid gap-3 p-6 sm:grid-cols-3 sm:p-8">
+            {maintenance.items.map((item) => (
+              <li
+                key={item.title}
+                className="rounded-2xl bg-cream p-5 text-left"
+              >
+                <p className="text-sm font-bold text-ink">{item.title}</p>
+                <p className="mt-2 text-xs leading-6 text-ink-soft">{item.body}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="space-y-3 border-t border-line bg-cream/60 px-6 py-6 sm:px-8">
+            <p className="flex items-start gap-2 text-sm leading-7 text-ink-soft">
+              <span aria-hidden="true" className="mt-1 text-midori-dark">✓</span>
+              {maintenance.hosting}
+            </p>
+            <p className="flex items-start gap-2 text-sm leading-7 text-ink-soft">
+              <span aria-hidden="true" className="mt-1 text-midori-dark">✓</span>
+              {maintenance.domain}
+            </p>
+            <p className="rounded-xl bg-white px-4 py-3 text-xs leading-6 text-ink-soft ring-1 ring-line">
+              {maintenance.note}
+            </p>
+          </div>
         </div>
       </Section>
 
@@ -255,9 +276,9 @@ export default function PricePage() {
           <span aria-hidden="true" className="absolute left-[14%] top-8 size-2.5 rounded-full bg-midori" />
           <span aria-hidden="true" className="absolute right-[18%] top-12 size-2 rounded-full bg-white/80" />
           <div className="relative mx-auto max-w-2xl">
-            <h2 className="font-maru text-2xl font-bold tracking-tight text-white">どのプランにするか、迷ったら</h2>
+            <h2 className="font-maru text-2xl font-bold tracking-tight text-white">付け足し内容で迷ったら</h2>
             <p className="mt-3 text-sm leading-7 text-white/75">
-              無料相談で、作りたいサイトと予算をお聞かせください。ぴったりのプランをご提案します。
+              無料相談で、作りたいサイトと予算をお聞かせください。必要な付け足しだけをご提案します。
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <ButtonLink href="/contact" variant="accent" size="lg" className="flex-1">
