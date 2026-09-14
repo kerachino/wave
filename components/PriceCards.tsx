@@ -55,7 +55,7 @@ export function PriceCards() {
           必要なものだけ付け足しできます
         </h3>
         <p className="mt-2 text-center text-sm leading-7 text-ink-soft">
-          基本プラン5,500円に、以下を組み合わせます。金額はお見積りで確定します。
+          基本プラン7,500円に、以下を組み合わせます。金額はお見積りで確定します。
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {addons.map((addon) => (

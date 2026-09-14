@@ -63,7 +63,7 @@ export default function WorksPage() {
               あなたのサイトを、事例にしませんか
             </h2>
             <p className="mt-3 text-sm leading-7 text-white/75">
-              基本プラン5,500円で、事例掲載にご協力いただけるお店・会社さまを募集しています。
+              基本プラン7,500円で、事例掲載にご協力いただけるお店・会社さまを募集しています。
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <ButtonLink

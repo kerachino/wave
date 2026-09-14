@@ -14,12 +14,24 @@ const rows: [string, string][] = [
   ["所在地", site.operator.office],
   ["電話番号", "非公開（電話での対応は行っておりません）"],
   ["メールアドレス", site.operator.email],
-  ["販売価格", "基本プラン5,500円（税込）＋付け足しオプション（お見積りで確定）。維持費は月1,000円〜（任意）"],
+  [
+    "販売価格",
+    "基本プラン7,500円（税込）＋付け足しオプション（お見積りで確定）。維持費は月1,000円〜（任意）",
+  ],
   ["代金の支払い方法", "銀行振込"],
   ["代金の支払い時期", "着手金：制作開始前50% ／ 残金：公開・納品後50%"],
-  ["サービスの引渡し時期", "ご契約・着手金確認後、基本プランは約2〜3週間、付け足し内容により3〜6週間"],
-  ["返品・キャンセル条件", "着手金支払い前は無料キャンセル。着手金支払い後・制作開始後は、制作進捗に応じた実費をご請求します。"],
-  ["追加費用", "付け足しオプション（ページ追加・お問い合わせフォーム・原稿作成・写真撮影・ブログ機能・修正3回目以降、お見積りで確定）、独自ドメイン（年1,000円前後・実費・使う場合のみ）、維持費（保守サポート費・月1,000円〜・任意）"],
+  [
+    "サービスの引渡し時期",
+    "ご契約・着手金確認後、基本プランは約2〜3週間、付け足し内容により3〜6週間",
+  ],
+  [
+    "返品・キャンセル条件",
+    "着手金支払い前は無料キャンセル。着手金支払い後・制作開始後は、制作進捗に応じた実費をご請求します。",
+  ],
+  [
+    "追加費用",
+    "付け足しオプション（ページ追加・お問い合わせフォーム・原稿作成・写真撮影・ブログ機能・修正3回目以降、お見積りで確定）、独自ドメイン（年1,000円前後・実費・使う場合のみ）、維持費（保守サポート費・月1,000円〜・任意）",
+  ],
 ];
 
 export default function LawPage() {
@@ -56,7 +68,10 @@ export default function LawPage() {
           <p>
             電話番号は、電話での営業・問い合わせ対応を行っていないため非公開としています。
             ご連絡は
-            <Link href="/contact" className="font-bold text-brand hover:text-brand-deep">
+            <Link
+              href="/contact"
+              className="font-bold text-brand hover:text-brand-deep"
+            >
               お問い合わせフォーム
             </Link>
             またはメール（{site.email}）にてお願いします。
@@ -66,7 +81,10 @@ export default function LawPage() {
 
       <Container className="py-12">
         <p className="text-center">
-          <Link href="/privacy" className="text-sm font-bold text-brand hover:text-brand-deep">
+          <Link
+            href="/privacy"
+            className="text-sm font-bold text-brand hover:text-brand-deep"
+          >
             プライバシーポリシーを見る →
           </Link>
         </p>

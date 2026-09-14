@@ -7,7 +7,7 @@ import { maintenance } from "@/lib/site";
 export const metadata = {
   title: "料金プラン・制作の流れ",
   description:
-    "ホームページ制作は基本プラン5,500円（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（任意）。申し込みから公開までの流れもご案内します。",
+    "ホームページ制作は基本プラン7,500円（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（任意）。申し込みから公開までの流れもご案内します。",
 };
 
 // 制作の流れ（8ステップ）
@@ -62,17 +62,16 @@ export default function PricePage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        eyebrow="料金・制作の流れ"
-        title="納得してから、お申し込みいただけます"
-        description="最初にかかる制作費と、公開後にかかる維持費。申し込みから公開までの流れも、あわせてご案内します。"
+        title="料金・制作の流れ"
+        description="詳しくはお見積りでご案内します。まずは無料相談で、作りたいサイトと予算をお聞かせください。"
       />
 
       {/* プラン表 */}
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="制作費"
-          title="基本プラン5,500円＋付け足し形式"
-          description="まずは基本プラン5,500円（税込）。足りない分だけ、必要なものを付け足せます。合計はお見積りで確定します。"
+          title="基本プラン7,500円＋付け足し形式"
+          description="まずは基本プラン7,500円（税込）。足りない分だけ、必要なものを付け足せます。合計はお見積りで確定します。"
         />
         <div className="mt-10">
           <PriceCards />
@@ -83,7 +82,7 @@ export default function PricePage() {
       <Section className="bg-cream">
         <SectionHeading
           eyebrow="基本プランについて"
-          title="基本5,500円の条件"
+          title="基本7,500円の条件"
         />
         <div className="mx-auto mt-8 max-w-3xl">
           <Card className="p-6">

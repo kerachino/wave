@@ -22,7 +22,7 @@ const merits = [
   {
     icon: YenIcon,
     title: "低価格",
-    body: "基本プラン5,500円。コストを削減し、低価格での提供を実現。",
+    body: "基本プラン7,500円。コストを削減し、低価格での提供を実現。",
     href: "/price",
     chip: "bg-midori-soft text-midori-dark group-hover:bg-midori group-hover:text-ink",
   },
@@ -115,7 +115,7 @@ export default function Home() {
               {/* 数字で見る安心 */}
               <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
                 {[
-                  ["基本料金", "5,500円"],
+                  ["基本料金", "7,500円"],
                   ["最短納期", "2週間〜"],
                   ["返信目安", "2〜3営業日"],
                 ].map(([label, value]) => (
@@ -248,7 +248,7 @@ export default function Home() {
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="料金プラン"
-          title="まずは、基本プラン5,500円から"
+          title="まずは、基本プラン7,500円から"
           description="いきなり大きなお願いは不安ですよね。まずは1ページの基本プランでお試し。足りない分は後から付け足せます。"
         />
         <div className="mt-12">
@@ -259,43 +259,52 @@ export default function Home() {
       <Section className="bg-cream">
         <SectionHeading
           eyebrow="制作の流れ"
-          title="申し込みから公開までの流れ"
-          description="ご不明な点はメール・チャットでご相談ください。"
+          title="申し込みから公開までの4ステップ"
         />
         <div className="mt-12 grid gap-5 md:grid-cols-4">
           {[
-            [
-              "無料相談",
-              "メール・チャットで、まずはお気軽に。価格や納期の相談だけでもOKです。",
-            ],
-            [
-              "ヒアリング・お見積り",
-              "作りたいサイトのお話をうかがい、料金とスケジュールをご提案します。",
-            ],
-            [
-              "ご契約・制作",
-              "サイト内でお申し込みいただき、着手金のお支払いのあと制作開始です。",
-            ],
-            [
-              "修正",
-              "完成前にデザインや文章の確認をお願いします。進み具合も共有しながら、3回までは無料で修正対応いたします。",
-            ],
-            [
-              "公開・納品",
-              "ご確認をいただきながら仕上げ、サイトを公開。残金のお支払いは公開後です。",
-            ],
-          ].map(([title, body], i) => (
+            {
+              title: "無料相談",
+              body: "メール・チャットで、まずはお気軽に。価格や納期の相談だけでもOKです。",
+              note: "費用はかかりません",
+            },
+            {
+              title: "ヒアリング・お見積り",
+              body: "作りたいサイトのお話をうかがい、ページ構成・料金・スケジュールをお見積りでご提案します。",
+              note: "見積り無料",
+            },
+            {
+              title: "ご契約・制作",
+              body: "サイト内でお申し込み後、着手金（50%）のお支払い確認後に制作を開始。進み具合を共有します。",
+              note: "着手金 50%",
+            },
+            {
+              title: "確認・公開",
+              body: "完成前にデザインや文章を確認。修正対応後に公開し、残金（50%）は公開後のお支払いです。",
+              note: "残金は公開後",
+            },
+          ].map((step, i) => (
             <div
-              key={i}
+              key={step.title}
               className="relative rounded-2xl border border-line bg-white p-6 shadow-card"
             >
-              <p className="grid size-10 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white shadow-pop-sm">
-                {i + 1}
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="grid size-10 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white shadow-pop-sm">
+                  {i + 1}
+                </p>
+                <span className="rounded-full bg-brand-soft px-3 py-1 text-[11px] font-bold text-brand-deep">
+                  STEP{i + 1}
+                </span>
+              </div>
               <h3 className="mt-4 font-maru text-lg font-bold text-ink">
-                {title}
+                {step.title}
               </h3>
-              <p className="mt-2 text-sm leading-7 text-ink-soft">{body}</p>
+              <p className="mt-2 text-sm leading-7 text-ink-soft">
+                {step.body}
+              </p>
+              <p className="mt-3 inline-block rounded-full bg-cream px-3 py-1 text-xs font-bold text-ink-soft ring-1 ring-line">
+                {step.note}
+              </p>
               {i < 3 && (
                 <span
                   aria-hidden="true"
@@ -317,6 +326,30 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-line bg-white p-6 text-left shadow-card sm:p-7">
+          <h3 className="font-maru text-base font-bold text-ink">
+            修正回数の目安（制作中の確認・公開前まで）
+          </h3>
+          <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-soft">
+            <li className="flex items-start gap-3">
+              <span className="mt-1.5 shrink-0 rounded bg-brand-soft px-2 py-0.5 text-xs font-bold text-brand-deep">
+                大きな修正 2回まで無料
+              </span>
+              <span>レイアウト・構成の変更、文章の大幅な書き換えなど。</span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="mt-1.5 shrink-0 rounded bg-midori-soft px-2 py-0.5 text-xs font-bold text-midori-dark">
+                小さな修正 数回程度は無料
+              </span>
+              <span>
+                色や写真の差し替え・文言の微調整など。細かな手直しは気軽にお伝えください。
+              </span>
+            </li>
+          </ul>
+          <p className="mt-4 text-xs leading-6 text-ink-mute">
+            あくまで目安です。修正の内容や量によっては、追加料金が発生する場合があります。
+          </p>
+        </div>
       </Section>
 
       {/* よくある質問（メインページ内のセクション） */}
@@ -324,7 +357,7 @@ export default function Home() {
         <SectionHeading
           eyebrow="よくあるご質問"
           title="「いくら？」「原稿がないけど大丈夫？」"
-          description="申し込む前に気になることを、先にまとめてお答えしています。"
+          description="申し込む前に気になることを、お答えしています。"
         />
         <div className="mx-auto mt-10 max-w-3xl">
           <FaqAccordion items={[...faqs]} />

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     default: `${site.name} | ホームページ制作代行`,
     template: `%s | ${site.name}`,
   },
-  description: `${site.tagline} 地域の法人・店舗さま向けのホームページ制作を、基本プラン5,500円＋付け足し形式の低価格でご提供。スマホ対応・相談しやすい運営が特徴です。`,
+  description: `${site.tagline} 地域の法人・店舗さま向けのホームページ制作を、基本プラン7,500円＋付け足し形式の低価格でご提供。スマホ対応・相談しやすい運営が特徴です。`,
   openGraph: {
     type: "website",
     locale: "ja_JP",
