@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { Container, Section } from "@/components/ui";
 import { site } from "@/lib/site";
+import { basePlanPrice, yen } from "@/lib/model";
 
 export const metadata = {
   title: "特定商取引法に基づく表記",
@@ -16,7 +17,7 @@ const rows: [string, string][] = [
   ["メールアドレス", site.operator.email],
   [
     "販売価格",
-    "基本プラン7,500円（税込）＋付け足しオプション（お見積りで確定）。維持費（保守サポート費）は月1,000円〜（サイトの公開に必要）",
+    `基本プラン${yen(basePlanPrice)}（税込）＋付け足しオプション（お見積りで確定）。維持費（保守サポート費）は月1,000円〜（サイトの公開に必要）`,
   ],
   ["代金の支払い方法", "銀行振込"],
   ["代金の支払い時期", "着手金：制作開始前50% ／ 残金：公開・納品後50%"],

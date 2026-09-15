@@ -10,6 +10,7 @@ import {
 } from "@/components/ui";
 import { CardIcon, CheckIcon, ClockIcon } from "@/components/icons";
 import { maintenance } from "@/lib/site";
+import { basePlanPrice, yen } from "@/lib/model";
 
 // ページ内の各セクション（冒頭のアンカーナビで使用）
 const pageSections = [
@@ -22,7 +23,7 @@ const pageSections = [
 export const metadata = {
   title: "料金プラン",
   description:
-    "ホームページ制作は基本プラン7,500円（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（サイトの公開に必要・お支払いがない場合は公開できません）。",
+    `ホームページ制作は基本プラン${yen(basePlanPrice)}（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（サイトの公開に必要・お支払いがない場合は公開できません）。`,
 };
 
 // 料金以外にかかる費用
@@ -90,7 +91,7 @@ export default function PricePage() {
       {/* ② 基本プランの条件 */}
       <Section id="conditions" className="scroll-mt-32 bg-cream">
         <SectionHeading
-          title="基本7,500円の条件"
+          title={`基本${yen(basePlanPrice)}の条件`}
           description="基本プランはモニター価格です。お申し込みの前に、以下の条件をご確認ください。"
         />
         <div className="mx-auto mt-10 max-w-3xl">

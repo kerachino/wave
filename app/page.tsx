@@ -17,12 +17,13 @@ import {
   SectionHeading,
 } from "@/components/ui";
 import { capabilities, faqs, site } from "@/lib/site";
+import { basePlanPrice, yen } from "@/lib/model";
 
 const merits = [
   {
     icon: YenIcon,
     title: "低価格",
-    body: "基本プラン7,500円。コストを削減し、低価格での提供を実現。",
+    body: `基本プラン${yen(basePlanPrice)}。必要なものだけ付け足せます。`,
     href: "/price",
     chip: "bg-midori-soft text-midori-dark group-hover:bg-midori group-hover:text-ink",
   },
@@ -115,7 +116,8 @@ export default function Home() {
               {/* 数字で見る安心 */}
               <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
                 {[
-                  ["基本料金", "7,500円"],
+                  ["基本料金", yen(basePlanPrice)],
+                                    ["基本料金", yen(basePlanPrice)],
                   ["最短納期", "2週間〜"],
                   ["返信目安", "2〜3営業日"],
                 ].map(([label, value]) => (

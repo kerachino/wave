@@ -2,6 +2,8 @@ export type PurchasableOption = {
   id: string;
   name: string;
   defaultPrice: number;
+  description?: string;
+  displayPrice?: string;
 };
 export type OrderOption = PurchasableOption & { price: number };
 export type Order = {
@@ -15,11 +17,66 @@ export type Order = {
   paymentStatus: "unpaid" | "paid";
   note?: string;
 };
-export const basePlanPrice = 7500;
+export const basePlanPrice = 9800;
+export const basePlanName = "基本プラン";
+export const basePlanDescription =
+  "まずは1ページ。お店や会社の紹介ページを最短スピードで公開します。";
+export const basePlanFeatures = [
+  "1ページ制作（LP・紹介ページ）",
+  "スマホ対応",
+  "お問い合わせ先の掲載",
+  "画像や文章の用意",
+] as const;
 export const purchasableOptions: PurchasableOption[] = [
-  { id: "copy", name: "文章作成サポート", defaultPrice: 3000 },
-  { id: "photo", name: "写真撮影・素材サポート", defaultPrice: 5000 },
-  { id: "update", name: "公開後の更新サポート", defaultPrice: 3000 },
+  {
+    id: "add-page",
+    name: "ページ追加",
+    defaultPrice: 5000,
+    displayPrice: "1ページ 5,000円〜",
+    description: "2ページ目から1ページごとに追加します。",
+  },
+  {
+    id: "contact-form",
+    name: "お問い合わせフォーム設置",
+    defaultPrice: 3000,
+    displayPrice: "3,000円",
+    description: "メール通知付きのフォームを設置します。",
+  },
+  {
+    id: "writing",
+    name: "原稿作成サポート",
+    defaultPrice: 3000,
+    displayPrice: "3,000円〜",
+    description: "ヒアリング内容から文章のたたき台を作ります。",
+  },
+  {
+    id: "photo",
+    name: "素材用意・画像調整",
+    defaultPrice: 5000,
+    displayPrice: "1回 5,000円〜",
+    description: "数枚程度の画像素材を用意・調整します。",
+  },
+  {
+    id: "blog",
+    name: "ブログ・お知らせ更新機能",
+    defaultPrice: 5000,
+    displayPrice: "5,000円〜",
+    description: "自分で更新できるお知らせ欄などを追加します。",
+  },
+  {
+    id: "app-dev",
+    name: "自社アプリの開発",
+    defaultPrice: 5000,
+    displayPrice: "5,000円〜",
+    description: "自社アプリの開発・連携をご相談いただけます。",
+  },
+  {
+    id: "mo",
+    name: "モニター条件への不同意",
+    defaultPrice: 5000,
+    displayPrice: "5,000円",
+    description: "モニター条件に同意いただけない場合の追加料金です。",
+  },
 ];
 export function yen(value: number) {
   return `${value.toLocaleString("ja-JP")}円`;

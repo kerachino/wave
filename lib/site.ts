@@ -171,25 +171,28 @@ export const contactDeadlineOptions = [
   "急がない・相談したい",
 ] as const;
 
-// ---- 料金（基本プラン＋付け足し形式で一元管理） ----
+// ---- 料金（価格の実体はmodel.tsで一元管理） ----
+import { basePlanName, basePlanDescription, basePlanFeatures, basePlanPrice, purchasableOptions, yen } from "@/lib/model";
+
 export const basePlan = {
   id: "basic",
-  name: "基本プラン",
-  price: "7,500円",
-  description:
-    "まずは1ページ。お店や会社の紹介ページを最短スピードで公開します。",
-  features: [
-    "1ページ制作（LP・紹介ページ）",
-    "スマホ対応",
-    "お問い合わせ先の掲載",
-    "画像や文章の用意",
-  ],
+  name: basePlanName,
+  price: yen(basePlanPrice),
+  description: basePlanDescription,
+  features: basePlanFeatures,
   monitorNote: "モニター条件：制作事例への掲載・クチコミへのご協力",
   cta: "基本プランで申し込む",
   featured: true,
 } as const;
 
-export const addons = [
+export const addons = purchasableOptions.map((option) => ({
+  id: option.id,
+  name: option.name,
+  price: option.displayPrice || yen(option.defaultPrice),
+  description: option.description || "内容はご相談に応じて調整します。",
+}));
+/*
+export const legacyAddons = [
   {
     id: "add-page",
     name: "ページ追加",
@@ -239,22 +242,23 @@ export const addons = [
       "制作させていただいたホームページは、実績としての掲載やアンケートへのご協力等が必須となりますので、モニターに同意いただけない場合は、こちらのオプションが追加となります。",
   },
 ] as const;
+*/
 
 export const planExamples = [
   {
     name: "1ページのみ",
-    total: "7,500円",
+    total: yen(basePlanPrice),
     breakdown: "基本プランのみ",
   },
   {
     name: "3ページ",
-    total: "17,500円",
-    breakdown: "基本7,500円 ＋ ページ追加2ページ分",
+    total: yen(basePlanPrice + 10000),
+    breakdown: `基本${yen(basePlanPrice)} ＋ ページ追加2ページ分`,
   },
   {
     name: "出退勤管理アプリ",
-    total: "17,500円",
-    breakdown: "基本7,500円 ＋ 自社アプリの開発(データベース使用等)10,000円",
+    total: yen(basePlanPrice + 10000),
+    breakdown: `基本${yen(basePlanPrice)} ＋ 自社アプリの開発(データベース使用等)10,000円`,
   },
 ] as const;
 

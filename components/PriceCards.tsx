@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { addons, basePlan, planExamples } from "@/lib/site";
 import { CheckIcon } from "@/components/icons";
+import { basePlanPrice, yen } from "@/lib/model";
 
 /** 料金：基本プラン＋付け足し形式のカード */
 export function PriceCards() {
@@ -49,7 +50,8 @@ export function PriceCards() {
           必要なものだけ付け足し
         </h3>
         <p className="mt-2 text-center text-sm leading-7 text-ink-soft">
-          基本プラン7,500円に、以下を組み合わせます。金額はお見積りで確定します。
+          基本プラン{yen(basePlanPrice)}に、以下を組み合わせます。金額はお見積りで確定します。
+                  基本プラン{yen(basePlanPrice)}に、以下を組み合わせます。金額はお見積りで確定します。
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {addons.map((addon) => (
