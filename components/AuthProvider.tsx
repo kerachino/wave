@@ -2,7 +2,9 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
+import { db } from "@/lib/firebase";
 
 type AuthContextValue = {
   user: User | null;
@@ -15,22 +17,24 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(isFirebaseConfigured && Boolean(auth));
-  const adminEmails = (process.env.NEXT_PUBLIC_ADMIN_EMAILS ?? "")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (!isFirebaseConfigured || !auth) return;
     return onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser);
-      setLoading(false);
+      if (!nextUser || !db) {
+        setIsAdmin(false);
+        setLoading(false);
+        return;
+      }
+      getDoc(doc(db, "users", nextUser.uid))
+        .then((snapshot) => setIsAdmin(snapshot.data()?.isAdmin === true))
+        .catch(() => setIsAdmin(false))
+        .finally(() => setLoading(false));
     });
   }, []);
 
-  const isAdmin = Boolean(
-    user?.email && adminEmails.includes(user.email.toLowerCase()),
-  );
   const value = useMemo(
     () => ({
       user,
