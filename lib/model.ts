@@ -67,7 +67,7 @@ export const purchasableOptions: PurchasableOption[] = [
     id: "app-dev",
     name: "自社アプリの開発",
     defaultPrice: 5000,
-    displayPrice: "5,000円〜",
+    displayPrice: "要相談(5,000円～対応可能)",
     description: "自社アプリの開発・連携をご相談いただけます。",
   },
   {
