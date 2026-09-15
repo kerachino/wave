@@ -32,6 +32,10 @@ export type Quote = {
   firstAmount: number;
   remainingAmount: number;
   note?: string;
+  recipientName: string;
+  issueDate: string;
+  validUntil: string;
+  precautions: string[];
   createdAt?: Date;
 };
 export const basePlanPrice = 9800;
