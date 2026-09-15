@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ChatWidget } from "@/components/ChatWidget";
 import { site } from "@/lib/site";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const notoSans = Noto_Sans_JP({
   variable: "--font-noto",
@@ -39,8 +40,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${notoSans.variable} ${display.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <Header />
-        <main className="flex-1">{children}</main>
+        <AuthProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+        </AuthProvider>
         <Footer />
         <ChatWidget />
       </body>
