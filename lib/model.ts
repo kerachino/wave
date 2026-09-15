@@ -21,6 +21,19 @@ export type Order = {
   subscriptionPrice?: number;
   subscriptionStatus?: "unpaid" | "paid" | "cancelled";
 };
+export type QuoteOption = { id: string; name: string; price: number };
+export type Quote = {
+  id: string;
+  uid: string;
+  title: string;
+  basePrice: number;
+  options: QuoteOption[];
+  totalPrice: number;
+  firstAmount: number;
+  remainingAmount: number;
+  note?: string;
+  createdAt?: Date;
+};
 export const basePlanPrice = 9800;
 export const maintenanceSubscriptionPrice = 2000;
 export const basePlanName = "基本プラン";
