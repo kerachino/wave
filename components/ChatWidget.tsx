@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { signInAnonymously } from "firebase/auth";
 import {
   isFirebaseConfigured,
@@ -20,6 +21,7 @@ type ViewState =
   | { status: "error" };
 
 export function ChatWidget() {
+  const pathname = usePathname();
   // URL末尾が #chat の場合は最初から開いておく（初期化時に判定）
   const [open, setOpen] = useState(
     typeof window !== "undefined" && window.location.hash === "#chat",
@@ -94,6 +96,8 @@ export function ChatWidget() {
     text: "こんにちは！ハトノコネクトです。ホームページ制作のご相談、お気軽にどうぞ。営業時間外のご相談も、担当者が確認し次第お返事いたします。",
   };
 
+  if (pathname.startsWith("/dashboard")) return null;
+
   return (
     <>
       {/* フローティングボタン */}
@@ -104,12 +108,27 @@ export function ChatWidget() {
         className="fixed bottom-5 right-5 z-50 grid size-14 place-items-center rounded-full bg-brand text-white shadow-lift ring-4 ring-brand/15 transition-all hover:scale-105 hover:bg-brand-dark"
       >
         {open ? (
-          <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg
+            viewBox="0 0 24 24"
+            className="size-6"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
             <path d="M6 6l12 12" />
             <path d="M18 6L6 18" />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24" className="size-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            viewBox="0 0 24 24"
+            className="size-7"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
           </svg>
         )}
@@ -132,14 +151,24 @@ export function ChatWidget() {
               aria-label="閉じる"
               className="grid size-8 place-items-center rounded-full text-white/80 hover:bg-white/10"
             >
-              <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              >
                 <path d="M6 6l12 12" />
                 <path d="M18 6L6 18" />
               </svg>
             </button>
           </div>
 
-          <div ref={scrollRef} className="scrollbar-thin flex-1 space-y-3 overflow-y-auto bg-cream px-4 py-4">
+          <div
+            ref={scrollRef}
+            className="scrollbar-thin flex-1 space-y-3 overflow-y-auto bg-cream px-4 py-4"
+          >
             {!isFirebaseConfigured ? (
               <div className="rounded-2xl bg-white p-4 text-sm leading-6 text-ink-soft shadow-sm">
                 チャット機能はただいま準備中です。
@@ -171,7 +200,10 @@ export function ChatWidget() {
           </div>
 
           {isFirebaseConfigured && (
-            <form onSubmit={handleSend} className="flex items-center gap-2 border-t border-ink/10 bg-white p-3">
+            <form
+              onSubmit={handleSend}
+              className="flex items-center gap-2 border-t border-ink/10 bg-white p-3"
+            >
               <input
                 type="text"
                 value={text}
@@ -186,7 +218,12 @@ export function ChatWidget() {
                 aria-label="送信"
                 className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white shadow-soft transition-colors hover:bg-brand-dark disabled:opacity-40"
               >
-                <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden="true">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-5"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
                   <path d="M3.4 20.4l17.5-8.4L3.4 3.6 3.3 10l12.5 2-12.5 2z" />
                 </svg>
               </button>
@@ -198,7 +235,6 @@ export function ChatWidget() {
           </p>
         </div>
       )}
-
     </>
   );
 }
@@ -233,4 +269,3 @@ function MessageBubble({ message }: { message: ChatMessage }) {
     </div>
   );
 }
-

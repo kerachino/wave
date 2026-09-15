@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { M_PLUS_Rounded_1c, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { ChatWidget } from "@/components/ChatWidget";
+import { SiteChrome } from "@/components/SiteChrome";
 import { site } from "@/lib/site";
 import { AuthProvider } from "@/components/AuthProvider";
 
@@ -41,11 +39,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col">
         <AuthProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
+          <SiteChrome>{children}</SiteChrome>
         </AuthProvider>
-        <Footer />
-        <ChatWidget />
       </body>
     </html>
   );
