@@ -18,17 +18,24 @@ service cloud.firestore {
     // ---- チャットルーム ----
     // ログイン済みユーザーのみ、自分の uid のルームを作成・読み書きできます。
     match /chat_rooms/{roomId} {
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow read, update, delete: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null
+        && (request.resource.data.uid == request.auth.uid
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+      allow read, update, delete: if request.auth != null
+        && (resource.data.uid == request.auth.uid
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
       allow list: if request.auth != null;
 
       // ---- メッセージ ----
       // ルームの持ち主のみ読み書きできます。
       match /messages/{messageId} {
-        allow read: if request.auth != null && get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.uid == request.auth.uid;
+        allow read: if request.auth != null
+          && (get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.uid == request.auth.uid
+            || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
         allow create: if request.auth != null
-          && request.resource.data.uid == request.auth.uid
-          && get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.uid == request.auth.uid;
+          && (request.resource.data.uid == request.auth.uid
+            || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true)
+          && get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.uid == roomId;
       }
     }
 

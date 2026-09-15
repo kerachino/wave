@@ -128,5 +128,19 @@ export async function sendChatMessage(
   });
 }
 
+/** 管理者から指定ユーザーのルームへ返信する */
+export async function sendStaffChatMessage(
+  roomId: string,
+  text: string,
+): Promise<void> {
+  if (!db) return;
+  await addDoc(collection(doc(db, "chat_rooms", roomId), "messages"), {
+    uid: roomId,
+    sender: "staff",
+    text,
+    createdAt: serverTimestamp(),
+  });
+}
+
 // 型の再エクスポート（利用側で import しやすいように）
 export type { Auth, User, Firestore, DocumentData, QuerySnapshot };

@@ -6,6 +6,7 @@ import { useAuth } from "@/components/AuthProvider";
 
 const menuItems = [
   { href: "/dashboard", label: "概要", icon: "⌂" },
+  { href: "/dashboard/payment", label: "お支払い", icon: "¥" },
   { href: "/dashboard/chat", label: "チャット", icon: "◌" },
 ];
 
