@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { auth, isFirebaseConfigured } from "@/lib/firebase";
 import { db } from "@/lib/firebase";
 
@@ -28,8 +28,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
         return;
       }
-      getDoc(doc(db, "users", nextUser.uid))
-        .then((snapshot) => setIsAdmin(snapshot.data()?.isAdmin === true))
+      const userDoc = doc(db, "users", nextUser.uid);
+      getDoc(userDoc)
+        .then(async (snapshot) => {
+          if (!snapshot.exists()) {
+            await setDoc(userDoc, {
+              uid: nextUser.uid,
+              email: nextUser.email ?? "",
+              displayName: nextUser.displayName ?? "",
+              photoURL: nextUser.photoURL ?? "",
+              isAdmin: false,
+              createdAt: serverTimestamp(),
+            });
+          }
+          setIsAdmin(snapshot.data()?.isAdmin === true);
+        })
         .catch(() => setIsAdmin(false))
         .finally(() => setLoading(false));
     });
