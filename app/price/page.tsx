@@ -22,8 +22,7 @@ const pageSections = [
 
 export const metadata = {
   title: "料金プラン",
-  description:
-    `ホームページ制作は基本プラン${yen(basePlanPrice)}（税込）＋必要な付け足しだけ。公開後の維持費は月1,000円〜（サイトの公開に必要・お支払いがない場合は公開できません）。`,
+  description: `ホームページ制作は基本プラン${yen(basePlanPrice)}（税込）＋必要な付け足しだけ。公開後の維持費は月2,000円〜（サイトの公開に必要・お支払いがない場合は公開できません）。`,
 };
 
 // 料金以外にかかる費用

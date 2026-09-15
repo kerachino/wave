@@ -16,8 +16,13 @@ export type Order = {
   status: "pending_payment" | "contracted";
   paymentStatus: "unpaid" | "paid";
   note?: string;
+  purchaseApproved?: boolean;
+  subscriptionApproved?: boolean;
+  subscriptionPrice?: number;
+  subscriptionStatus?: "unpaid" | "paid" | "cancelled";
 };
 export const basePlanPrice = 9800;
+export const maintenanceSubscriptionPrice = 2000;
 export const basePlanName = "基本プラン";
 export const basePlanDescription =
   "まずは1ページ。お店や会社の紹介ページを最短スピードで公開します。";
