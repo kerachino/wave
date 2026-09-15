@@ -13,6 +13,7 @@ import {
 } from "firebase/auth";
 import {
   getFirestore,
+  getDoc,
   collection,
   doc,
   addDoc,
@@ -26,6 +27,7 @@ import {
   type DocumentData,
   type QuerySnapshot,
 } from "firebase/firestore";
+import { initializeFirestore, persistentLocalCache } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -50,7 +52,13 @@ function init() {
     app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   }
   if (!authInstance) authInstance = getAuth(app);
-  if (!dbInstance) dbInstance = getFirestore(app);
+  if (!dbInstance) {
+    try {
+      dbInstance = initializeFirestore(app, { localCache: persistentLocalCache() });
+    } catch {
+      dbInstance = getFirestore(app);
+    }
+  }
 }
 
 init();
@@ -78,6 +86,15 @@ export function subscribeChat(
   onError: (error: unknown) => void,
 ): (() => void) | null {
   if (!db) return null;
+  const cacheKey = `hatono-chat:${roomId}`;
+  if (typeof window !== "undefined") {
+    try {
+      const cached = JSON.parse(localStorage.getItem(cacheKey) || "null") as ChatMessage[] | null;
+      if (cached?.length) onUpdate(cached.map((message) => ({ ...message, createdAt: message.createdAt ? new Date(message.createdAt) : undefined })));
+    } catch {
+      localStorage.removeItem(cacheKey);
+    }
+  }
   const roomDoc = doc(db, "chat_rooms", roomId);
   const q = query(
     collection(roomDoc, "messages"),
@@ -96,6 +113,9 @@ export function subscribeChat(
           createdAt: data.createdAt?.toDate?.() ?? undefined,
         };
       });
+      if (typeof window !== "undefined") {
+        try { localStorage.setItem(cacheKey, JSON.stringify(list)); } catch { /* キャッシュ不可の環境では購読を継続 */ }
+      }
       onUpdate(list);
     },
     onError,
@@ -106,6 +126,8 @@ export function subscribeChat(
 export async function ensureChatRoom(roomId: string): Promise<void> {
   if (!db) return;
   const roomDoc = doc(db, "chat_rooms", roomId);
+  const existing = await getDoc(roomDoc);
+  if (existing.exists()) return;
   await setDoc(
     roomDoc,
     { uid: roomId, createdAt: serverTimestamp(), updatedAt: serverTimestamp() },

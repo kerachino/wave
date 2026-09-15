@@ -19,7 +19,10 @@ export default function DashboardChatPage() {
   const [text, setText] = useState("");
   const [connecting, setConnecting] = useState(true);
   const [error, setError] = useState("");
+  const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const receivedMessages = useRef(false);
+  const messageIds = useRef<string[]>([]);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
@@ -34,6 +37,11 @@ export default function DashboardChatPage() {
         unsubscribe = subscribeChat(
           roomId,
           (nextMessages) => {
+            if (receivedMessages.current) {
+              setNewMessageIds((current) => [...current, ...nextMessages.filter((message) => message.sender === "staff" && !messageIds.current.includes(message.id)).map((message) => message.id)]);
+            }
+            receivedMessages.current = true;
+            messageIds.current = nextMessages.map((message) => message.id);
             setMessages(nextMessages);
             setConnecting(false);
           },
@@ -116,7 +124,7 @@ export default function DashboardChatPage() {
             </div>
           )}
           {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
+            <MessageBubble key={message.id} message={message} isNew={newMessageIds.includes(message.id)} />
           ))}
           {error && <p className="text-center text-xs text-red-600">{error}</p>}
         </div>
@@ -145,13 +153,14 @@ export default function DashboardChatPage() {
   );
 }
 
-function MessageBubble({ message }: { message: ChatMessage }) {
+function MessageBubble({ message, isNew }: { message: ChatMessage; isNew?: boolean }) {
   const staff = message.sender === "staff";
   return (
     <div className={`flex ${staff ? "justify-start" : "justify-end"}`}>
       <div
         className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-6 ${staff ? "rounded-tl-sm bg-white text-ink shadow-sm" : "rounded-tr-sm bg-brand text-white"}`}
       >
+        {isNew && <span className="mb-1 block text-[10px] font-bold text-brand">新着</span>}
         {message.text}
         {message.createdAt && (
           <p
