@@ -27,7 +27,7 @@ export const site = {
     // 代表者氏名（※ 実際の氏名に置き換えてください）
     representative: "※代表者名（未設定）",
     // 事業所（都道府県まで記載）
-    office: "東京都渋谷区",
+    office: "東京都渋谷区本町６丁目３９番９号",
     // 詳細住所（※ 実際の住所に置き換えてください）
     officeDetail: "※東京都渋谷区内（詳細住所はお問い合わせ時にご案内します）",
     // 対応エリア
@@ -36,6 +36,8 @@ export const site = {
     email: "hatonoconnect@outlook.com",
     // 事業開始時期（※ 実績に合わせて更新）
     established: "2026年",
+    // 電話番号（※ 実際の番号に置き換えてください）
+    tel: "非公開（電話での対応は行っておりません）",
   },
 };
 
@@ -56,7 +58,7 @@ export const footerLinks = [
   { href: "/privacy", label: "プライバシーポリシー" },
 ] as const;
 
-// ---- できること（トップページで説明なしに列挙） ----
+// ---- できること（トップページで列挙。当サイト自体を参考例として案内） ----
 export const capabilities = [
   "お店・会社の紹介ページ",
   "お問い合わせフォームの設置",
@@ -172,7 +174,14 @@ export const contactDeadlineOptions = [
 ] as const;
 
 // ---- 料金（価格の実体はmodel.tsで一元管理） ----
-import { basePlanName, basePlanDescription, basePlanFeatures, basePlanPrice, purchasableOptions, yen } from "@/lib/model";
+import {
+  basePlanName,
+  basePlanDescription,
+  basePlanFeatures,
+  basePlanPrice,
+  purchasableOptions,
+  yen,
+} from "@/lib/model";
 
 export const basePlan = {
   id: "basic",

@@ -117,7 +117,7 @@ export default function Home() {
               <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
                 {[
                   ["基本料金", yen(basePlanPrice)],
-                                    ["基本料金", yen(basePlanPrice)],
+                  ["基本料金", yen(basePlanPrice)],
                   ["最短納期", "2週間〜"],
                   ["返信目安", "2〜3営業日"],
                 ].map(([label, value]) => (
@@ -246,9 +246,13 @@ export default function Home() {
         </div>
       </Section>
 
-      {/* できること（説明なしの列挙） */}
+      {/* できること（当サイト自体を参考例として案内） */}
       <Section className="bg-paper">
-        <SectionHeading eyebrow="できること" title="こんなものが作れます" />
+        <SectionHeading
+          eyebrow="できること"
+          title="こんなものが作れます"
+          description="当サイト自体が制作の一例です。"
+        />
         <ul className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-2">
           {capabilities.map((item) => (
             <li

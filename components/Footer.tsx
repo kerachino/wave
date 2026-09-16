@@ -26,13 +26,13 @@ export function Footer() {
               </div>
             </div>
             <p className="mt-5 max-w-xs text-sm leading-7 text-white/60">
-              {site.tagline}
-              地域の法人・店舗さまに向けて、ホームページ制作から公開後のお手伝いまでをワンストップでご提供します。
+              {site.tagline}。
+              ホームページ制作から公開後のお手伝いまでをご提供します。
             </p>
             <p className="mt-4 text-xs leading-6 text-white/40">
               返信目安：{site.replyTime}
               <br />
-              24時間いつでも受付中（メール・チャット）
+              24時間いつでも受付中（メール・アプリ内チャット）
             </p>
           </div>
 
@@ -109,7 +109,10 @@ export function Footer() {
             <Link href="/law" className="transition-colors hover:text-white">
               特定商取引法に基づく表記
             </Link>
-            <Link href="/privacy" className="transition-colors hover:text-white">
+            <Link
+              href="/privacy"
+              className="transition-colors hover:text-white"
+            >
               プライバシーポリシー
             </Link>
           </div>
@@ -118,5 +121,3 @@ export function Footer() {
     </footer>
   );
 }
-
-
