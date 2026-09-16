@@ -96,7 +96,14 @@ export default function ApplyPage() {
           </div>
           <p className="mt-6 text-sm leading-7 text-ink-soft">
             その他の条件は、お見積り書およびご契約のご案内メールにて明示します。
-            ご不明な点は、お申し込み前に
+            より詳しい利用条件は
+            <Link
+              href="/terms"
+              className="font-bold text-brand hover:text-brand-deep"
+            >
+              利用規約
+            </Link>
+            をご覧ください。ご不明な点は、お申し込み前に
             <Link
               href="/contact"
               className="font-bold text-brand hover:text-brand-deep"

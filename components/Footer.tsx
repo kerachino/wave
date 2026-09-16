@@ -110,6 +110,12 @@ export function Footer() {
               特定商取引法に基づく表記
             </Link>
             <Link
+              href="/terms"
+              className="transition-colors hover:text-white"
+            >
+              利用規約
+            </Link>
+            <Link
               href="/privacy"
               className="transition-colors hover:text-white"
             >

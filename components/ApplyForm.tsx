@@ -391,7 +391,8 @@ export function ApplyForm() {
               className="mt-1 size-5 accent-brand"
             />
             <span className="text-xs leading-6 text-ink-soft">
-              契約条件・注意事項（<Link href="/apply#terms">お申し込みページ内</Link>）および
+              契約条件・注意事項（<Link href="/apply#terms">お申し込みページ内</Link>）・
+              <Link href="/terms">利用規約</Link>・
               <Link href="/privacy">プライバシーポリシー</Link>に同意します。
             </span>
           </label>
