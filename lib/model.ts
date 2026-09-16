@@ -106,6 +106,5 @@ export function yen(value: number) {
 export function computeAmounts(basePrice: number, options: OrderOption[]) {
   const totalPrice =
     basePrice + options.reduce((sum, option) => sum + option.price, 0);
-  const firstAmount = Math.floor(totalPrice * 0.5);
-  return { totalPrice, firstAmount, remainingAmount: totalPrice - firstAmount };
+  return { totalPrice, firstAmount: totalPrice, remainingAmount: 0 };
 }

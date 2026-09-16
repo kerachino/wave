@@ -183,7 +183,7 @@ export default function PricePage() {
       <Section id="payment" className="scroll-mt-32 bg-cream">
         <SectionHeading
           title="支払い方法・時期"
-          description="全額前払いはお願いしていません。着手金50%＋公開後の残金50%の2回にお分けしてお支払いいただけます。"
+          description="原則として制作開始前に全額をお支払いいただく前払いです。個別に合意した場合のみ、別の支払い条件をご案内します。"
         />
         <div className="mx-auto mt-10 grid max-w-4xl gap-6 md:grid-cols-2">
           <Card className="p-6 sm:p-7">
@@ -221,14 +221,14 @@ export default function PricePage() {
                   aria-hidden="true"
                   className="mt-3 size-1.5 shrink-0 rounded-full bg-brand"
                 />
-                着手金：制作開始前にお見積り金額の50%
+                原則前払い：制作開始前にお見積り金額の全額
               </li>
               <li className="flex items-start gap-2.5">
                 <span
                   aria-hidden="true"
                   className="mt-3 size-1.5 shrink-0 rounded-full bg-brand"
                 />
-                残金：サイト公開・納品後に残り50%
+                個別条件：分割払いなどは事前の合意がある場合のみ適用
               </li>
             </ul>
           </Card>
