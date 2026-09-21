@@ -46,8 +46,8 @@ const REISSUABLE_STATUSES = new Set([
   "PARTIALLY_REFUNDED",
 ]);
 
-function errorResponse(message: string, status: number) {
-  return NextResponse.json({ ok: false, error: message }, { status });
+function errorResponse(message: string, status: number, code?: string) {
+  return NextResponse.json({ ok: false, error: message, code }, { status });
 }
 
 /** Square のエラーから表示用のメッセージを作ります */
@@ -62,13 +62,15 @@ function squareErrorMessage(error: unknown) {
 }
 
 export async function POST(request: Request) {
+  // code は管理者向け診断用。一般表示は message のみを使うこと。
   if (!isSquareConfigured) {
     console.error(
       "Square の設定が不足しています。.env.local の SQUARE_ACCESS_TOKEN / SQUARE_LOCATION_ID を確認してください。",
     );
     return errorResponse(
-      "決済の準備が完了していません。しばらくお待ちください。",
+      "決済の準備が完了していません。しばらくお待ちください。(SQUARE未設定)",
       503,
+      "square_not_configured",
     );
   }
   if (!isFirebaseAdminConfigured) {
@@ -76,8 +78,9 @@ export async function POST(request: Request) {
       "Firebase Admin の設定が不足しています。.env.local の FIREBASE_SERVICE_ACCOUNT_KEY などを確認してください。",
     );
     return errorResponse(
-      "決済の準備が完了していません。しばらくお待ちください。",
+      "決済の準備が完了していません。しばらくお待ちください。(管理者設定未完了)",
       503,
+      "firebase_admin_not_configured",
     );
   }
 
@@ -88,9 +91,13 @@ export async function POST(request: Request) {
   const auth = adminAuth();
   const db = adminDb();
   if (!auth || !db) {
+    console.error(
+      "Firebase Admin SDK の初期化に失敗しました。秘密鍵の形式を確認してください。",
+    );
     return errorResponse(
-      "決済の準備が完了していません。しばらくお待ちください。",
+      "決済の準備が完了していません。しばらくお待ちください。(初期化失敗)",
       503,
+      "firebase_admin_init_failed",
     );
   }
 

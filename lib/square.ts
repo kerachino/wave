@@ -30,6 +30,23 @@ const environment =
 /** アクセストークンとロケーションIDが揃っていれば Square を利用できます。 */
 export const isSquareConfigured = Boolean(accessToken && locationId);
 
+/**
+ * 管理者用診断: どの環境変数が欠けているか（値そのものは返さない）。
+ * 公開APIのエラーコード切り分けと /api/admin/diagnostics から利用します。
+ */
+export function squareConfigStatus() {
+  return {
+    configured: isSquareConfigured,
+    hasAccessToken: Boolean(accessToken),
+    hasLocationId: Boolean(locationId),
+    hasWebhookSignatureKey: Boolean(signatureKey),
+    environment:
+      process.env.SQUARE_ENVIRONMENT === "production"
+        ? "production"
+        : "sandbox",
+  };
+}
+
 /** Webhook の署名検証用キーが設定されていれば Webhook を受け付けます。 */
 export const isSquareWebhookConfigured = Boolean(signatureKey);
 

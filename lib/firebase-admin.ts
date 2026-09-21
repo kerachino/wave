@@ -71,6 +71,20 @@ function readServiceAccount(): ServiceAccount | null {
 
 export const isFirebaseAdminConfigured = readServiceAccount() !== null;
 
+/** 管理者用診断: どちらの経路で設定されているか（秘密鍵の値は返さない）。 */
+export function firebaseAdminConfigStatus() {
+  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+  return {
+    configured: isFirebaseAdminConfigured,
+    hasServiceAccountKey: Boolean(raw && raw.trim() !== ""),
+    hasSplitKeys: Boolean(
+      process.env.FIREBASE_PROJECT_ID &&
+        process.env.FIREBASE_CLIENT_EMAIL &&
+        process.env.FIREBASE_PRIVATE_KEY,
+    ),
+  };
+}
+
 let adminApp: App | null = null;
 
 function initAdminApp(): App | null {
