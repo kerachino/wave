@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { yen, type Order } from "@/lib/model";
+import { isAccessUnlocked, yen, type Order } from "@/lib/model";
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
@@ -22,6 +22,7 @@ export default function DashboardPage() {
         読み込み中...
       </div>
     );
+  const unlocked = isAccessUnlocked(order);
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div>
@@ -46,23 +47,35 @@ export default function DashboardPage() {
         <OrderCard order={order} />
       )}
       <section className="rounded-3xl border border-line bg-white p-6 shadow-card">
-        <h2 className="font-maru text-xl font-bold text-ink">
-          担当者に相談する
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="font-maru text-xl font-bold text-ink">
+            担当者に相談する
+          </h2>
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-bold ${unlocked ? "bg-brand-soft text-brand-deep" : "bg-cream text-ink-mute"}`}
+          >
+            {unlocked ? "制限解除済み" : "お支払い待ち"}
+          </span>
+        </div>
         <p className="mt-2 text-sm text-ink-soft">
-          決済確認後のご相談や制作のやり取りは、専用チャットで行えます。
+          {unlocked
+            ? "ご相談や制作のやり取りは、専用チャットで行えます。"
+            : "お支払いを確認すると、専用チャットなどの機能をご利用いただけます。"}
         </p>
         <button
-          onClick={() => router.push("/dashboard/chat")}
+          onClick={() =>
+            router.push(unlocked ? "/dashboard/chat" : "/dashboard/payment")
+          }
           className="mt-5 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-dark"
         >
-          チャットを開く
+          {unlocked ? "チャットを開く" : "お支払いへ進む"}
         </button>
       </section>
     </div>
   );
 }
 function OrderCard({ order }: { order: Order }) {
+  const router = useRouter();
   return (
     <section className="rounded-3xl border border-line bg-white p-6 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -91,13 +104,17 @@ function OrderCard({ order }: { order: Order }) {
           <strong>{yen(order.firstAmount)}</strong>
         </div>
       </div>
-      {order.paymentStatus !== "paid" && (
+      {order.paymentStatus !== "paid" ? (
         <button
-          disabled
-          className="mt-6 w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white opacity-60"
+          onClick={() => router.push("/dashboard/payment")}
+          className="mt-6 w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-dark"
         >
-          決済機能を設定中
+          Squareで請求書を受け取る
         </button>
+      ) : (
+        <p className="mt-6 rounded-xl bg-brand-soft px-4 py-3 text-xs text-brand-deep">
+          お支払いを確認しました。利用制限は解除されています。
+        </p>
       )}
     </section>
   );

@@ -9,7 +9,7 @@
 - **チャット** … Firestore に保存されるチャット（画面右下の吹き出しから）※設定準備中
 - **Google ログイン** … お申し込み時に利用（Firebase Auth）※設定準備中
 - **お申し込み・ご契約** … Google ログイン → 申込みフォーム → 契約条件 → お支払い案内
-- **決済代行（カード決済）** … **未定のため保留**。現在は銀行振込のみ。導入後に展開予定
+- **オンライン決済（Square）** … マイページから Square の請求書を発行（Square がメール送信）→ お支払い完了を Webhook で受け取り、自動的に制限を解除
 
 ## ページ構成
 
@@ -45,6 +45,11 @@ npm run dev
 | `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | Gmail SMTP によるメール送信 |
 | `CONTACT_EMAIL` | お問い合わせ・申込みの送信先メール |
 | `NEXT_PUBLIC_FIREBASE_*` | Firebase（チャット・Google ログイン）※未設定なら「準備中」表示 |
+| `SQUARE_ACCESS_TOKEN` / `SQUARE_LOCATION_ID` | Square の請求書発行（サーバー側のみ） |
+| `SQUARE_ENVIRONMENT` | `sandbox` / `production`（既定は `sandbox`） |
+| `SQUARE_WEBHOOK_SIGNATURE_KEY` | Square Webhook の署名検証キー |
+| `SQUARE_WEBHOOK_NOTIFICATION_URL` | Square に登録した Webhook の通知 URL（署名検証で一致が必要） |
+| `FIREBASE_SERVICE_ACCOUNT_KEY` | Firebase Admin SDK（Webhook での Firestore 更新・ID トークン検証） |
 
 ### メール（Gmail）の設定
 
@@ -59,6 +64,26 @@ npm run dev
 3. `NEXT_PUBLIC_FIREBASE_*` を Firebase SDK の設定からコピー
 4. `firestore.rules` の内容を Firestore > Rules に貼り付け
 5. チャットのルームは `chat_rooms/{uid}/messages` に保存。匿名ログインで uid を発行するため、Firebase コンソールで「匿名認証」も有効化してください
+
+### Square（オンライン決済）の設定
+
+1. [Square Developer](https://developer.squareup.com/apps) でアプリを作成し、Sandbox のアクセストークンとロケーションIDを取得
+2. `.env.local` に `SQUARE_ACCESS_TOKEN` / `SQUARE_LOCATION_ID` / `SQUARE_ENVIRONMENT="sandbox"` を設定
+3. Webhooks > Subscriptions で通知URLに `https://<公開URL>/api/square/webhook` を登録し、イベント `invoice.payment_made`（あわせて `invoice.canceled`）を選択
+4. 生成された Signature Key を `SQUARE_WEBHOOK_SIGNATURE_KEY` に、登録した通知URLを `SQUARE_WEBHOOK_NOTIFICATION_URL` に設定
+5. 本番リリース時は `SQUARE_ENVIRONMENT="production"` と本番のトークン・署名キーへ切り替え
+
+#### 決済の流れ
+
+1. お客さまがマイページ（`/dashboard/payment`）で「Squareで請求書を受け取る」を押す
+2. アプリが Square の Invoices API で請求書を作成 → 公開（publish）し、Square がお客さまへ請求書メールを送信
+3. お客さまがお支払いを完了すると、Square から `invoice.payment_made` が `/api/square/webhook` に届く
+4. アプリが署名（`x-square-hmacsha256-signature`）を検証し、`orders/{uid}` を支払い済みに更新して制限（`accessUnlocked`）を解除
+5. マイページのチャットなど、制限されていた機能が利用可能になる
+
+> 金額はサーバー側の `orders/{uid}` の内容（基本プラン＋付け足し／維持費）から組み立てます。
+> 請求書の再発行は行わず、発行済みの請求書を再利用します（二重請求の防止）。
+> Firestore のセキュリティルールにより、決済状況と制限解除はサーバー（Admin SDK）だけが書き込めます。
 
 ## デプロイ（Netlify）
 
@@ -75,10 +100,14 @@ Netlify の Git 連携でデプロイできます。
 - お問い合わせのメール本文・送信処理: `app/api/contact/route.ts`
 - 申込みフォームの送信処理: `app/api/apply/route.ts`
 - チャット・Firebase 初期化: `lib/firebase.ts`
+- Square 連携（請求書の発行・署名検証）: `lib/square.ts`
+- 請求書の発行 API: `app/api/square/invoice/route.ts`
+- Square Webhook（支払い確認・制限解除）: `app/api/square/webhook/route.ts`
+- Firebase Admin（サーバー側の Firestore 更新）: `lib/firebase-admin.ts`
+- 決済データの型・制限判定: `lib/model.ts`
 
 ## 保留事項（TODO）
 
-- 決済代行サービス（Stripe 等）の選定と決済ページの実装
 - Firebase プロジェクト作成と `.env.local` への設定反映
 - 実績ページ（`/works`）への Before/After・お客さまの声の掲載
 - 運営者氏名・詳細住所など、`lib/site.ts` 内のプレースホルダー更新

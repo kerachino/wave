@@ -7,6 +7,14 @@ rules_version = '2';
 // ・chat_rooms/{roomId}                    … チャットルーム
 // ・chat_rooms/{roomId}/messages/{id}      … メッセージ
 // ・applications/{id}                      … お申し込み情報
+// ・orders/{uid}                           … 購入内容・決済状況（書き込みは運営のみ）
+// ・users/{uid}                            … ユーザー情報（isAdmin など）
+// ・quotes/{quoteId}                       … 見積書（書き込みは運営のみ）
+// ・square_invoices/{invoiceId}            … Square 請求書の対応表（サーバーのみ）
+//
+// 決済の確定（paymentStatus / accessUnlocked など）は、Square からの
+// Webhook を検証したうえで サーバー（Firebase Admin SDK）だけが書き込みます。
+// クライアントからは書き込めないため、不正な制限解除はできません。
 //
 // 運営側（スタッフ）の返信は Firebase コンソールから行う想定です。
 // コンソールからの書き込みは、このルールの制約を受けません。
@@ -53,6 +61,12 @@ service cloud.firestore {
           || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
       allow write: if request.auth != null
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // ---- Square 請求書とお客さまの対応表 ----
+    // Webhook（サーバー）が作成・参照します。クライアントからは読み書きできません。
+    match /square_invoices/{invoiceId} {
+      allow read, write: if false;
     }
 
     match /users/{uid} {

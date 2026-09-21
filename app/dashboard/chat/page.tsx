@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
 import {
   db,
@@ -11,6 +13,7 @@ import {
   subscribeChat,
   type ChatMessage,
 } from "@/lib/firebase";
+import { isAccessUnlocked, type Order } from "@/lib/model";
 
 export default function DashboardChatPage() {
   const router = useRouter();
@@ -20,9 +23,24 @@ export default function DashboardChatPage() {
   const [connecting, setConnecting] = useState(true);
   const [error, setError] = useState("");
   const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
+  const [order, setOrder] = useState<Order | null>(null);
+  const [orderReady, setOrderReady] = useState(!isFirebaseConfigured);
   const scrollRef = useRef<HTMLDivElement>(null);
   const receivedMessages = useRef(false);
   const messageIds = useRef<string[]>([]);
+
+  // お支払い状況（制限の解除状態）を購読する
+  useEffect(() => {
+    if (!user || !db || !isFirebaseConfigured) return;
+    return onSnapshot(
+      doc(db, "orders", user.uid),
+      (snapshot) => {
+        setOrder(snapshot.exists() ? (snapshot.data() as Order) : null);
+        setOrderReady(true);
+      },
+      () => setOrderReady(true),
+    );
+  }, [user]);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
@@ -80,8 +98,9 @@ export default function DashboardChatPage() {
     }
   }
 
-  if (loading || !user)
+  if (loading || !user || !orderReady)
     return <p className="text-sm text-ink-mute">読み込み中...</p>;
+  const unlocked = isAccessUnlocked(order);
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
@@ -93,6 +112,9 @@ export default function DashboardChatPage() {
           担当者とのやり取りをここで確認できます。
         </p>
       </div>
+      {!unlocked ? (
+        <LockedNotice />
+      ) : (
       <section className="flex h-[min(70vh,40rem)] min-h-[34rem] flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-card">
         <header className="flex items-center gap-3 border-b border-line px-5 py-4">
           <span className="grid size-10 place-items-center rounded-full bg-brand-soft font-bold text-brand">
@@ -149,7 +171,30 @@ export default function DashboardChatPage() {
           </button>
         </form>
       </section>
+      )}
     </div>
+  );
+}
+
+/** お支払い確認前の制限表示 */
+function LockedNotice() {
+  return (
+    <section className="rounded-3xl border border-line bg-white p-8 text-center shadow-card">
+      <p className="text-xs font-bold tracking-[0.18em] text-brand">LOCKED</p>
+      <h2 className="mt-3 font-maru text-xl font-bold text-ink">
+        お支払いの確認後にご利用いただけます
+      </h2>
+      <p className="mt-3 text-sm leading-7 text-ink-soft">
+        ご契約代金のお支払いを確認すると、担当者とのチャットなどの機能がご利用いただけます。
+        Square から届く請求書メール、または下のボタンからお支払いをお願いします。
+      </p>
+      <Link
+        href="/dashboard/payment"
+        className="mt-6 inline-block rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
+      >
+        お支払いへ進む
+      </Link>
+    </section>
   );
 }
 

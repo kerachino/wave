@@ -140,8 +140,8 @@ export default function ApplyPage() {
               カード決済（決済代行）
             </p>
             <p className="mt-2 text-sm leading-7 text-ink-soft">
-              決済代行サービス（Stripe など）の導入を検討中です。
-              導入が決まり次第、このページでご案内します。
+              Square の請求書決済（カード・オンライン）に対応準備中です。
+              ご契約後、マイページから請求書をお受け取りいただけます。
             </p>
           </div>
           <div className="rounded-3xl border border-ink/10 bg-white p-6 shadow-sm">
