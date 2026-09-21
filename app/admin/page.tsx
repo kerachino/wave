@@ -110,6 +110,8 @@ type DiagnosticsResult = {
     configured: boolean;
     hasServiceAccountKey: boolean;
     hasSplitKeys: boolean;
+    rawJsonParseOk?: boolean;
+    privateKeyValid?: boolean;
   };
   hint?: string;
   error?: string;
@@ -173,6 +175,15 @@ function SystemPanel({ password }: { password: string }) {
             <li>SQUARE_ENVIRONMENT: {result.square?.environment}</li>
             <li>SQUARE_WEBHOOK_SIGNATURE_KEY: {result.square?.hasWebhookSignatureKey ? "○" : "×（Webhook受信不可）"}</li>
             <li>Firebase Admin: {result.firebaseAdmin?.configured ? "○" : "×"}</li>
+            {result.firebaseAdmin && !result.firebaseAdmin.configured && (
+              <li className="text-red-600">
+                {result.firebaseAdmin.rawJsonParseOk === false
+                  ? "→ JSON解析失敗: FIREBASE_SERVICE_ACCOUNT_KEYを1行JSONで貼り直してください"
+                  : result.firebaseAdmin.privateKeyValid === false
+                    ? "→ 秘密鍵の形式不正: 前後の引用符・空白を除き、\\n が改行に戻る形式で登録してください(3分割キー推奨)"
+                    : "→ 値が不足しています"}
+              </li>
+            )}
           </ul>
           {result.hint && <p className="text-xs text-ink-mute">{result.hint}</p>}
         </div>

@@ -23,13 +23,36 @@ type ServiceAccount = {
   privateKey: string;
 };
 
-/** 改行コード（\n のエスケープ）を実際の改行に戻す */
+/** 改行コード（\n のエスケープ）を実際の改行に戻す。Netlify等での登録ミス（前後の引用符・空白）も吸収する */
 function normalizePrivateKey(value: string) {
-  return value.replace(/\\n/g, "\n");
+  let key = value.trim();
+  // NetlifyのUIで "-----BEGIN..." と引用符付きで貼られた場合を吸収
+  if (
+    (key.startsWith('"') && key.endsWith('"')) ||
+    (key.startsWith("'") && key.endsWith("'"))
+  ) {
+    key = key.slice(1, -1).trim();
+  }
+  // JSON内に二重エスケープ(\\n)で入っている場合と、素の \n 文字列の場合の両方を戻す
+  // ※二重→単一の順で置換しないと、残ったバックスラッシュで cert() が失敗する
+  key = key.replace(/\\\\n/g, "\n").replace(/\\n/g, "\n");
+  return key;
+}
+
+/** PEM形式として最低限の形をしているか（詳細な検証は cert() 側で行う） */
+function looksLikePem(key: string) {
+  return (
+    key.includes("-----BEGIN PRIVATE KEY-----") &&
+    key.includes("-----END PRIVATE KEY-----")
+  );
 }
 
 /** 環境変数からサービスアカウント情報を読み取る（未設定なら null） */
-function readServiceAccount(): ServiceAccount | null {
+export function readServiceAccountDebug(): {
+  serviceAccount: ServiceAccount | null;
+  privateKeyValid: boolean;
+  rawJsonParseOk: boolean;
+} {
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
   if (raw && raw.trim() !== "") {
     try {
@@ -39,34 +62,54 @@ function readServiceAccount(): ServiceAccount | null {
         private_key?: string;
       };
       if (parsed.project_id && parsed.client_email && parsed.private_key) {
+        const privateKey = normalizePrivateKey(parsed.private_key);
         return {
-          projectId: parsed.project_id,
-          clientEmail: parsed.client_email,
-          privateKey: normalizePrivateKey(parsed.private_key),
+          serviceAccount: {
+            projectId: parsed.project_id,
+            clientEmail: parsed.client_email,
+            privateKey,
+          },
+          privateKeyValid: looksLikePem(privateKey),
+          rawJsonParseOk: true,
         };
       }
       console.error(
         "FIREBASE_SERVICE_ACCOUNT_KEY に project_id / client_email / private_key が含まれていません。",
       );
+      return { serviceAccount: null, privateKeyValid: false, rawJsonParseOk: true };
     } catch (error) {
       console.error(
         "FIREBASE_SERVICE_ACCOUNT_KEY を JSON として解析できませんでした。サービスアカウントの JSON を改行コードごと 1 行の文字列にして設定してください（代わりに FIREBASE_PROJECT_ID / FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY でも可）。",
         error,
       );
+      return { serviceAccount: null, privateKeyValid: false, rawJsonParseOk: false };
     }
   }
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY;
-  if (projectId && clientEmail && privateKey) {
+  const privateKeyRaw = process.env.FIREBASE_PRIVATE_KEY;
+  if (projectId && clientEmail && privateKeyRaw) {
+    const privateKey = normalizePrivateKey(privateKeyRaw);
     return {
-      projectId,
-      clientEmail,
-      privateKey: normalizePrivateKey(privateKey),
+      serviceAccount: { projectId, clientEmail, privateKey },
+      privateKeyValid: looksLikePem(privateKey),
+      rawJsonParseOk: true,
     };
   }
-  return null;
+  return { serviceAccount: null, privateKeyValid: false, rawJsonParseOk: true };
+}
+
+function readServiceAccount(): ServiceAccount | null {
+  const { serviceAccount, privateKeyValid } = readServiceAccountDebug();
+  if (!serviceAccount) return null;
+  if (!privateKeyValid) {
+    console.error(
+      "Firebase Admin の秘密鍵がPEM形式ではありません。FIREBASE_PRIVATE_KEY の \\n が正しく改行に戻っているか、前後に引用符が付いていないか確認してください。",
+    );
+    return null;
+  }
+  return serviceAccount;
 }
 
 export const isFirebaseAdminConfigured = readServiceAccount() !== null;

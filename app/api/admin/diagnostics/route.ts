@@ -3,7 +3,10 @@
 // POST /api/admin/diagnostics  body: { "password": "..." }
 // ============================================================
 import { NextResponse } from "next/server";
-import { firebaseAdminConfigStatus } from "@/lib/firebase-admin";
+import {
+  firebaseAdminConfigStatus,
+  readServiceAccountDebug,
+} from "@/lib/firebase-admin";
 import { squareConfigStatus } from "@/lib/square";
 
 export const runtime = "nodejs";
@@ -28,6 +31,8 @@ export async function POST(request: Request) {
 
   const square = squareConfigStatus();
   const firebaseAdmin = firebaseAdminConfigStatus();
+  // 値は返さず、JSON解析可否とPEM形式かどうかだけ返す
+  const debug = readServiceAccountDebug();
   const missing: string[] = [];
   if (!square.hasAccessToken) missing.push("SQUARE_ACCESS_TOKEN");
   if (!square.hasLocationId) missing.push("SQUARE_LOCATION_ID");
@@ -43,7 +48,11 @@ export async function POST(request: Request) {
     ready: square.configured && firebaseAdmin.configured,
     missing,
     square,
-    firebaseAdmin,
+    firebaseAdmin: {
+      ...firebaseAdmin,
+      rawJsonParseOk: debug.rawJsonParseOk,
+      privateKeyValid: debug.privateKeyValid,
+    },
     hint: "不足がある場合は Netlify の Environment variables に登録し、再デプロイしてください。",
   });
 }
