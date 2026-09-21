@@ -112,6 +112,7 @@ type DiagnosticsResult = {
     hasSplitKeys: boolean;
     rawJsonParseOk?: boolean;
     privateKeyValid?: boolean;
+    source?: string;
   };
   hint?: string;
   error?: string;
@@ -175,6 +176,9 @@ function SystemPanel({ password }: { password: string }) {
             <li>SQUARE_ENVIRONMENT: {result.square?.environment}</li>
             <li>SQUARE_WEBHOOK_SIGNATURE_KEY: {result.square?.hasWebhookSignatureKey ? "○" : "×（Webhook受信不可）"}</li>
             <li>Firebase Admin: {result.firebaseAdmin?.configured ? "○" : "×"}</li>
+            {result.firebaseAdmin?.source && (
+              <li>検出形式: {result.firebaseAdmin.source}</li>
+            )}
             {result.firebaseAdmin && !result.firebaseAdmin.configured && (
               <li className="text-red-600">
                 {result.firebaseAdmin.rawJsonParseOk === false

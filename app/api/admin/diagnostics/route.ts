@@ -52,6 +52,7 @@ export async function POST(request: Request) {
       ...firebaseAdmin,
       rawJsonParseOk: debug.rawJsonParseOk,
       privateKeyValid: debug.privateKeyValid,
+      source: debug.source,
     },
     hint: "不足がある場合は Netlify の Environment variables に登録し、再デプロイしてください。",
   });

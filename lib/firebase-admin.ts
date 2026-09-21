@@ -52,38 +52,75 @@ export function readServiceAccountDebug(): {
   serviceAccount: ServiceAccount | null;
   privateKeyValid: boolean;
   rawJsonParseOk: boolean;
+  source: "service_account_key_json" | "service_account_key_pem" | "split_keys" | "none";
 } {
+  const none = {
+    serviceAccount: null,
+    privateKeyValid: false,
+    rawJsonParseOk: true,
+    source: "none",
+  } as const;
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
   if (raw && raw.trim() !== "") {
-    try {
-      const parsed = JSON.parse(raw) as {
-        project_id?: string;
-        client_email?: string;
-        private_key?: string;
-      };
-      if (parsed.project_id && parsed.client_email && parsed.private_key) {
-        const privateKey = normalizePrivateKey(parsed.private_key);
+    const trimmed = raw.trim();
+    // 1) 正規形: サービスアカウントJSONを1行にした文字列
+    if (trimmed.startsWith("{")) {
+      try {
+        const parsed = JSON.parse(trimmed) as {
+          project_id?: string;
+          client_email?: string;
+          private_key?: string;
+        };
+        if (parsed.project_id && parsed.client_email && parsed.private_key) {
+          const privateKey = normalizePrivateKey(parsed.private_key);
+          return {
+            serviceAccount: {
+              projectId: parsed.project_id,
+              clientEmail: parsed.client_email,
+              privateKey,
+            },
+            privateKeyValid: looksLikePem(privateKey),
+            rawJsonParseOk: true,
+            source: "service_account_key_json",
+          };
+        }
+        console.error(
+          "FIREBASE_SERVICE_ACCOUNT_KEY に project_id / client_email / private_key が含まれていません。",
+        );
+        return { ...none, source: "service_account_key_json" };
+      } catch (error) {
+        console.error(
+          "FIREBASE_SERVICE_ACCOUNT_KEY を JSON として解析できませんでした。サービスアカウントの JSON を改行コードごと 1 行の文字列にして設定してください（代わりに FIREBASE_PROJECT_ID / FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY でも可）。",
+          error,
+        );
+        return { ...none, rawJsonParseOk: false, source: "service_account_key_json" };
+      }
+    }
+    // 2) 誤って秘密鍵(PEM)だけが入っている場合も救済する。
+    //    projectId / clientEmail は分割キーかNEXT_PUBLIC側から補う。
+    const pemKey = normalizePrivateKey(trimmed);
+    if (looksLikePem(pemKey)) {
+      const projectId =
+        process.env.FIREBASE_PROJECT_ID ||
+        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+      const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+      if (projectId && clientEmail) {
         return {
-          serviceAccount: {
-            projectId: parsed.project_id,
-            clientEmail: parsed.client_email,
-            privateKey,
-          },
-          privateKeyValid: looksLikePem(privateKey),
+          serviceAccount: { projectId, clientEmail, privateKey: pemKey },
+          privateKeyValid: true,
           rawJsonParseOk: true,
+          source: "service_account_key_pem",
         };
       }
       console.error(
-        "FIREBASE_SERVICE_ACCOUNT_KEY に project_id / client_email / private_key が含まれていません。",
+        "FIREBASE_SERVICE_ACCOUNT_KEY に秘密鍵のみが設定されています。FIREBASE_PROJECT_ID / FIREBASE_CLIENT_EMAIL も合わせて設定してください（またはJSON全体を設定）。",
       );
-      return { serviceAccount: null, privateKeyValid: false, rawJsonParseOk: true };
-    } catch (error) {
-      console.error(
-        "FIREBASE_SERVICE_ACCOUNT_KEY を JSON として解析できませんでした。サービスアカウントの JSON を改行コードごと 1 行の文字列にして設定してください（代わりに FIREBASE_PROJECT_ID / FIREBASE_CLIENT_EMAIL / FIREBASE_PRIVATE_KEY でも可）。",
-        error,
-      );
-      return { serviceAccount: null, privateKeyValid: false, rawJsonParseOk: false };
+      return { ...none, privateKeyValid: true, source: "service_account_key_pem" };
     }
+    console.error(
+      "FIREBASE_SERVICE_ACCOUNT_KEY の形式が正しくありません。JSON全体か、PEM形式の秘密鍵を設定してください。",
+    );
+    return { ...none, rawJsonParseOk: false, source: "service_account_key_json" };
   }
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
@@ -95,9 +132,10 @@ export function readServiceAccountDebug(): {
       serviceAccount: { projectId, clientEmail, privateKey },
       privateKeyValid: looksLikePem(privateKey),
       rawJsonParseOk: true,
+      source: "split_keys",
     };
   }
-  return { serviceAccount: null, privateKeyValid: false, rawJsonParseOk: true };
+  return { ...none };
 }
 
 function readServiceAccount(): ServiceAccount | null {
