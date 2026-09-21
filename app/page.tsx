@@ -250,7 +250,7 @@ export default function Home() {
       <Section className="bg-paper">
         <SectionHeading
           eyebrow="できること"
-          title="こんなものが作れます."
+          title="こんなものが作れます"
           description="当サイト自体が制作の一例です。"
         />
         <ul className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-2">

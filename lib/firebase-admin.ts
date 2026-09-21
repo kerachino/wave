@@ -150,13 +150,20 @@ function readServiceAccount(): ServiceAccount | null {
   return serviceAccount;
 }
 
+/** 起動時に確定させず、呼び出し都度評価する（診断APIと請求APIの判定を一致させるため） */
+export function checkFirebaseAdminConfigured(): boolean {
+  return firebaseAdminConfigStatus().configured;
+}
+
 export const isFirebaseAdminConfigured = readServiceAccount() !== null;
 
 /** 管理者用診断: どちらの経路で設定されているか（秘密鍵の値は返さない）。 */
 export function firebaseAdminConfigStatus() {
+  // 診断APIと請求APIで同じ判定になるよう、都度読み直す
+  const debug = readServiceAccountDebug();
   const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
   return {
-    configured: isFirebaseAdminConfigured,
+    configured: debug.serviceAccount !== null && debug.privateKeyValid,
     hasServiceAccountKey: Boolean(raw && raw.trim() !== ""),
     hasSplitKeys: Boolean(
       process.env.FIREBASE_PROJECT_ID &&

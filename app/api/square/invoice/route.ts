@@ -16,7 +16,7 @@ import {
   adminAuth,
   adminDb,
   bearerToken,
-  isFirebaseAdminConfigured,
+  checkFirebaseAdminConfigured,
 } from "@/lib/firebase-admin";
 import {
   createAndPublishInvoice,
@@ -63,6 +63,7 @@ function squareErrorMessage(error: unknown) {
 
 export async function POST(request: Request) {
   // code は管理者向け診断用。一般表示は message のみを使うこと。
+  // 診断API(/api/admin/diagnostics)と同じ都度評価を使い、古い定数との不一致を防ぐ。
   if (!isSquareConfigured) {
     console.error(
       "Square の設定が不足しています。.env.local の SQUARE_ACCESS_TOKEN / SQUARE_LOCATION_ID を確認してください。",
@@ -73,7 +74,7 @@ export async function POST(request: Request) {
       "square_not_configured",
     );
   }
-  if (!isFirebaseAdminConfigured) {
+  if (!checkFirebaseAdminConfigured()) {
     console.error(
       "Firebase Admin の設定が不足しています。.env.local の FIREBASE_SERVICE_ACCOUNT_KEY などを確認してください。",
     );
