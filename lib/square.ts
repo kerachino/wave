@@ -54,7 +54,10 @@ export const isSquareWebhookConfigured = Boolean(signatureKey);
 export function squareWebhookUrl() {
   const explicit = process.env.SQUARE_WEBHOOK_NOTIFICATION_URL;
   if (explicit && explicit.trim() !== "") return explicit.trim();
-  const base = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/+$/, "");
+  const base = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(
+    /\/+$/,
+    "",
+  );
   return `${base}/api/square/webhook`;
 }
 
@@ -83,7 +86,9 @@ export function invoiceDueDate(daysAhead?: number) {
     daysAhead ??
     (Number.isFinite(configured) && configured > 0 ? configured : 14);
   const due = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tokyo" }).format(due);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tokyo" }).format(
+    due,
+  );
 }
 
 /**
