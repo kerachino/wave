@@ -13,17 +13,17 @@
 
 ## ページ構成
 
-| ルート | 内容 |
-| --- | --- |
-| `/` | トップページ（キャッチコピー・4つの魅力・基本プラン・流れ・よくある質問） |
-| `/price` | 料金プラン（基本プラン＋付け足し・基本条件・維持費・支払い方法） |
-| `/works` | 制作事例（実績が出るまでは「モニター募集中」表示） |
-| `/contact` | お問い合わせ（メールフォーム／チャット） |
-| `/apply` | お申し込み・ご契約（ログイン・フォーム・契約条件・決済案内） |
-| `/operator` | 運営者情報 |
-| `/law` | 特定商取引法に基づく表記 |
-| `/privacy` | プライバシーポリシー |
-| `/terms` | 利用規約 |
+| ルート      | 内容                                                                      |
+| ----------- | ------------------------------------------------------------------------- |
+| `/`         | トップページ（キャッチコピー・4つの魅力・基本プラン・流れ・よくある質問） |
+| `/price`    | 料金プラン（基本プラン＋付け足し・基本条件・維持費・支払い方法）          |
+| `/works`    | 制作事例（実績が出るまでは「モニター募集中」表示）                        |
+| `/contact`  | お問い合わせ（メールフォーム／チャット）                                  |
+| `/apply`    | お申し込み・ご契約（ログイン・フォーム・契約条件・決済案内）              |
+| `/operator` | 運営者情報                                                                |
+| `/law`      | 特定商取引法に基づく表記                                                  |
+| `/privacy`  | プライバシーポリシー                                                      |
+| `/terms`    | 利用規約                                                                  |
 
 > 旧 `/service`・`/flow` は `next.config.ts` の設定で `/price` へリダイレクトされます。
 > 旧 `/faq` はトップページ内のセクション `/#faq` へ統合しました。
@@ -40,16 +40,16 @@ npm run dev
 
 `.env.local.example` を参考に `.env.local` を用意してください（Git にはコミットされません）。
 
-| 変数 | 用途 |
-| --- | --- |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | Gmail SMTP によるメール送信 |
-| `CONTACT_EMAIL` | お問い合わせ・申込みの送信先メール |
-| `NEXT_PUBLIC_FIREBASE_*` | Firebase（チャット・Google ログイン）※未設定なら「準備中」表示 |
-| `SQUARE_ACCESS_TOKEN` / `SQUARE_LOCATION_ID` | Square の請求書発行（サーバー側のみ） |
-| `SQUARE_ENVIRONMENT` | `sandbox` / `production`（既定は `sandbox`） |
-| `SQUARE_WEBHOOK_SIGNATURE_KEY` | Square Webhook の署名検証キー |
-| `SQUARE_WEBHOOK_NOTIFICATION_URL` | Square に登録した Webhook の通知 URL（署名検証で一致が必要） |
-| `FIREBASE_SERVICE_ACCOUNT_KEY` | Firebase Admin SDK（Webhook での Firestore 更新・ID トークン検証） |
+| 変数                                                  | 用途                                                               |
+| ----------------------------------------------------- | ------------------------------------------------------------------ |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` | Gmail SMTP によるメール送信                                        |
+| `CONTACT_EMAIL`                                       | お問い合わせ・申込みの送信先メール                                 |
+| `NEXT_PUBLIC_FIREBASE_*`                              | Firebase（チャット・Google ログイン）※未設定なら「準備中」表示     |
+| `SQUARE_ACCESS_TOKEN` / `SQUARE_LOCATION_ID`          | Square の請求書発行（サーバー側のみ）                              |
+| `SQUARE_ENVIRONMENT`                                  | `sandbox` / `production`（既定は `sandbox`）                       |
+| `SQUARE_WEBHOOK_SIGNATURE_KEY`                        | Square Webhook の署名検証キー                                      |
+| `SQUARE_WEBHOOK_NOTIFICATION_URL`                     | Square に登録した Webhook の通知 URL（署名検証で一致が必要）       |
+| `FIREBASE_SERVICE_ACCOUNT_KEY`                        | Firebase Admin SDK（Webhook での Firestore 更新・ID トークン検証） |
 
 ### メール（Gmail）の設定
 
