@@ -114,9 +114,8 @@ export default function Home() {
                 </ButtonLink>
               </div>
               {/* 数字で見る安心 */}
-              <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
+              {/* <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
                 {[
-                  ["基本料金", yen(basePlanPrice)],
                   ["基本料金", yen(basePlanPrice)],
                   ["最短納期", "2週間〜"],
                   ["返信目安", "2〜3営業日"],
@@ -130,7 +129,7 @@ export default function Home() {
                     </dd>
                   </div>
                 ))}
-              </dl>
+              </dl> */}
             </div>
 
             {/* モックアップ */}
@@ -213,7 +212,7 @@ export default function Home() {
         </Container>
       </section>
       {/* 4つの魅力 */}
-      <Section className="bg-cream">
+      {/* <Section className="bg-cream">
         <SectionHeading
           title="選ばれる理由"
           description="難しいことはぜんぶおまかせ。はじめやすさと、頼んで良かったと思われるものに。"
@@ -244,7 +243,7 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </Section>
+      </Section> */}
 
       {/* できること（当サイト自体を参考例として案内） */}
       <Section className="bg-paper">
