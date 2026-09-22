@@ -165,15 +165,15 @@ h3 {
   color: transparent;
 }
 
-/* オーロラのように回転するグラデーション（CTAカードの装飾） */
+/* オーロラのように回転するグラデーション（CTA・料金カードの装飾：ブランドカラーに統一） */
 .aurora {
   background: conic-gradient(
     from 0deg at 50% 50%,
-    rgb(37 99 235 / 0.5),
-    rgb(14 165 233 / 0.45),
-    rgb(251 191 36 / 0.4),
-    rgb(59 130 246 / 0.45),
-    rgb(37 99 235 / 0.5)
+    rgb(74 158 214 / 0.55),
+    rgb(242 104 140 / 0.45),
+    rgb(108 185 232 / 0.5),
+    rgb(35 78 110 / 0.5),
+    rgb(74 158 214 / 0.55)
   );
   filter: blur(72px);
   animation: aurora-spin 26s linear infinite;

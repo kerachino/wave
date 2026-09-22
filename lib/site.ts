@@ -41,12 +41,12 @@ export const site = {
   },
 };
 
-// ナビゲーション（image.png準拠：特徴・料金・流れ・オプション・FAQ）
+// ナビゲーション（トップページ内の各セクションへの案内）
 export const navItems = [
   { href: "/#features", label: "サービスの特徴" },
   { href: "/#plan", label: "料金プラン" },
   { href: "/#flow", label: "制作の流れ" },
-  { href: "/#option", label: "オプション" },
+  { href: "/#payment", label: "お支払い" },
   { href: "/#faq", label: "よくある質問" },
 ] as const;
 

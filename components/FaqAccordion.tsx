@@ -7,12 +7,11 @@ export type FaqItem = {
   a: string;
 };
 
-/** 質問ごとに色が変わるポップなアコーディオン */
+/** 質問ごとに変わるアクセント（ブランドカラーに統一） */
 const accentColors = [
-  "bg-sky-400 text-ink",
-  "bg-amber-400 text-ink",
-  "bg-emerald-400 text-ink",
-  "bg-pink-400 text-ink",
+  "bg-brand text-white",
+  "bg-brand-deep text-white",
+  "bg-midori text-white",
 ];
 
 export function FaqAccordion({ items }: { items: FaqItem[] }) {
