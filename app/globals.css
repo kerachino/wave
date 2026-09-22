@@ -24,29 +24,33 @@
 }
 
 @theme {
-  /* プライマリ（ポップブルー） */
-  --color-brand: #2563eb;
-  --color-brand-dark: #1d4ed8;
-  --color-brand-deep: #1e3a8a;
-  --color-brand-soft: #dbeafe;
+  /* プライマリ（優しいライトブルー） */
+  --color-brand: #4a9ed6;
+  --color-brand-dark: #3582b8;
+  --color-brand-deep: #234e6e;
+  --color-brand-soft: #e7f2fa;
 
-  /* テキスト（スレート） */
-  --color-ink: #0f172a;
-  --color-ink-soft: #475569;
-  --color-ink-mute: #94a3b8;
+  /* テキスト（優しいネイビー） */
+  --color-ink: #23475f;
+  --color-ink-soft: #56748c;
+  --color-ink-mute: #8ea7bb;
 
-  /* 背景（ホワイト / ごく薄いブルー） */
+  /* 背景（ホワイト / とても薄い空色） */
   --color-paper: #ffffff;
-  --color-cream: #f2f7ff;
-  --color-cream-deep: #e2ecfd;
+  --color-cream: #f3f8fd;
+  --color-cream-deep: #e1edf6;
 
-  /* アクセント（ひまわりイエロー） */
-  --color-midori: #fbbf24;
-  --color-midori-dark: #b45309;
-  --color-midori-soft: #fef3c7;
+  /* アクセント（コーラルピンク） */
+  --color-midori: #f2688c;
+  --color-midori-dark: #c14a68;
+  --color-midori-soft: #fde9ef;
+
+  /* ミント（維持費カード用） */
+  --color-mint: #e9f5f1;
+  --color-mint-deep: #cde8e0;
 
   /* 境界線と影 */
-  --color-line: #dbe4f5;
+  --color-line: #d8e6f2;
   --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05);
   --shadow-soft: 0 1px 2px rgb(15 23 42 / 0.05),
     0 12px 32px -16px rgb(15 23 42 / 0.16);
@@ -77,20 +81,28 @@ h3 {
 /* ポップな水玉模様（明るい背景用） */
 .dots {
   background-image: radial-gradient(
-    rgb(37 99 235 / 0.1) 1.5px,
+    rgb(74 158 214 / 0.12) 1.5px,
     transparent 1.5px
   );
   background-size: 18px 18px;
 }
 
-/* グラデーションテキスト（ブルー → シアン） */
+/* グラデーションテキスト（優しいブルー → ピンク） */
 .text-gradient {
   background-image: linear-gradient(
     110deg,
-    #2563eb 10%,
-    #0ea5e9 55%,
-    #06b6d4 90%
+    #f2688c 5%,
+    #4a9ed6 55%,
+    #6cb9e8 90%
   );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 優しいブルーのグラデーションテキスト */
+.text-gradient-blue {
+  background-image: linear-gradient(110deg, #4a9ed6 10%, #6fb5e2 90%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -100,7 +112,7 @@ h3 {
 .glow-soft {
   background: radial-gradient(
     closest-side,
-    rgb(37 99 235 / 0.16),
+    rgb(74 158 214 / 0.18),
     transparent 70%
   );
 }
@@ -109,16 +121,16 @@ h3 {
 .glow-strong {
   background: radial-gradient(
     closest-side,
-    rgb(37 99 235 / 0.32),
+    rgb(74 158 214 / 0.3),
     transparent 70%
   );
 }
 
-/* ひまわりイエローのblob */
+/* ピンクのblob（優しい差し色） */
 .glow-amber {
   background: radial-gradient(
     closest-side,
-    rgb(251 191 36 / 0.4),
+    rgb(242 104 140 / 0.22),
     transparent 70%
   );
 }
@@ -127,17 +139,17 @@ h3 {
 .glow-pink {
   background: radial-gradient(
     closest-side,
-    rgb(244 114 182 / 0.28),
+    rgb(242 104 140 / 0.24),
     transparent 70%
   );
 }
 
 /* シール風のオフセット影（ポップの要） */
 .shadow-pop {
-  box-shadow: 5px 5px 0 0 rgb(15 23 42 / 0.85);
+  box-shadow: 5px 5px 0 0 rgb(35 71 95 / 0.16);
 }
 .shadow-pop-sm {
-  box-shadow: 3px 3px 0 0 rgb(15 23 42 / 0.85);
+  box-shadow: 3px 3px 0 0 rgb(35 71 95 / 0.16);
 }
 
 /* 明るいグラデーションテキスト（青系の暗い面用） */

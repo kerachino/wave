@@ -43,9 +43,9 @@ export function Header() {
           })}
           <Link
             href="/contact"
-            className="ml-3 rounded-full bg-brand px-5 py-2.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
+            className="ml-3 inline-flex items-center gap-1.5 rounded-full bg-[#f2688c] px-5 py-2.5 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:brightness-105"
           >
-            無料で相談する
+            ✉ お問い合わせ
           </Link>
         </nav>
 
@@ -109,9 +109,9 @@ export function Header() {
               <Link
                 href="/contact"
                 onClick={() => setOpen(false)}
-                className="rounded-xl bg-brand px-5 py-3 text-center text-sm font-bold text-white shadow-soft"
+                className="rounded-xl bg-[#f2688c] px-5 py-3 text-center text-sm font-bold text-white shadow-soft"
               >
-                無料で相談する
+                お問い合わせ
               </Link>
               <a
                 href={`mailto:${site.email}`}

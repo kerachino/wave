@@ -41,13 +41,13 @@ export const site = {
   },
 };
 
-// ナビゲーション（メインページのみ。契約・規約系はフッターに分離）
-// よくある質問はメインページ内のセクション（/#faq）のため、別ページは作らない
+// ナビゲーション（image.png準拠：特徴・料金・流れ・オプション・FAQ）
 export const navItems = [
-  { href: "/", label: "ホーム" },
-  { href: "/price", label: "料金" },
-  { href: "/works", label: "制作事例" },
-  { href: "/contact", label: "お問い合わせ" },
+  { href: "/#features", label: "サービスの特徴" },
+  { href: "/#plan", label: "料金プラン" },
+  { href: "/#flow", label: "制作の流れ" },
+  { href: "/#option", label: "オプション" },
+  { href: "/#faq", label: "よくある質問" },
 ] as const;
 
 // フッターの補助リンク
