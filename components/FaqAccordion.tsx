@@ -7,21 +7,41 @@ export type FaqItem = {
   a: string;
 };
 
+/** 質問ごとに色が変わるポップなアコーディオン */
+const accentColors = [
+  "bg-sky-400 text-ink",
+  "bg-amber-400 text-ink",
+  "bg-emerald-400 text-ink",
+  "bg-pink-400 text-ink",
+];
+
 export function FaqAccordion({ items }: { items: FaqItem[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-line overflow-hidden rounded-3xl border-2 border-line bg-white shadow-card">
+    <div className="overflow-hidden rounded-3xl border-2 border-line bg-white shadow-card">
       {items.map((item, i) => {
         const open = openIndex === i;
+        const accent = accentColors[i % accentColors.length];
         return (
-          <div key={i}>
+          <div
+            key={i}
+            className={i > 0 ? "border-t-2 border-dashed border-line" : ""}
+          >
             <button
               type="button"
               onClick={() => setOpenIndex(open ? null : i)}
               aria-expanded={open}
-              className="flex w-full items-center gap-4 px-5 py-5 text-left transition-colors hover:text-brand-dark sm:px-6"
+              className={`flex w-full items-center gap-4 px-5 py-5 text-left transition-colors sm:px-6 ${
+                open ? "bg-cream/60" : "hover:bg-cream/40"
+              }`}
             >
+              <span
+                aria-hidden="true"
+                className={`grid size-9 shrink-0 place-items-center rounded-xl font-maru text-sm font-bold shadow-card ${accent}`}
+              >
+                Q
+              </span>
               <span
                 className={`flex-1 text-sm font-bold leading-7 transition-colors sm:text-[15px] ${
                   open ? "text-brand-dark" : "text-ink"
@@ -31,8 +51,10 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
               </span>
               <span
                 aria-hidden="true"
-                className={`grid size-6 shrink-0 place-items-center rounded-full transition-colors ${
-                  open ? "bg-midori text-ink" : "bg-cream-deep text-ink-soft"
+                className={`grid size-7 shrink-0 place-items-center rounded-full transition-all duration-200 ${
+                  open
+                    ? "rotate-45 bg-ink text-midori"
+                    : "bg-cream-deep text-ink-soft"
                 }`}
               >
                 <svg
@@ -50,7 +72,17 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
             </button>
             {open && (
               <div className="animate-fade-up px-5 pb-6 sm:px-6">
-                <p className="text-sm leading-8 text-ink-soft">{item.a}</p>
+                <div className="flex items-start gap-4 rounded-2xl bg-cream/70 px-4 py-4">
+                  <span
+                    aria-hidden="true"
+                    className="grid size-9 shrink-0 place-items-center rounded-xl bg-brand font-maru text-sm font-bold text-white shadow-card"
+                  >
+                    A
+                  </span>
+                  <p className="flex-1 text-sm leading-8 text-ink-soft">
+                    {item.a}
+                  </p>
+                </div>
               </div>
             )}
           </div>

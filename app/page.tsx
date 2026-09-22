@@ -1,9 +1,12 @@
 import Link from "next/link";
 import {
+  AppIcon,
   BoltIcon,
   CardIcon,
   ChatIcon,
   CheckIcon,
+  DocIcon,
+  HouseIcon,
   MailIcon,
   YenIcon,
 } from "@/components/icons";
@@ -15,7 +18,7 @@ import {
   Section,
   SectionHeading,
 } from "@/components/ui";
-import { capabilities, faqs, site } from "@/lib/site";
+import { faqs, site } from "@/lib/site";
 import { basePlanPrice, yen } from "@/lib/model";
 
 const highlights = [
@@ -362,25 +365,74 @@ export default function Home() {
         <SectionHeading
           eyebrow="できること"
           title="こんなものが作れます"
-          description="当サイト自体が制作の一例です。"
+          description="当サイト自体が制作の一例です。まずは気になるカードをのぞいてみてください。"
         />
-        <ul className="mx-auto mt-10 grid max-w-4xl gap-3 sm:grid-cols-2">
-          {capabilities.map((item) => (
-            <li
-              key={item}
-              className="flex items-center gap-3 rounded-2xl border border-line bg-white px-5 py-4 text-sm font-bold text-ink shadow-card"
+        <div className="mx-auto mt-12 grid max-w-5xl gap-5 sm:grid-cols-2">
+          {[
+            {
+              icon: HouseIcon,
+              title: "お店・会社の紹介ページ",
+              body: "営業時間・メニュー・アクセスまで。スマホでもきれいに読める1ページから。",
+              chip: "bg-sky-400 text-ink",
+              card: "border-sky-300 bg-gradient-to-b from-sky-50 via-white to-white hover:border-sky-400",
+            },
+            {
+              icon: MailIcon,
+              title: "お問い合わせフォームの設置",
+              body: "メール通知つきで迷惑メール対策もセット。相談の取りこぼしを防ぎます。",
+              chip: "bg-amber-400 text-ink",
+              card: "border-amber-300 bg-gradient-to-b from-amber-50 via-white to-white hover:border-amber-400",
+            },
+            {
+              icon: DocIcon,
+              title: "ブログ・管理ページ",
+              body: "お知らせや実績を自分で更新できる仕組みつき。公開後の発信もラクラク。",
+              chip: "bg-emerald-400 text-ink",
+              card: "border-emerald-300 bg-gradient-to-b from-emerald-50 via-white to-white hover:border-emerald-400",
+            },
+            {
+              icon: AppIcon,
+              title: "自社アプリの開発",
+              body: "予約・在庫・出退勤など、業務に合わせたアプリのご相談も承ります。",
+              chip: "bg-pink-400 text-ink",
+              card: "border-pink-300 bg-gradient-to-b from-pink-50 via-white to-white hover:border-pink-400",
+            },
+          ].map((capability) => (
+            <article
+              key={capability.title}
+              className={`group flex items-start gap-4 rounded-3xl border-2 p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-soft sm:p-7 ${capability.card}`}
             >
-              <span className="grid size-6 shrink-0 place-items-center rounded-full bg-midori-soft text-midori-dark">
-                <CheckIcon className="size-4" />
+              <span
+                className={`grid size-14 shrink-0 place-items-center rounded-2xl shadow-card transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-105 ${capability.chip}`}
+              >
+                <capability.icon className="size-7" />
               </span>
-              {item}
-            </li>
+              <div>
+                <h3 className="font-maru text-lg font-bold leading-snug text-ink">
+                  {capability.title}
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-ink-soft">
+                  {capability.body}
+                </p>
+              </div>
+            </article>
           ))}
-        </ul>
+        </div>
+        <div className="mx-auto mt-6 max-w-5xl overflow-hidden rounded-3xl border-2 border-ink bg-ink px-6 py-6 shadow-pop sm:px-8">
+          <p className="flex flex-col items-center gap-3 text-center sm:flex-row sm:justify-center sm:gap-4">
+            <span className="inline-flex items-center gap-2 rounded-full bg-midori px-4 py-1.5 text-xs font-bold text-ink">
+              <CheckIcon className="size-4" />
+              このサイト自体が制作例です
+            </span>
+            <span className="text-sm leading-7 text-white/75">
+              フォームもチャットも決済も、このサイトで実際に動いています。
+            </span>
+          </p>
+        </div>
       </Section>
 
       {/* 基本プラン（付け足し・維持費は料金ページで案内） */}
-      <Section className="bg-paper">
+      <Section className="bg-cream">
         <SectionHeading
           eyebrow="料金プラン"
           title="まずは、基本プランから"
@@ -391,111 +443,147 @@ export default function Home() {
         </div>
       </Section>
       {/* 制作の流れ（4ステップ） */}
-      <Section className="bg-cream">
+      <Section className="bg-paper">
         <SectionHeading
           eyebrow="制作の流れ"
           title="申し込みから公開までの4ステップ"
+          description="むずかしい手続きはありません。チャットで進捗を確認しながら進められます。"
         />
-        <div className="mt-12 grid gap-5 md:grid-cols-4">
-          {[
-            {
-              title: "無料相談",
-              body: "メール・チャットで、まずはお気軽に。価格や納期の相談だけでもOKです。",
-            },
-            {
-              title: "ヒアリング・お見積り",
-              body: "作りたいサイトのお話をうかがい、ページ構成・料金・スケジュールをお見積りでご提案します。",
-              note: "見積り無料",
-            },
-            {
-              title: "ご契約・制作",
-              body: "サイト内でお申し込み後、着手金（50%）のお支払い確認後に制作を開始します。",
-            },
-            {
-              title: "確認・公開",
-              body: "修正後の最終確認をいただき、残金（50%）のお支払い確認後に公開します。なお、サイトの公開を維持するには、月1,000円〜が必要です。",
-              note: "大きな修正は2回まで無料",
-            },
-          ].map((step, i) => (
-            <div
-              key={step.title}
-              className="relative rounded-2xl border border-line bg-white p-6 shadow-card"
-            >
-              <div className="flex items-center justify-between">
-                <p className="grid size-10 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white shadow-pop-sm">
-                  {i + 1}
-                </p>
-              </div>
-              <h3 className="mt-4 font-maru text-lg font-bold text-ink">
-                {step.title}
-              </h3>
-              <p className="mt-2 text-sm leading-7 text-ink-soft">
-                {step.body}
-              </p>
-              <p className="mt-3 inline-block rounded-full bg-cream px-3 py-1 text-xs font-bold text-ink-soft ring-1 ring-line">
-                {step.note}
-              </p>
-              {i < 3 && (
-                <span
-                  aria-hidden="true"
-                  className="absolute -right-3.5 top-1/2 z-10 hidden size-7 -translate-y-1/2 place-items-center rounded-full border border-line bg-white text-ink-mute shadow-card md:grid"
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="size-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+        <div className="relative mt-12">
+          <div
+            aria-hidden="true"
+            className="glow-soft pointer-events-none absolute -left-24 top-10 size-80 opacity-70"
+          />
+          <div className="relative grid gap-5 md:grid-cols-4">
+            {[
+              {
+                icon: MailIcon,
+                title: "無料相談",
+                body: "メール・チャットで、まずはお気軽に。価格や納期の相談だけでもOKです。",
+                badge: "相談無料",
+                chip: "bg-sky-400 text-ink",
+                card: "border-sky-300 bg-gradient-to-b from-sky-50 via-white to-white hover:border-sky-400",
+              },
+              {
+                icon: DocIcon,
+                title: "ヒアリング・お見積り",
+                body: "作りたいサイトのお話をうかがい、ページ構成・料金・スケジュールをお見積りでご提案します。",
+                badge: "見積り無料",
+                chip: "bg-amber-400 text-ink",
+                card: "border-amber-300 bg-gradient-to-b from-amber-50 via-white to-white hover:border-amber-400",
+              },
+              {
+                icon: CardIcon,
+                title: "ご契約・制作",
+                body: "サイト内でお申し込み後、お支払い確認後に制作を開始します。",
+                badge: "サイト内で完結",
+                chip: "bg-pink-400 text-ink",
+                card: "border-pink-300 bg-gradient-to-b from-pink-50 via-white to-white hover:border-pink-400",
+              },
+              {
+                icon: HouseIcon,
+                title: "確認・公開",
+                body: "修正後の最終確認をいただき、お支払い確認後に公開します。公開後も月1,000円〜でサポートします。",
+                badge: "大きな修正は2回まで無料",
+                chip: "bg-emerald-400 text-ink",
+                card: "border-emerald-300 bg-gradient-to-b from-emerald-50 via-white to-white hover:border-emerald-400",
+              },
+            ].map((step, i) => (
+              <div
+                key={step.title}
+                className={`group relative rounded-3xl border-2 p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-soft ${step.card}`}
+              >
+                <div className="flex items-center justify-between">
+                  <span
+                    className={`grid size-12 place-items-center rounded-2xl shadow-card transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-105 ${step.chip}`}
                   >
-                    <path d="M9 5l7 7-7 7" />
-                  </svg>
-                </span>
-              )}
-            </div>
-          ))}
+                    <step.icon className="size-6" />
+                  </span>
+                  <span className="grid size-8 place-items-center rounded-full bg-ink font-maru text-sm font-bold text-white">
+                    {i + 1}
+                  </span>
+                </div>
+                <p className="mt-4 text-[10px] font-bold tracking-[0.18em] text-ink-mute">
+                  STEP {i + 1}
+                </p>
+                <h3 className="mt-1 font-maru text-lg font-bold text-ink">
+                  {step.title}
+                </h3>
+                <p className="mt-2 text-sm leading-7 text-ink-soft">
+                  {step.body}
+                </p>
+                <p className="mt-4 inline-block rounded-full bg-white px-3 py-1 text-xs font-bold text-ink ring-1 ring-line">
+                  {step.badge}
+                </p>
+                {i < 3 && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute -right-3.5 top-1/2 z-10 hidden size-7 -translate-y-1/2 place-items-center rounded-full border-2 border-ink bg-midori text-ink shadow-pop-sm md:grid"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="size-4"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="mx-auto mt-8 max-w-3xl rounded-2xl border border-line bg-white p-6 text-left shadow-card sm:p-7">
-          <h3 className="font-maru text-base font-bold text-ink">
-            修正回数の目安（制作中の確認・公開前まで）
-          </h3>
-          <ul className="mt-4 space-y-3 text-sm leading-7 text-ink-soft">
-            <li className="flex items-start gap-3">
-              <span className="mt-1.5 shrink-0 rounded bg-brand-soft px-2 py-0.5 text-xs font-bold text-brand-deep">
-                大きな修正 2回まで無料
-              </span>
-              <span>レイアウト・構成の変更、文章の大幅な書き換えなど。</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1.5 shrink-0 rounded bg-midori-soft px-2 py-0.5 text-xs font-bold text-midori-dark">
-                小さな修正 数回程度は無料
-              </span>
-              <span>
-                色や写真の差し替え・文言の微調整など。細かな手直しは気軽にお伝えください。
-              </span>
-            </li>
-          </ul>
-          <p className="mt-4 text-xs leading-6 text-ink-mute">
-            あくまで目安です。修正の内容や量によっては、追加料金が発生する場合があります。
-          </p>
+        <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-2">
+          <div className="rounded-3xl border-2 border-brand/30 bg-gradient-to-b from-brand-soft via-white to-white p-6 shadow-card">
+            <p className="inline-flex items-center gap-2 rounded-full bg-brand px-3 py-1 text-xs font-bold text-white">
+              大きな修正 2回まで無料
+            </p>
+            <p className="mt-3 text-sm leading-7 text-ink-soft">
+              レイアウト・構成の変更、文章の大幅な書き換えなど。
+            </p>
+          </div>
+          <div className="rounded-3xl border-2 border-amber-300 bg-gradient-to-b from-amber-50 via-white to-white p-6 shadow-card">
+            <p className="inline-flex items-center gap-2 rounded-full bg-amber-400 px-3 py-1 text-xs font-bold text-ink">
+              小さな修正 数回程度は無料
+            </p>
+            <p className="mt-3 text-sm leading-7 text-ink-soft">
+              色や写真の差し替え・文言の微調整など。細かな手直しは気軽にお伝えください。
+            </p>
+          </div>
         </div>
+        <p className="mx-auto mt-4 max-w-4xl text-center text-xs leading-6 text-ink-mute">
+          あくまで目安です。修正の内容や量によっては、追加料金が発生する場合があります。
+        </p>
       </Section>
 
       {/* よくある質問（メインページ内のセクション） */}
-      <Section id="faq" className="bg-paper scroll-mt-20">
+      <Section id="faq" className="bg-cream scroll-mt-20">
         <SectionHeading
           eyebrow="よくあるご質問"
-          title="「いくら？」「原稿がないけど大丈夫？」"
-          description="申し込む前に気になることを、お答えしています。"
+          title="気になることを解決！"
+          description="「いくら？」「原稿がないけど大丈夫？」申し込む前に気になることを、お答えしています。"
         />
         <div className="mx-auto mt-10 max-w-3xl">
           <FaqAccordion items={[...faqs]} />
         </div>
+        <p className="mx-auto mt-8 max-w-3xl text-center text-sm leading-7 text-ink-soft">
+          ここにない質問は、
+          <Link
+            href="/contact"
+            className="font-bold text-brand underline decoration-brand/30 underline-offset-4 transition-colors hover:text-brand-dark"
+          >
+            お問い合わせフォーム
+          </Link>
+          からお気軽にどうぞ。
+        </p>
       </Section>
 
       {/* お問い合わせCTA（ポップなブルーのグラデーションカード） */}
-      <Section className="bg-cream">
+      <Section className="bg-paper">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand to-brand-dark px-6 py-14 text-center shadow-lift sm:px-10 sm:py-16">
           {/* 装飾 */}
           <div
@@ -542,39 +630,43 @@ export default function Home() {
             <div className="mt-9 grid gap-4 sm:grid-cols-3">
               <Link
                 href="/contact"
-                className="rounded-3xl border border-white/15 bg-white/10 px-4 py-6 backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/15"
+                className="group rounded-3xl border-2 border-sky-300 bg-sky-50 px-4 py-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-soft"
               >
-                <MailIcon className="mx-auto size-7 text-midori" />
-                <span className="mt-3 block text-sm font-bold text-white">
+                <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-sky-400 text-ink shadow-card transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-105">
+                  <MailIcon className="size-6" />
+                </span>
+                <span className="mt-3 block text-sm font-bold text-ink">
                   メールで相談
                 </span>
-                <span className="mt-1 block text-[11px] text-white/50">
+                <span className="mt-1 block text-[11px] text-ink-soft">
                   24時間受付
                 </span>
               </Link>
               <Link
                 href="/contact#chat"
-                className="rounded-3xl border border-midori/60 bg-midori/15 px-4 py-6 backdrop-blur transition-all hover:-translate-y-1 hover:bg-midori/25"
+                className="group rounded-3xl border-2 border-amber-300 bg-amber-50 px-4 py-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-soft"
               >
-                <ChatIcon className="mx-auto size-7 text-midori" />
-                <span className="mt-3 block text-sm font-bold text-white">
+                <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-amber-400 text-ink shadow-card transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-105">
+                  <ChatIcon className="size-6" />
+                </span>
+                <span className="mt-3 block text-sm font-bold text-ink">
                   チャットで相談
                 </span>
-                <span className="mt-1 block text-[11px] text-white/50">
+                <span className="mt-1 block text-[11px] text-ink-soft">
                   画面右下の吹き出しから
                 </span>
               </Link>
               <Link
                 href="/apply"
-                className="rounded-3xl border border-white/15 bg-white/10 px-4 py-6 backdrop-blur transition-all hover:-translate-y-1 hover:bg-white/15"
+                className="group rounded-3xl border-2 border-emerald-300 bg-emerald-50 px-4 py-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-soft"
               >
-                <span className="mx-auto grid size-7 place-items-center rounded-full bg-midori text-sm font-bold text-ink">
-                  →
+                <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-emerald-400 text-ink shadow-card transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-105">
+                  <span className="text-lg font-bold">→</span>
                 </span>
-                <span className="mt-3 block text-sm font-bold text-white">
+                <span className="mt-3 block text-sm font-bold text-ink">
                   お申し込み
                 </span>
-                <span className="mt-1 block text-[11px] text-white/50">
+                <span className="mt-1 block text-[11px] text-ink-soft">
                   サイト内で完結
                 </span>
               </Link>
