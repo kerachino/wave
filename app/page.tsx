@@ -45,10 +45,7 @@ const flowSteps = [
     icon: AppIcon,
     title: "制作・確認",
     desc: "構成案とデザインをご提案します。チャットで確認しながら、納得いくまで仕上げます。",
-    points: [
-      "構成案とデザインをご提案",
-      "チャットで確認・修正（2回まで無料）",
-    ],
+    points: ["構成案とデザインをご提案", "チャットで確認・修正（2回まで無料）"],
     action: "あなたが行うこと：チャットで「OK・直して」を伝えるだけ",
     bar: "bg-midori",
     badge: "bg-midori text-white",
@@ -60,10 +57,7 @@ const flowSteps = [
     icon: BoltIcon,
     title: "公開・お支払い",
     desc: "テスト画面で仕上がりを確認して公開します。お支払いは公開前の前払いが基本です。",
-    points: [
-      "テスト画面で確認して公開",
-      "公開前にSquare請求書でお支払い",
-    ],
+    points: ["テスト画面で確認して公開", "公開前にSquare請求書でお支払い"],
     action: "あなたが行うこと：テスト画面の確認とお支払いだけ",
     bar: "bg-brand-deep",
     badge: "bg-brand-deep text-white",
@@ -138,9 +132,7 @@ export default function Home() {
                     <span>
                       <span className="block font-maru text-base font-bold leading-6 text-ink">
                         {p.top}
-                        <span className="ml-1 text-[#f2688c]">
-                          {p.bottom}
-                        </span>
+                        <span className="ml-1 text-[#f2688c]">{p.bottom}</span>
                       </span>
                       <span className="mt-0.5 block text-[11px] leading-5 text-ink-soft">
                         {p.text}
@@ -201,44 +193,58 @@ export default function Home() {
       <section id="features" className="scroll-mt-24 bg-white">
         <Container className="py-14 sm:py-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-midori"
+            />
             FEATURES
           </p>
           <h2 className="mt-4 max-w-2xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-            はじめてでも安心、
-            <span className="text-brand">選ばれる3つの理由</span>
+            選ばれる<span className="text-brand">3つの理由</span>
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-8 text-ink-soft">
-            低価格・ウェブ完結・公開後のサポートまで。小さなお店や個人事業主の方が、無理なくホームページを持てる仕組みにしています。
+            小さなお店や個人事業主の方でも、無理なくホームページが持てます。
           </p>
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 sm:grid-cols-3">
             <div className="relative overflow-hidden rounded-3xl border border-line bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-lift">
-              <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-brand" />
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1.5 bg-brand"
+              />
               <div className="flex items-start justify-between">
                 <span className="grid size-14 place-items-center rounded-2xl bg-brand-soft text-brand">
                   <YenIcon className="size-7" />
                 </span>
-                <span aria-hidden="true" className="font-maru text-3xl font-bold text-cream-deep">
+                <span
+                  aria-hidden="true"
+                  className="font-maru text-3xl font-bold text-cream-deep"
+                >
                   01
                 </span>
               </div>
               <p className="mt-4 font-maru text-lg font-bold text-ink">
-                低価格ではじめられる
+                安心の低価格
               </p>
               <p className="mt-2 text-[13px] leading-7 text-ink-soft">
-                基本プランは{yen(basePlanPrice)}〜（税込）。必要な分だけ付け足せるので、予算に合わせて作れます。
+                ホームページ制作の相場は10〜30万円。小回りと低コストで、低価格を実現しています。
               </p>
-              <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-brand-soft/60 px-3 py-1 text-[11px] font-bold text-brand-deep">
-                見積もり無料・追加は1つからOK
-              </p>
+              {/* <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-brand-soft/60 px-3 py-1 text-[11px] font-bold text-brand-deep">
+                お見積もり無料
+              </p> */}
             </div>
             <div className="relative overflow-hidden rounded-3xl border border-line bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-lift">
-              <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-midori" />
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1.5 bg-midori"
+              />
               <div className="flex items-start justify-between">
                 <span className="grid size-14 place-items-center rounded-2xl bg-midori-soft text-midori-dark">
                   <HouseIcon className="size-7" />
                 </span>
-                <span aria-hidden="true" className="font-maru text-3xl font-bold text-midori-soft">
+                <span
+                  aria-hidden="true"
+                  className="font-maru text-3xl font-bold text-midori-soft"
+                >
                   02
                 </span>
               </div>
@@ -246,19 +252,25 @@ export default function Home() {
                 すべてウェブで完結
               </p>
               <p className="mt-2 text-[13px] leading-7 text-ink-soft">
-                相談・契約・お支払い・納品まで来店不要。メールとチャットだけで全国どこからでもご依頼いただけます。
+                契約・お支払い、やり取りは当アプリ上で行います。
               </p>
-              <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-midori-soft/70 px-3 py-1 text-[11px] font-bold text-midori-dark">
+              {/* <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-midori-soft/70 px-3 py-1 text-[11px] font-bold text-midori-dark">
                 来店・対面の打ち合わせ不要
-              </p>
+              </p> */}
             </div>
             <div className="relative overflow-hidden rounded-3xl border border-line bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-lift">
-              <span aria-hidden="true" className="absolute inset-x-0 top-0 h-1.5 bg-brand-deep" />
+              <span
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1.5 bg-brand-deep"
+              />
               <div className="flex items-start justify-between">
                 <span className="grid size-14 place-items-center rounded-2xl bg-cream-deep text-brand-deep">
                   <ChatIcon className="size-7" />
                 </span>
-                <span aria-hidden="true" className="font-maru text-3xl font-bold text-cream-deep">
+                <span
+                  aria-hidden="true"
+                  className="font-maru text-3xl font-bold text-cream-deep"
+                >
                   03
                 </span>
               </div>
@@ -266,11 +278,12 @@ export default function Home() {
                 公開後もサポート
               </p>
               <p className="mt-2 text-[13px] leading-7 text-ink-soft">
-                維持費プラン（{maintenance.price}）で小さな修正・更新に対応。「困った」をそのままにしません。
+                維持費プラン（{maintenance.price}
+                ）で修正・更新に対応。「困った」をそのままにしません。
               </p>
-              <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-cream px-3 py-1 text-[11px] font-bold text-brand-deep ring-1 ring-line">
+              {/* <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-cream px-3 py-1 text-[11px] font-bold text-brand-deep ring-1 ring-line">
                 月1回程度の修正・相談つき
-              </p>
+              </p> */}
             </div>
           </div>
           <div className="mx-auto mt-6 grid max-w-5xl gap-4 lg:grid-cols-2">
@@ -281,7 +294,10 @@ export default function Home() {
               />
               <div className="relative">
                 <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold tracking-wider ring-1 ring-white/20">
-                  <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+                  <span
+                    aria-hidden="true"
+                    className="size-1.5 rounded-full bg-midori"
+                  />
                   こんなサイトが作れます
                 </p>
                 <p className="mt-3 font-maru text-xl font-bold leading-9">
@@ -317,7 +333,7 @@ export default function Home() {
                 </li>
               </ul>
               <p className="mt-4 text-xs leading-6 text-ink-soft">
-                すべてお任せで大丈夫です。原稿がなくてもヒアリングからご提案します。
+                丁寧にサポートいたします。
               </p>
             </div>
           </div>
@@ -327,16 +343,19 @@ export default function Home() {
       <section id="plan" className="scroll-mt-24 border-y border-line bg-cream">
         <Container className="py-14 sm:py-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep ring-1 ring-line">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-midori"
+            />
             PLAN
           </p>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              まずは{yen(basePlanPrice)}から。
-              <span className="text-brand">必要な分だけ付け足す</span>料金
+              {/* まずは{yen(basePlanPrice)}から。 */}
+              <span className="text-brand">必要な分だけ</span>
             </h2>
             <p className="max-w-md text-sm leading-8 text-ink-soft">
-              分かりにくいパック料金はありません。基本の1ページに、欲しい機能だけをプラスできます。
+              基本の1ページに必要な機能だけをプラス。
             </p>
           </div>
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 lg:grid-cols-[1.1fr_0.9fr]">
@@ -436,7 +455,8 @@ export default function Home() {
                   </span>
                 </div>
                 <p className="mt-1 text-xs leading-6 text-ink-soft">
-                  {maintenance.priceNote}。小さな修正・更新と困ったときの相談が含まれます。
+                  {maintenance.priceNote}
+                  。小さな修正・更新と困ったときの相談が含まれます。
                 </p>
                 <Link
                   href="/price#maintenance"
@@ -453,12 +473,15 @@ export default function Home() {
       <section id="flow" className="scroll-mt-24 border-y border-line bg-cream">
         <Container className="py-14 sm:py-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep ring-1 ring-line">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-midori"
+            />
             FLOW
           </p>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              お任せで進む、<span className="text-brand">かんたん3ステップ</span>
+              かんたん<span className="text-brand">3ステップ</span>
             </h2>
             <p className="max-w-md text-sm leading-8 text-ink-soft">
               来店や対面の打ち合わせは不要です。この3ステップだけで公開まで進みます。
@@ -472,41 +495,43 @@ export default function Home() {
               >
                 <span aria-hidden="true" className={`h-1.5 w-full ${s.bar}`} />
                 <div className="flex flex-1 flex-col p-6">
-                {i < flowSteps.length - 1 && (
-                  <span
-                    aria-hidden="true"
-                    className="absolute -right-5 top-1/2 z-10 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-white text-lg font-bold text-brand shadow-card ring-1 ring-line md:grid"
-                  >
-                    ›
+                  {i < flowSteps.length - 1 && (
+                    <span
+                      aria-hidden="true"
+                      className="absolute -right-5 top-1/2 z-10 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-white text-lg font-bold text-brand shadow-card ring-1 ring-line md:grid"
+                    >
+                      ›
+                    </span>
+                  )}
+                  <span className="flex items-center gap-3">
+                    <span
+                      className={`grid size-10 shrink-0 place-items-center rounded-full font-maru text-base font-bold ${s.badge}`}
+                    >
+                      {s.no}
+                    </span>
+                    <span
+                      className={`grid size-12 shrink-0 place-items-center rounded-2xl ${s.iconWrap}`}
+                    >
+                      <s.icon className="size-6" />
+                    </span>
                   </span>
-                )}
-                <span className="flex items-center gap-3">
-                  <span
-                    className={`grid size-10 shrink-0 place-items-center rounded-full font-maru text-base font-bold ${s.badge}`}
-                  >
-                    {s.no}
-                  </span>
-                  <span className={`grid size-12 shrink-0 place-items-center rounded-2xl ${s.iconWrap}`}>
-                    <s.icon className="size-6" />
-                  </span>
-                </span>
-                <p className="mt-4 font-maru text-xl font-bold leading-8 text-ink">
-                  {s.title}
-                </p>
-                <p className="mt-1.5 text-xs leading-6 text-ink-soft">
-                  {s.desc}
-                </p>
-                <ul className="mt-4 space-y-1.5 border-t border-line pt-4 text-xs leading-6 text-ink">
-                  {s.points.map((pt) => (
-                    <li key={pt} className="flex gap-1.5">
-                      <CheckIcon className="mt-1 size-4 shrink-0 text-brand" />
-                      {pt}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-4 rounded-xl bg-cream px-3 py-2 text-[11px] font-bold leading-5 text-brand-deep ring-1 ring-line">
-                  {s.action}
-                </p>
+                  <p className="mt-4 font-maru text-xl font-bold leading-8 text-ink">
+                    {s.title}
+                  </p>
+                  <p className="mt-1.5 text-xs leading-6 text-ink-soft">
+                    {s.desc}
+                  </p>
+                  <ul className="mt-4 space-y-1.5 border-t border-line pt-4 text-xs leading-6 text-ink">
+                    {s.points.map((pt) => (
+                      <li key={pt} className="flex gap-1.5">
+                        <CheckIcon className="mt-1 size-4 shrink-0 text-brand" />
+                        {pt}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-4 rounded-xl bg-cream px-3 py-2 text-[11px] font-bold leading-5 text-brand-deep ring-1 ring-line">
+                    {s.action}
+                  </p>
                 </div>
               </li>
             ))}
@@ -535,12 +560,15 @@ export default function Home() {
       <section id="payment" className="scroll-mt-24 bg-white">
         <Container className="py-14 sm:py-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+            <span
+              aria-hidden="true"
+              className="size-1.5 rounded-full bg-midori"
+            />
             PAYMENT
           </p>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              前払いで安心。<span className="text-brand">選べる2つの支払い方法</span>
+              <span className="text-brand">選べる2つの支払い方法</span>
             </h2>
             <p className="max-w-md text-sm leading-8 text-ink-soft">
               お見積もり後に届くSquareの請求書メールから、銀行振込かクレジットカードを選ぶだけです。
@@ -575,11 +603,15 @@ export default function Home() {
                   <span className="mt-3 grid gap-2 sm:grid-cols-2">
                     <span className="rounded-xl bg-cream px-3 py-2.5 text-xs leading-6 text-ink">
                       <span className="block font-bold">銀行振込</span>
-                      <span className="text-ink-soft">指定口座へお振込み（手数料はお客さま負担）</span>
+                      <span className="text-ink-soft">
+                        指定口座へお振込み（手数料はお客さま負担）
+                      </span>
                     </span>
                     <span className="rounded-xl bg-cream px-3 py-2.5 text-xs leading-6 text-ink">
                       <span className="block font-bold">クレジットカード</span>
-                      <span className="text-ink-soft">請求書ページからオンライン決済</span>
+                      <span className="text-ink-soft">
+                        請求書ページからオンライン決済
+                      </span>
                     </span>
                   </span>
                 </span>
@@ -623,7 +655,10 @@ export default function Home() {
               </Link>
               <p className="relative text-center text-[11px] leading-5 text-white/60">
                 ご契約の条件・注意事項は
-                <Link href="/terms" className="ml-1 font-bold text-white underline underline-offset-4">
+                <Link
+                  href="/terms"
+                  className="ml-1 font-bold text-white underline underline-offset-4"
+                >
                   利用規約
                 </Link>
                 でご確認いただけます。
@@ -638,7 +673,10 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <div className="lg:sticky lg:top-24">
               <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep ring-1 ring-line">
-                <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+                <span
+                  aria-hidden="true"
+                  className="size-1.5 rounded-full bg-midori"
+                />
                 FAQ
               </p>
               <h2 className="mt-4 font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
