@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   AppIcon,
@@ -157,57 +158,21 @@ export default function Home() {
               </dl> */}
             </div>
 
-            {/* モックアップ */}
+            {/* ヒーロー画像 */}
             <div className="relative">
               <div
                 aria-hidden="true"
                 className="glow-soft absolute -inset-10 opacity-90"
               />
               <div className="relative rotate-1 overflow-hidden rounded-3xl border-2 border-line bg-white shadow-lift transition-transform duration-300 hover:rotate-0">
-                {/* ブラウザバー */}
-                <div className="flex items-center gap-1.5 border-b border-line px-4 py-3">
-                  <span className="size-2.5 rounded-full bg-line" />
-                  <span className="size-2.5 rounded-full bg-line" />
-                  <span className="size-2.5 rounded-full bg-line" />
-                  <span className="mx-auto flex h-6 w-44 items-center justify-center rounded-full bg-cream text-[10px] text-ink-mute">
-                    https://your-shop.jp
-                  </span>
-                  <span className="size-2.5" aria-hidden="true" />
-                </div>
-                {/* 画面 */}
-                <div className="p-5 sm:p-6">
-                  <div className="rounded-xl bg-gradient-to-br from-brand-soft via-white to-white p-5 ring-1 ring-line">
-                    <p className="text-[10px] font-bold tracking-widest text-brand">
-                      〇〇商店 公式サイト
-                    </p>
-                    <div className="mt-2.5 space-y-1.5">
-                      <div className="h-2.5 w-3/4 rounded-full bg-ink/80" />
-                      <div className="h-2.5 w-1/2 rounded-full bg-ink/20" />
-                    </div>
-                    <div className="mt-4 flex gap-2">
-                      <span className="h-6 w-20 rounded-lg bg-brand" />
-                      <span className="h-6 w-20 rounded-lg bg-white ring-1 ring-line" />
-                    </div>
-                  </div>
-                  <div className="mt-3 grid grid-cols-3 gap-3">
-                    {["ごあいさつ", "営業時間・アクセス", "お問い合わせ"].map(
-                      (label) => (
-                        <div
-                          key={label}
-                          className="rounded-xl bg-cream p-3 ring-1 ring-line"
-                        >
-                          <p className="text-[10px] font-bold text-ink-soft">
-                            {label}
-                          </p>
-                          <div className="mt-2 space-y-1">
-                            <div className="h-1.5 w-full rounded-full bg-line" />
-                            <div className="h-1.5 w-2/3 rounded-full bg-line" />
-                          </div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </div>
+                <Image
+                  src="/header.png"
+                  alt="パソコンでホームページを制作している様子"
+                  width={1200}
+                  height={800}
+                  priority
+                  className="h-auto w-full object-cover"
+                />
               </div>
               {/* フローティングチップ（シール風） */}
               <div className="absolute -bottom-5 left-4 flex -rotate-2 items-center gap-2.5 rounded-2xl border-2 border-ink bg-white px-4 py-3 shadow-pop-sm sm:left-8">
