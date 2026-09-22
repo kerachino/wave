@@ -1,11 +1,10 @@
 import Link from "next/link";
 import {
   BoltIcon,
+  CardIcon,
   ChatIcon,
   CheckIcon,
-  HouseIcon,
   MailIcon,
-  PhoneIcon,
   YenIcon,
 } from "@/components/icons";
 import { FaqAccordion } from "@/components/FaqAccordion";
@@ -19,34 +18,42 @@ import {
 import { capabilities, faqs, site } from "@/lib/site";
 import { basePlanPrice, yen } from "@/lib/model";
 
-const merits = [
+const highlights = [
   {
     icon: YenIcon,
-    title: "低価格",
-    body: `基本プラン${yen(basePlanPrice)}。必要なものだけ付け足せます。`,
+    badge: "魅力 01",
+    title: "とにかく安い",
+    catch: `基本プラン${yen(basePlanPrice)}〜`,
+    body: `基本プラン${yen(basePlanPrice)}（税込）からスタート。必要なものだけ後から付け足せるので、ムダなお金がかかりません。サーバー代もかからず、維持費は月1,000円〜です。`,
     href: "/price",
-    chip: "bg-midori-soft text-midori-dark group-hover:bg-midori group-hover:text-ink",
+    linkLabel: "料金プランを見る →",
+    card: "border-amber-300 bg-gradient-to-b from-amber-50 via-white to-white hover:border-amber-400",
+    badgeStyle: "bg-amber-400 text-ink",
+    chip: "bg-amber-400 text-ink",
   },
   {
-    icon: BoltIcon,
-    title: "スピード制作",
-    body: "最短2週間〜の納品。お店の紹介ページを、今すぐネットに載せられます。",
-    href: "/price",
-    chip: "bg-pink-100 text-pink-500 group-hover:bg-pink-500 group-hover:text-white",
+    icon: CardIcon,
+    badge: "魅力 02",
+    title: "アプリ内で決済できる",
+    catch: "サイト内でお支払いまで完結",
+    body: "銀行振込に加えて、Squareの請求書決済（カード・オンライン対応）を準備中。ご契約後のマイページから請求書を受け取り、そのままお支払い。郵送や来店の手続きは不要です。",
+    href: "/apply",
+    linkLabel: "お申し込みの流れを見る →",
+    card: "border-sky-300 bg-gradient-to-b from-sky-50 via-white to-white hover:border-sky-400",
+    badgeStyle: "bg-brand text-white",
+    chip: "bg-brand text-white",
   },
   {
-    icon: PhoneIcon,
-    title: "スマホ対応",
-    body: "標準でスマホ対応。どの端末でもきれいに表示。",
-    href: "/price",
-    chip: "bg-brand-soft text-brand group-hover:bg-brand group-hover:text-white",
-  },
-  {
-    icon: HouseIcon,
-    title: "サイト完結",
-    body: "支払いからやり取りまでサイト内で完結。お支払は外部決済代行サービスと契約しており、安全にお支払いいただけます。",
-    href: "/operator",
-    chip: "bg-emerald-100 text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white",
+    icon: ChatIcon,
+    badge: "魅力 03",
+    title: "アプリ内でチャットできる",
+    catch: "相談・制作のやり取りもこのサイトで",
+    body: "メールだけでなく、専用のチャットでいつでも相談OK。お支払い確認後は担当者とのチャットが使えて、修正依頼や公開後の「ここを変えたい」も気軽に送れます。",
+    href: "/contact",
+    linkLabel: "相談方法を見る →",
+    card: "border-emerald-300 bg-gradient-to-b from-emerald-50 via-white to-white hover:border-emerald-400",
+    badgeStyle: "bg-emerald-500 text-white",
+    chip: "bg-emerald-500 text-white",
   },
 ];
 
@@ -113,6 +120,21 @@ export default function Home() {
                   料金プランを見る
                 </ButtonLink>
               </div>
+              {/* 3つの魅力をひと目で */}
+              <ul className="mt-6 flex flex-wrap gap-2">
+                <li className="inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3.5 py-1.5 text-xs font-bold text-ink">
+                  <YenIcon className="size-4 text-amber-500" />
+                  基本プラン{yen(basePlanPrice)}〜
+                </li>
+                <li className="inline-flex items-center gap-1.5 rounded-full border border-sky-300 bg-sky-50 px-3.5 py-1.5 text-xs font-bold text-ink">
+                  <CardIcon className="size-4 text-brand" />
+                  アプリ内で決済OK
+                </li>
+                <li className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3.5 py-1.5 text-xs font-bold text-ink">
+                  <ChatIcon className="size-4 text-emerald-600" />
+                  アプリ内でチャットOK
+                </li>
+              </ul>
               {/* 数字で見る安心 */}
               {/* <dl className="mt-10 grid grid-cols-3 divide-x divide-line rounded-3xl border-2 border-line bg-white py-4 shadow-card">
                 {[
@@ -211,39 +233,129 @@ export default function Home() {
           </div>
         </Container>
       </section>
-      {/* 4つの魅力 */}
-      {/* <Section className="bg-cream">
+      {/* このサイトの魅力（できることセクションの前に配置） */}
+      <Section className="bg-cream">
         <SectionHeading
-          title="選ばれる理由"
-          description="難しいことはぜんぶおまかせ。はじめやすさと、頼んで良かったと思われるものに。"
+          eyebrow="このサイトの魅力"
+          title="安いのに、全部このサイトで完結"
+          description="お申し込みからお支払い、制作のやり取りまで。面倒な手続きはできるだけなくしました。"
         />
         <div className="relative mt-12">
           <div
             aria-hidden="true"
             className="glow-soft pointer-events-none absolute -top-24 right-0 size-80 opacity-80"
           />
-          <div className="relative grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {merits.map((merit) => (
-              <div
-                key={merit.title}
-                className="group rounded-3xl border border-line bg-white p-6 shadow-card transition-all duration-200 hover:-translate-y-1 hover:border-brand/40 hover:shadow-soft"
+          <div className="relative grid gap-5 md:grid-cols-3">
+            {highlights.map((highlight) => (
+              <article
+                key={highlight.title}
+                className={`group relative overflow-hidden rounded-3xl border-2 p-6 text-left shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-soft sm:p-7 ${highlight.card}`}
               >
-                <span
-                  className={`grid size-12 place-items-center rounded-full transition-colors ${merit.chip}`}
-                >
-                  <merit.icon className="size-6" />
-                </span>
-                <h3 className="mt-5 font-maru text-lg font-bold text-ink">
-                  {merit.title}
+                <div className="flex items-start justify-between gap-3">
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-[11px] font-bold tracking-wider ${highlight.badgeStyle}`}
+                  >
+                    {highlight.badge}
+                  </span>
+                  <span
+                    className={`grid size-14 shrink-0 place-items-center rounded-2xl shadow-card transition-transform duration-200 group-hover:-rotate-6 group-hover:scale-105 ${highlight.chip}`}
+                  >
+                    <highlight.icon className="size-7" />
+                  </span>
+                </div>
+                <h3 className="mt-5 font-maru text-xl font-bold leading-snug text-ink">
+                  {highlight.title}
                 </h3>
-                <p className="mt-2 text-sm leading-7 text-ink-soft">
-                  {merit.body}
+                <p className="mt-1 text-[13px] font-bold text-ink-soft">
+                  {highlight.catch}
                 </p>
-              </div>
+                <p className="mt-3 text-sm leading-7 text-ink-soft">
+                  {highlight.body}
+                </p>
+                <Link
+                  href={highlight.href}
+                  className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-brand transition-colors hover:text-brand-dark"
+                >
+                  {highlight.linkLabel}
+                </Link>
+              </article>
             ))}
           </div>
+          {/* アプリ内で完結する流れ */}
+          <div className="relative mt-6 overflow-hidden rounded-3xl border-2 border-ink bg-ink px-6 py-7 shadow-pop sm:px-8">
+            <div
+              aria-hidden="true"
+              className="glow-amber pointer-events-none absolute -right-16 -top-20 size-64 opacity-30"
+            />
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center">
+              <div className="lg:max-w-xs">
+                <p className="inline-flex items-center gap-2 rounded-full bg-midori px-3 py-1 text-[11px] font-bold tracking-wider text-ink">
+                  <BoltIcon className="size-4" />
+                  ぜんぶサイト内で完結
+                </p>
+                <p className="mt-3 font-maru text-lg font-bold leading-snug text-white">
+                  相談 → 申し込み → 決済 → チャット
+                </p>
+                <p className="mt-2 text-xs leading-6 text-white/70">
+                  電話・郵送・来店の手続きは不要です。
+                </p>
+              </div>
+              <ol className="grid flex-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  {
+                    icon: MailIcon,
+                    step: "STEP 1",
+                    title: "無料で相談",
+                    body: "メール・チャットで24時間受付",
+                    chip: "bg-sky-400 text-ink",
+                  },
+                  {
+                    icon: CheckIcon,
+                    step: "STEP 2",
+                    title: "サイトで申し込み",
+                    body: "Googleログイン→フォーム入力だけ",
+                    chip: "bg-midori text-ink",
+                  },
+                  {
+                    icon: CardIcon,
+                    step: "STEP 3",
+                    title: "アプリ内で決済",
+                    body: "マイページで請求書を受け取り支払い",
+                    chip: "bg-pink-400 text-ink",
+                  },
+                  {
+                    icon: ChatIcon,
+                    step: "STEP 4",
+                    title: "チャットで制作",
+                    body: "修正依頼も公開後の相談もOK",
+                    chip: "bg-emerald-400 text-ink",
+                  },
+                ].map((flow) => (
+                  <li
+                    key={flow.title}
+                    className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur transition-colors hover:bg-white/15"
+                  >
+                    <span
+                      className={`grid size-10 place-items-center rounded-xl ${flow.chip}`}
+                    >
+                      <flow.icon className="size-5" />
+                    </span>
+                    <p className="mt-3 text-[10px] font-bold tracking-[0.18em] text-midori">
+                      {flow.step}
+                    </p>
+                    <p className="mt-1 text-sm font-bold text-white">
+                      {flow.title}
+                    </p>
+                    <p className="mt-1 text-[11px] leading-5 text-white/65">
+                      {flow.body}
+                    </p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </div>
-      </Section> */}
+      </Section>
 
       {/* できること（当サイト自体を参考例として案内） */}
       <Section className="bg-paper">
