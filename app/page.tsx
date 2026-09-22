@@ -4,6 +4,7 @@ import {
   AppIcon,
   ArrowIcon,
   BoltIcon,
+  CardIcon,
   ChatIcon,
   CheckIcon,
   ClockIcon,
@@ -71,13 +72,13 @@ const heroPoints = [
     icon: YenIcon,
     top: "低価格",
     bottom: `${yen(basePlanPrice)}〜`,
-    text: "基本プランは9,800円〜。必要な分だけ付け足せます。",
+    text: "基本の1ページに必要な機能だけをプラス。",
   },
   {
     icon: HouseIcon,
     top: "すべて",
     bottom: "ウェブ完結",
-    text: "相談・契約・支払い・納品まで来店不要です。",
+    text: "契約・お支払い、やり取りは当アプリ上で行います。",
   },
 ];
 
@@ -568,92 +569,43 @@ export default function Home() {
           </p>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              <span className="text-brand">選べる2つの支払い方法</span>
+              お支払いは<span className="text-brand">シンプル＆安心</span>
             </h2>
             <p className="max-w-md text-sm leading-8 text-ink-soft">
-              お見積もり後に届くSquareの請求書メールから、銀行振込かクレジットカードを選ぶだけです。
+              銀行振込とクレジットカードから選べます。
             </p>
           </div>
-          <div className="mx-auto mt-10 grid max-w-5xl gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-            <ol className="space-y-4">
-              <li className="flex gap-4 rounded-3xl border border-line bg-white p-5 shadow-card sm:p-6">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white">
-                  1
+          <div className="relative mx-auto mt-10 flex max-w-5xl flex-col gap-5 overflow-hidden rounded-3xl bg-brand-deep p-6 text-white shadow-lift sm:p-8 lg:flex-row lg:items-center">
+            <div
+              aria-hidden="true"
+              className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-30"
+            />
+            <div className="relative flex-1">
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 text-xs font-bold text-brand-deep">
+                  <YenIcon className="size-4" />
+                  銀行振込
                 </span>
-                <span>
-                  <span className="block text-sm font-bold text-ink">
-                    請求書メールを受け取る
-                  </span>
-                  <span className="mt-1 block text-xs leading-6 text-ink-soft">
-                    お見積もりの金額でSquareの請求書をお送りします。金額・内容を確認してください。
-                  </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-1.5 text-xs font-bold text-brand-deep">
+                  <CardIcon className="size-4" />
+                  クレジットカード
                 </span>
-              </li>
-              <li className="flex gap-4 rounded-3xl border border-line bg-white p-5 shadow-card sm:p-6">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white">
-                  2
-                </span>
-                <span className="flex-1">
-                  <span className="block text-sm font-bold text-ink">
-                    銀行振込かカードを選んで支払う
-                  </span>
-                  <span className="mt-1 block text-xs leading-6 text-ink-soft">
-                    どちらか都合の良い方法でお支払いください。お支払いの確認後に制作を開始します。
-                  </span>
-                  <span className="mt-3 grid gap-2 sm:grid-cols-2">
-                    <span className="rounded-xl bg-cream px-3 py-2.5 text-xs leading-6 text-ink">
-                      <span className="block font-bold">銀行振込</span>
-                      <span className="text-ink-soft">
-                        指定口座へお振込み（手数料はお客さま負担）
-                      </span>
-                    </span>
-                    <span className="rounded-xl bg-cream px-3 py-2.5 text-xs leading-6 text-ink">
-                      <span className="block font-bold">クレジットカード</span>
-                      <span className="text-ink-soft">
-                        請求書ページからオンライン決済
-                      </span>
-                    </span>
-                  </span>
-                </span>
-              </li>
-              <li className="flex gap-4 rounded-3xl border border-line bg-white p-5 shadow-card sm:p-6">
-                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-brand font-maru text-base font-bold text-white">
-                  3
-                </span>
-                <span>
-                  <span className="block text-sm font-bold text-ink">
-                    制作開始・公開
-                  </span>
-                  <span className="mt-1 block text-xs leading-6 text-ink-soft">
-                    入金確認後に制作を始め、テスト画面の確認を経て公開します。分割払いをご希望の方は、事前にご相談ください。
-                  </span>
-                </span>
-              </li>
-            </ol>
-            <div className="relative flex flex-col justify-center gap-3 overflow-hidden rounded-3xl bg-brand-deep p-6 text-white shadow-lift sm:p-7">
-              <div
-                aria-hidden="true"
-                className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-30"
-              />
-              <p className="relative rounded-2xl bg-white/10 p-4 text-xs leading-6 text-white/85 ring-1 ring-white/15">
-                <span className="block font-bold text-white">
-                  振込手数料について
-                </span>
-                銀行振込の手数料のみ、お客さまのご負担をお願いしています。カード決済の手数料はかかりません。
+              </div>
+              <p className="mt-4 font-maru text-xl font-bold leading-9">
+                お好きな方法でお支払いいただけます
               </p>
-              <p className="relative rounded-2xl bg-white/10 p-4 text-xs leading-6 text-white/85 ring-1 ring-white/15">
-                <span className="block font-bold text-white">
-                  領収書・インボイスについて
-                </span>
-                ご希望の方には適格請求書（インボイス）・領収書を発行します。お支払いの際にお申し付けください。
+              <p className="mt-2 text-[13px] leading-7 text-white/75">
+                決済にはSquare（スクエア）の請求書サービスを利用しています。当店がカード番号をお預かりすることはありません。
               </p>
+            </div>
+            <div className="relative flex w-full flex-col gap-2.5 lg:max-w-xs">
               <Link
                 href="/price#payment"
-                className="relative inline-flex items-center justify-center gap-1 rounded-full bg-white px-5 py-3 text-sm font-bold text-brand-deep transition-all hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-1 rounded-full bg-white px-5 py-3 text-sm font-bold text-brand-deep transition-all hover:-translate-y-0.5"
               >
                 料金ページで詳しく見る <ArrowIcon className="size-4" />
               </Link>
-              <p className="relative text-center text-[11px] leading-5 text-white/60">
+              <p className="text-center text-[11px] leading-5 text-white/60">
                 ご契約の条件・注意事項は
                 <Link
                   href="/terms"
