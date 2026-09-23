@@ -1,9 +1,7 @@
 ﻿import Image from "next/image";
 import Link from "next/link";
 import {
-  AppIcon,
   ArrowIcon,
-  BoltIcon,
   CardIcon,
   ChatIcon,
   CheckIcon,
@@ -14,6 +12,7 @@ import {
   YenIcon,
 } from "@/components/icons";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { FlowSteps } from "@/components/FlowSteps";
 import { Container } from "@/components/ui";
 import { faqs, maintenance } from "@/lib/site";
 import {
@@ -24,48 +23,6 @@ import {
   yen,
 } from "@/lib/model";
 
-/* おおまかな3ステップの流れ（ブランドカラーに統一） */
-const flowSteps = [
-  {
-    no: 1,
-    icon: ChatIcon,
-    title: "相談・お申し込み",
-    desc: "フォームから相談内容を送るだけ。内容・予算・納期を確認して、お見積もりをご提示します。",
-    points: [
-      "お問い合わせフォームから相談・見積もり依頼",
-      "メールやチャットで内容・予算を確認",
-    ],
-    action: "あなたが行うこと：フォームの入力だけ",
-    bar: "bg-brand",
-    badge: "bg-brand text-white",
-    iconWrap: "bg-brand-soft text-brand",
-    card: "border-line bg-white",
-  },
-  {
-    no: 2,
-    icon: AppIcon,
-    title: "制作・確認",
-    desc: "構成案とデザインをご提案します。チャットで確認しながら、納得いくまで仕上げます。",
-    points: ["構成案とデザインをご提案", "チャットで確認・修正（2回まで無料）"],
-    action: "あなたが行うこと：チャットで「OK・直して」を伝えるだけ",
-    bar: "bg-midori",
-    badge: "bg-midori text-white",
-    iconWrap: "bg-midori-soft text-midori-dark",
-    card: "border-line bg-white",
-  },
-  {
-    no: 3,
-    icon: BoltIcon,
-    title: "公開・お支払い",
-    desc: "テスト画面で仕上がりを確認して公開します。お支払いは公開前の前払いが基本です。",
-    points: ["テスト画面で確認して公開", "公開前にSquare請求書でお支払い"],
-    action: "あなたが行うこと：テスト画面の確認とお支払いだけ",
-    bar: "bg-brand-deep",
-    badge: "bg-brand-deep text-white",
-    iconWrap: "bg-cream-deep text-brand-deep",
-    card: "border-line bg-white",
-  },
-];
 
 const heroPoints = [
   {
@@ -471,92 +428,7 @@ export default function Home() {
         </Container>
       </section>
       {/* ご依頼から公開までの流れ */}
-      <section id="flow" className="scroll-mt-24 border-y border-line bg-cream">
-        <Container className="py-14 sm:py-20">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep ring-1 ring-line">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full bg-midori"
-            />
-            FLOW
-          </p>
-          <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              かんたん<span className="text-brand">3ステップ</span>
-            </h2>
-            <p className="max-w-md text-sm leading-8 text-ink-soft">
-              来店や対面の打ち合わせは不要です。この3ステップだけで公開まで進みます。
-            </p>
-          </div>
-          <ol className="relative mx-auto mt-10 grid max-w-5xl gap-4 md:grid-cols-3">
-            {flowSteps.map((s, i) => (
-              <li
-                key={s.no}
-                className="relative flex flex-col overflow-hidden rounded-3xl border border-line bg-white text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-lift"
-              >
-                <span aria-hidden="true" className={`h-1.5 w-full ${s.bar}`} />
-                <div className="flex flex-1 flex-col p-6">
-                  {i < flowSteps.length - 1 && (
-                    <span
-                      aria-hidden="true"
-                      className="absolute -right-5 top-1/2 z-10 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-white text-lg font-bold text-brand shadow-card ring-1 ring-line md:grid"
-                    >
-                      ›
-                    </span>
-                  )}
-                  <span className="flex items-center gap-3">
-                    <span
-                      className={`grid size-10 shrink-0 place-items-center rounded-full font-maru text-base font-bold ${s.badge}`}
-                    >
-                      {s.no}
-                    </span>
-                    <span
-                      className={`grid size-12 shrink-0 place-items-center rounded-2xl ${s.iconWrap}`}
-                    >
-                      <s.icon className="size-6" />
-                    </span>
-                  </span>
-                  <p className="mt-4 font-maru text-xl font-bold leading-8 text-ink">
-                    {s.title}
-                  </p>
-                  <p className="mt-1.5 text-xs leading-6 text-ink-soft">
-                    {s.desc}
-                  </p>
-                  <ul className="mt-4 space-y-1.5 border-t border-line pt-4 text-xs leading-6 text-ink">
-                    {s.points.map((pt) => (
-                      <li key={pt} className="flex gap-1.5">
-                        <CheckIcon className="mt-1 size-4 shrink-0 text-brand" />
-                        {pt}
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-4 rounded-xl bg-cream px-3 py-2 text-[11px] font-bold leading-5 text-brand-deep ring-1 ring-line">
-                    {s.action}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="mx-auto mt-6 flex max-w-5xl flex-col items-start justify-between gap-4 rounded-3xl border border-line bg-white p-5 shadow-card sm:flex-row sm:items-center sm:p-6">
-            <p className="text-xs leading-6 text-ink-soft">
-              メールとチャットだけで進められます。分からないことは
-              <Link
-                href="/contact"
-                className="ml-1 font-bold text-brand underline decoration-brand/30 underline-offset-4 hover:text-brand-dark"
-              >
-                無料相談
-              </Link>
-              でいつでも聞けます。
-            </p>
-            <Link
-              href="/contact"
-              className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
-            >
-              まずは無料で相談する <ArrowIcon className="size-4" />
-            </Link>
-          </div>
-        </Container>
-      </section>
+      <FlowSteps />
       {/* お支払いについて */}
       <section id="payment" className="scroll-mt-24 bg-white">
         <Container className="py-14 sm:py-20">

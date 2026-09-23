@@ -440,12 +440,8 @@ export function ApplyForm() {
             <div className="mt-3 space-y-4 text-sm leading-7 text-ink-soft">
               <p>
                 <span className="font-bold text-midori-dark">銀行振込：</span>
-                ご契約時に、以下のスケジュールでお支払いいただきます。
+                お見積り金額の全額を、制作開始前にお支払いいただきます（前払い）。
               </p>
-              <ul className="list-disc space-y-1 pl-5">
-                <li>着手金：制作開始前にお見積り金額の50%</li>
-                <li>残金 ：サイト公開・納品後に残り50%</li>
-              </ul>
               <p>
                 振込先の口座情報は、ご契約のご案内メールにてお伝えします。
                 振込手数料はお客さまのご負担となります。

@@ -100,7 +100,7 @@ function OrderCard({ order }: { order: Order }) {
           <span>{yen(order.totalPrice)}</span>
         </div>
         <div className="flex justify-between text-brand">
-          <span>今回のお支払い（50%）</span>
+          <span>今回のお支払い（前払い・全額）</span>
           <strong>{yen(order.firstAmount)}</strong>
         </div>
       </div>
