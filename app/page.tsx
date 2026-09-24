@@ -23,7 +23,6 @@ import {
   yen,
 } from "@/lib/model";
 
-
 const heroPoints = [
   {
     icon: YenIcon,
@@ -542,7 +541,7 @@ export default function Home() {
                 あなたの想いを、Webでカタチに
               </h2>
               <p className="mt-3 text-sm leading-7 text-white/75">
-                作りたいサイトの内容・予算・納期をお聞かせください。お見積もりだけでも大歓迎です。返信目安は2〜3営業日以内です。
+                作りたいサイトの内容・予算・納期をお聞かせください。お見積もりだけでも大歓迎。
               </p>
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link

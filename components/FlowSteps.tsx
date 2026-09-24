@@ -19,7 +19,7 @@ const channels = {
   },
   app: {
     icon: ChatIcon,
-    label: "アプリ内で",
+    label: "アプリ",
     badge: "bg-midori-soft text-midori-dark",
   },
 } as const;
@@ -27,11 +27,10 @@ const channels = {
 const steps = [
   {
     no: 1,
-    title: "相談する",
+    title: "ご相談",
     channel: "mail",
     accent: "bg-brand text-white",
-    desc: `作りたいイメージを送るだけでOK。お返事は${site.replyTime}です。`,
-    tags: ["問い合わせ受付", "ヒアリング", "お見積り・プランのご提案"],
+    desc: `まずはお気軽にご相談ください。制作の可否やお見積りをご案内します。`,
     cta: { href: "/contact", label: "無料で相談する" },
   },
   {
@@ -39,8 +38,7 @@ const steps = [
     title: "契約・お支払い",
     channel: "app",
     accent: "bg-midori text-white",
-    desc: "ご納得いただいたら、制作開始前にお支払い",
-    tags: ["取引条件の明示", "ご契約", "お支払い（前払い）"],
+    desc: "お見積りにご納得いただけたら、契約とお支払いを行います。",
     cta: null,
   },
   {
@@ -49,11 +47,6 @@ const steps = [
     channel: "app",
     accent: "bg-brand-deep text-white",
     desc: "チャットで確認しながら仕上げます",
-    tags: [
-      "ワイヤーフレームで構成合意",
-      "デザイン制作・修正",
-      "チャットでのやり取り",
-    ],
     cta: null,
   },
   {
@@ -61,13 +54,7 @@ const steps = [
     title: "公開・納品",
     channel: "app",
     accent: "bg-brand-deep text-white",
-    desc: "テスト画面で確認して、OKなら公開",
-    tags: [
-      "納品・検収",
-      "サイトの公開",
-      "公開後の修正・更新サポート",
-      `維持費 ${maintenance.price}`,
-    ],
+    desc: "制作物を公開し、納品します。必要に応じて修正も行います。",
     cta: null,
   },
 ] as const;
@@ -119,16 +106,6 @@ export function FlowSteps() {
                 <p className="mt-1.5 text-xs leading-6 text-ink-soft">
                   {step.desc}
                 </p>
-                <ul className="mt-auto flex flex-wrap gap-1.5 pt-4">
-                  {step.tags.map((tag) => (
-                    <li
-                      key={tag}
-                      className="rounded-full bg-cream px-2.5 py-1 text-[11px] font-bold leading-5 text-ink-soft ring-1 ring-line"
-                    >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
 
                 {/* STEP 1 だけ、相談フォームへのボタンを表示 */}
                 {step.cta && (
