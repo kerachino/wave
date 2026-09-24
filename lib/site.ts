@@ -52,7 +52,7 @@ export const navItems = [
 
 // フッターの補助リンク
 export const footerLinks = [
-  { href: "/apply", label: "お申し込み・ご契約" },
+  { href: "/login", label: "マイページ（お申し込み・お支払い）" },
   { href: "/operator", label: "運営者情報" },
   { href: "/terms", label: "利用規約" },
   { href: "/law", label: "特定商取引法に基づく表記" },
@@ -191,7 +191,7 @@ export const basePlan = {
   description: basePlanDescription,
   features: basePlanFeatures,
   monitorNote: "モニター条件：制作事例への掲載・クチコミへのご協力",
-  cta: "基本プランで申し込む",
+  cta: "基本プランで相談する",
   featured: true,
 } as const;
 

@@ -352,10 +352,10 @@ export default function Home() {
                 </ul>
                 <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
                   <Link
-                    href="/apply"
+                    href="/contact"
                     className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-midori px-6 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:brightness-105"
                   >
-                    このプランで申し込む <ArrowIcon className="size-4" />
+                    このプランで相談する <ArrowIcon className="size-4" />
                   </Link>
                   <Link
                     href="/price"
@@ -552,10 +552,10 @@ export default function Home() {
                   無料で相談する
                 </Link>
                 <Link
-                  href="/apply"
+                  href="/login"
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-white/10 px-7 py-3.5 text-[15px] font-bold text-white ring-1 ring-white/30 transition-all hover:-translate-y-0.5 hover:bg-white/15"
                 >
-                  お申し込みへ進む <ArrowIcon className="size-4" />
+                  マイページで契約する <ArrowIcon className="size-4" />
                 </Link>
               </div>
             </div>

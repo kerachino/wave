@@ -202,9 +202,9 @@ export default function PricePage() {
               </li>
               <li className="flex items-center gap-2">
                 <span className="rounded bg-brand-soft px-2 py-0.5 text-xs font-bold text-brand-deep">
-                  準備中
+                  オンライン
                 </span>
-                クレジットカード決済（決済代行サービス導入後に開始）
+                マイページの請求書（Square）からクレジットカード等でお支払い
               </li>
             </ul>
           </Card>
@@ -288,12 +288,12 @@ export default function PricePage() {
                 無料で相談する
               </ButtonLink>
               <ButtonLink
-                href="/apply"
+                href="/login"
                 variant="secondary"
                 size="lg"
                 className="flex-1"
               >
-                お申し込みへ
+                マイページへ（契約・お支払い）
               </ButtonLink>
             </div>
           </div>

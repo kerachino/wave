@@ -28,6 +28,29 @@ export type SquareInvoiceInfo = {
   paidAt?: Date | string;
 };
 
+/** 購入（契約）に同意したときの記録。いつ・誰が・何に同意したかを残します */
+export type PurchaseConsent = {
+  /** 同意した取引条件のバージョン（lib/contract.ts の contractVersion） */
+  version: string;
+  /** 同意者（Firebase の uid） */
+  uid: string;
+  /** 同意者のメールアドレス */
+  email: string;
+  displayName?: string;
+  kind: "project" | "subscription";
+  /** 同意時の契約金額（円） */
+  amount: number;
+  /** 同意日時（サーバー時刻で記録） */
+  agreedAt?: Date | string;
+  /** 同意日時（ISO 文字列。画面表示用） */
+  agreedAtIso?: string;
+  /** 同意時のクライアント IP（サーバーのみ記録） */
+  ip?: string;
+  userAgent?: string;
+  /** 同意時に明示した取引条件の写し（証跡） */
+  disclosures?: { no: number; label: string; value: string }[];
+};
+
 export type Order = {
   uid: string;
   basePrice: number;
@@ -42,6 +65,19 @@ export type Order = {
   subscriptionApproved?: boolean;
   subscriptionPrice?: number;
   subscriptionStatus?: "unpaid" | "paid" | "cancelled";
+  // ---- 取引条件の明示（契約条件）----
+  /** 発注者（お客さま）の名称。運営者が購入許可時に設定します */
+  customerName?: string;
+  /** 給付（納品）を受領する期日 YYYY-MM-DD（未設定なら標準条件を表示） */
+  contractDeliveryDate?: string;
+  /** 検査完了期日 YYYY-MM-DD（未設定なら標準条件を表示） */
+  contractInspectionDeadline?: string;
+  /** 給付を受領する場所・方法（未設定ならオンライン納品を表示） */
+  contractDeliveryPlace?: string;
+  /** 本契約の同意ログ */
+  projectConsent?: PurchaseConsent;
+  /** 維持費サブスクの同意ログ */
+  subscriptionConsent?: PurchaseConsent;
   // ---- Square 決済 ----
   /** Square 側の顧客ID（初回の請求書作成時に保存） */
   squareCustomerId?: string;

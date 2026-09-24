@@ -40,7 +40,7 @@ export function TrialPlan() {
         </ul>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
           <Link
-            href="/apply"
+            href="/contact"
             className="flex-1 rounded-full bg-brand px-5 py-3.5 text-center text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
           >
             {basePlan.cta}

@@ -5,9 +5,14 @@
 // 「請求書の作成 → 公開（publish）」を行います。公開すると Square が
 // 自動的に請求書メールをお客さまへ送信します。
 //
+// 契約条件（取引条件の明示）への同意がない場合は発行しません。
+// 同意したときは「いつ・誰が・何に同意したか」を
+// orders/{uid}.projectConsent（または subscriptionConsent）と
+// purchase_consents コレクションに記録します（サーバーのみ書き込み可）。
+//
 // POST /api/square/invoice
 //   Authorization: Bearer <Firebase ID トークン>
-//   body: { "kind": "project" | "subscription" }
+//   body: { "kind": "project" | "subscription", "agreed": true, "version": "..." }
 // ============================================================
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
@@ -32,6 +37,7 @@ import {
   type SquareInvoiceInfo,
   yen,
 } from "@/lib/model";
+import { buildContractDisclosures, contractVersion } from "@/lib/contract";
 import { site } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -48,6 +54,13 @@ const REISSUABLE_STATUSES = new Set([
 
 function errorResponse(message: string, status: number, code?: string) {
   return NextResponse.json({ ok: false, error: message, code }, { status });
+}
+
+/** 同意ログに残すクライアント IP（プロキシ経由の転送元） */
+function clientIp(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0]?.trim() ?? "";
+  return request.headers.get("x-real-ip") ?? "";
 }
 
 /** Square のエラーから表示用のメッセージを作ります */
@@ -117,7 +130,11 @@ export async function POST(request: Request) {
     );
   }
 
-  const body = (await request.json().catch(() => ({}))) as { kind?: unknown };
+  const body = (await request.json().catch(() => ({}))) as {
+    kind?: unknown;
+    agreed?: unknown;
+    version?: unknown;
+  };
   const kind: InvoiceKind | null =
     body.kind === "project"
       ? "project"
@@ -126,6 +143,23 @@ export async function POST(request: Request) {
         : null;
   if (!kind) {
     return errorResponse("請求内容の指定が正しくありません。", 400);
+  }
+
+  // ---- 契約条件（取引条件の明示）への同意を検証する ----
+  // チェックに同意せず購入ボタンが押された場合でも、サーバー側で拒否します。
+  if (body.agreed !== true) {
+    return errorResponse(
+      "契約条件への同意が必要です。内容をご確認のうえ、チェックを入れてお進みください。",
+      400,
+      "consent_required",
+    );
+  }
+  if (body.version !== contractVersion) {
+    return errorResponse(
+      "契約条件が更新されました。ページを再読み込みして、最新の条件をご確認ください。",
+      409,
+      "contract_version_mismatch",
+    );
   }
 
   if (!email) {
@@ -171,25 +205,12 @@ export async function POST(request: Request) {
     );
   }
 
-  // ---- 発行済みの請求書は再利用する（二重発行の防止） ----
-  if (
-    existingInvoice?.id &&
-    !REISSUABLE_STATUSES.has(existingInvoice.status ?? "")
-  ) {
-    return NextResponse.json({
-      ok: true,
-      reused: true,
-      invoice: existingInvoice,
-      message: "発行済みの請求書をご案内しています。メールをご確認ください。",
-    });
-  }
-
-  // ---- 請求内容を組み立てる ----
+  // ---- 請求内容を組み立てる（同意ログに残す金額にも使います） ----
   const lineItems: InvoiceLineItem[] =
     kind === "project"
       ? [
           { name: basePlanName, amount: order.basePrice },
-          ...order.options.map((option) => ({
+          ...(order.options ?? []).map((option) => ({
             name: option.name,
             amount: option.price,
           })),
@@ -206,6 +227,65 @@ export async function POST(request: Request) {
       "請求金額が確定していません。運営者にお問い合わせください。",
       400,
     );
+  }
+
+  // ---- 同意ログを記録する（いつ・誰が・何に同意したか） ----
+  // 日時はサーバー時刻、同意者は検証済みの ID トークンの uid を使います。
+  // お客さまに明示した取引条件の写しもあわせて保存します（証跡）。
+  // クライアントからは書き込めないため、後から改ざんはできません。
+  const consentField: "projectConsent" | "subscriptionConsent" =
+    kind === "project" ? "projectConsent" : "subscriptionConsent";
+  const consentedAt = new Date();
+  const customerName = order.customerName || displayName || email;
+  const consent = {
+    version: contractVersion,
+    uid,
+    email,
+    displayName: displayName ?? "",
+    kind,
+    amount,
+    agreedAt: FieldValue.serverTimestamp(),
+    agreedAtIso: consentedAt.toISOString(),
+    ip: clientIp(request),
+    userAgent: request.headers.get("user-agent") ?? "",
+    disclosures: buildContractDisclosures({
+      kind,
+      order,
+      customerName,
+      customerEmail: email,
+      agreedAt: consentedAt,
+      dueDate: existingInvoice?.dueDate,
+    }).map(({ no, label, value }) => ({ no, label, value })),
+  };
+  await orderRef.set(
+    { uid, [consentField]: consent, updatedAt: FieldValue.serverTimestamp() },
+    { merge: true },
+  );
+  // 上書きされない監査用の同意ログ（追記のみ・クライアントからは読み書き不可）
+  try {
+    await db.collection("purchase_consents").add({
+      ...consent,
+      orderUid: uid,
+      createdAt: FieldValue.serverTimestamp(),
+    });
+  } catch (error) {
+    // 監査ログの失敗で購入を止めない（同意は orders 側に残っている）
+    console.error("同意ログの保存に失敗しました:", error);
+  }
+
+  // ---- 発行済みの請求書は再利用する（二重発行の防止） ----
+  if (
+    existingInvoice?.id &&
+    !REISSUABLE_STATUSES.has(existingInvoice.status ?? "")
+  ) {
+    return NextResponse.json({
+      ok: true,
+      reused: true,
+      invoice: existingInvoice,
+      contractVersion,
+      consentedAt: consent.agreedAtIso,
+      message: "発行済みの請求書をご案内しています。メールをご確認ください。",
+    });
   }
 
   const dueDate = invoiceDueDate();
@@ -270,6 +350,8 @@ export async function POST(request: Request) {
       ok: true,
       reused: false,
       invoice,
+      contractVersion,
+      consentedAt: consent.agreedAtIso,
       message: `請求書をメールで送信しました（${email}）。支払期限は ${dueDate} です。`,
     });
   } catch (error) {

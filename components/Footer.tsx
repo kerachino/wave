@@ -92,10 +92,10 @@ export function Footer() {
                 お問い合わせフォーム
               </Link>
               <Link
-                href="/apply"
+                href="/login"
                 className="rounded-lg border border-white/20 px-4 py-2 text-xs font-bold text-white transition-colors hover:border-white/50"
               >
-                お申し込み
+                マイページ（契約・お支払い）
               </Link>
             </div>
           </div>

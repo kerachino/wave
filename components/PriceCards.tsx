@@ -37,7 +37,7 @@ export function PriceCards() {
           ))}
         </ul>
         <Link
-          href="/apply"
+          href="/contact"
           className="mx-auto mt-6 block w-full max-w-md rounded-xl bg-brand px-5 py-3.5 text-center text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
         >
           {basePlan.cta}

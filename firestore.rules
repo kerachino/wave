@@ -1,20 +1,21 @@
 rules_version = '2';
 
 // ============================================================
-// Firestore セキュリティルール（チャット・申込み用）
+// Firestore セキュリティルール（チャット・契約・決済用）
 // Firebase コンソール（Firestore > Rules）に貼り付けて使用してください。
 //
 // ・chat_rooms/{roomId}                    … チャットルーム
 // ・chat_rooms/{roomId}/messages/{id}      … メッセージ
-// ・applications/{id}                      … お申し込み情報
-// ・orders/{uid}                           … 購入内容・決済状況（書き込みは運営のみ）
+// ・orders/{uid}                           … 購入内容・契約条件・同意ログ・決済状況（書き込みは運営のみ）
+// ・purchase_consents/{id}                 … 同意ログの追記専用アーカイブ（サーバーのみ）
 // ・users/{uid}                            … ユーザー情報（isAdmin など）
 // ・quotes/{quoteId}                       … 見積書（書き込みは運営のみ）
 // ・square_invoices/{invoiceId}            … Square 請求書の対応表（サーバーのみ）
 //
-// 決済の確定（paymentStatus / accessUnlocked など）は、Square からの
-// Webhook を検証したうえで サーバー（Firebase Admin SDK）だけが書き込みます。
-// クライアントからは書き込めないため、不正な制限解除はできません。
+// 決済の確定（paymentStatus / accessUnlocked など）と同意ログ
+// （projectConsent / subscriptionConsent）は、Square からの Webhook と
+// 請求書 API を検証したうえで サーバー（Firebase Admin SDK）だけが書き込みます。
+// クライアントからは書き込めないため、不正な制限解除や同意の改ざんはできません。
 //
 // 運営側（スタッフ）の返信は Firebase コンソールから行う想定です。
 // コンソールからの書き込みは、このルールの制約を受けません。
@@ -47,20 +48,21 @@ service cloud.firestore {
       }
     }
 
-    // ---- お申し込み情報 ----
-    // ログイン済みユーザーは自分の申込みのみ作成でき、
-    // 読み書きは運営（コンソール）が行います。
-    match /applications/{applicationId} {
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow read, update, delete: if false;
-    }
-
+    // ---- 購入内容・契約条件・同意ログ ----
+    // お客さまは自分の内容を読むだけ。書き込みは運営（isAdmin）のみで、
+    // 決済確定・同意ログはサーバー（Admin SDK）が記録します。
     match /orders/{uid} {
       allow read: if request.auth != null
         && (request.auth.uid == uid
           || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
       allow write: if request.auth != null
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // ---- 同意ログ（追記専用のアーカイブ） ----
+    // 請求書 API（サーバー）が作成します。クライアントからは読み書きできません。
+    match /purchase_consents/{consentId} {
+      allow read, write: if false;
     }
 
     // ---- Square 請求書とお客さまの対応表 ----

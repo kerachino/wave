@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
       { source: "/service", destination: "/price", permanent: true },
       // よくある質問はメインページ内のセクションへ統合
       { source: "/faq", destination: "/#faq", permanent: true },
+      // お申し込みフォームは廃止し、マイページ（/dashboard/payment）の購入画面へ統合
+      { source: "/apply", destination: "/price", permanent: true },
     ];
   },
 };

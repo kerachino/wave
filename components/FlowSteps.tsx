@@ -38,7 +38,7 @@ const steps = [
     title: "契約・お支払い",
     channel: "app",
     accent: "bg-midori text-white",
-    desc: "お見積りにご納得いただけたら、契約とお支払いを行います。",
+    desc: "お見積りにご納得いただけたら、マイページで取引条件に同意して契約・お支払いを行います。",
     cta: null,
   },
   {
