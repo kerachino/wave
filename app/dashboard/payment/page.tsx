@@ -10,19 +10,19 @@
 // ============================================================
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
-import { db, isFirebaseConfigured } from "@/lib/firebase";
+import { ProjectSwitcher } from "@/components/ProjectSwitcher";
+import { useProjects } from "@/components/useProjects";
+import { isFirebaseConfigured } from "@/lib/firebase";
 import {
   maintenanceSubscriptionPrice,
   toDate,
   yen,
-  type Order,
   type PurchaseConsent,
   type SquareInvoiceInfo,
 } from "@/lib/model";
+import { projectTitle, type Project } from "@/lib/projects";
 import {
   buildContractDisclosures,
   contractTerms,
@@ -36,18 +36,15 @@ type PaymentTab = "project" | "subscription";
 type InvoiceKind = "project" | "subscription";
 
 export default function DashboardPaymentPage() {
-  const router = useRouter();
   const { user, loading } = useAuth();
-  const [order, setOrder] = useState<Order | null>(null);
+  const {
+    projects,
+    selected: order,
+    selectedId,
+    select,
+    loading: projectsLoading,
+  } = useProjects(user?.uid);
   const [tab, setTab] = useState<PaymentTab>("project");
-
-  useEffect(() => {
-    if (!loading && !user) router.replace("/login");
-    if (!user || !db || !isFirebaseConfigured) return;
-    return onSnapshot(doc(db, "orders", user.uid), (snapshot) =>
-      setOrder(snapshot.exists() ? (snapshot.data() as Order) : null),
-    );
-  }, [loading, user, router]);
 
   if (loading || !user)
     return <p className="text-sm text-ink-mute">読み込み中...</p>;
@@ -68,6 +65,24 @@ export default function DashboardPaymentPage() {
           してください。ボタンを押すと Square からご請求書メールをお送りします。
         </p>
       </header>
+
+      {/* 1人のお客さまが複数のご依頼を持つため、対象を切り替えられます */}
+      {!isFirebaseConfigured ? null : projectsLoading ? (
+        <p className="text-sm text-ink-mute">読み込み中...</p>
+      ) : projects.length > 1 ? (
+        <ProjectSwitcher
+          projects={projects}
+          selectedId={selectedId}
+          onSelect={select}
+          className="w-full justify-between sm:w-auto"
+        />
+      ) : null}
+      {order ? (
+        <p className="text-xs text-ink-mute">
+          対象のご依頼：<span className="font-bold text-ink">{projectTitle(order)}</span>
+        </p>
+      ) : null}
+
       <nav className="flex gap-2 border-b border-line" aria-label="支払いメニュー">
         <button
           type="button"
@@ -115,7 +130,7 @@ function ProjectPayment({
   customerName,
   customerEmail,
 }: {
-  order: Order;
+  order: Project;
   customerName: string;
   customerEmail: string;
 }) {
@@ -169,6 +184,8 @@ function ProjectPayment({
         ) : (
           <SquareInvoiceButton
             kind="project"
+            projectId={order.id}
+            legacy={order.legacy}
             label="同意して購入する"
             existing={order.projectInvoice}
             agreed={agreed}
@@ -187,7 +204,7 @@ function SubscriptionPayment({
   customerName,
   customerEmail,
 }: {
-  order: Order;
+  order: Project;
   customerName: string;
   customerEmail: string;
 }) {
@@ -248,6 +265,8 @@ function SubscriptionPayment({
             ) : (
               <SquareInvoiceButton
                 kind="subscription"
+                projectId={order.id}
+                legacy={order.legacy}
                 label="同意して申し込む"
                 existing={order.subscriptionInvoice}
                 agreed={agreed}
@@ -460,11 +479,16 @@ function ConsentLog({ consent }: { consent?: PurchaseConsent }) {
 
 function SquareInvoiceButton({
   kind,
+  projectId,
+  legacy,
   label,
   existing,
   agreed,
 }: {
   kind: InvoiceKind;
+  projectId: string;
+  /** 旧 orders/{uid} から読み込んだ依頼（移行までは従来どおり扱う） */
+  legacy?: boolean;
   label: string;
   existing?: SquareInvoiceInfo;
   agreed: boolean;
@@ -486,14 +510,23 @@ function SquareInvoiceButton({
     setMessage("");
     try {
       const token = await user.getIdToken();
+      // legacy は旧 orders/{uid} から読み込んだ依頼のみ true
+      const invoiceScope = legacy ? {} : { projectId };
       const response = await fetch("/api/square/invoice", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        // projectId で対象のご依頼を特定します。
+        // 旧依頼（orders/{uid}）には付けず、従来どおりのキーで処理します。
         // agreed / version はサーバー側の同意チェックに使われます。
-        body: JSON.stringify({ kind, agreed, version: contractVersion }),
+        body: JSON.stringify({
+          kind,
+          agreed,
+          version: contractVersion,
+          ...(legacy ? {} : { projectId }),
+        }),
       });
       const data = (await response.json().catch(() => ({}))) as {
         ok?: boolean;

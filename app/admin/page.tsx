@@ -1,13 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, doc, onSnapshot, setDoc } from "firebase/firestore";
+import { collection, onSnapshot, serverTimestamp, setDoc, doc } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { basePlanPrice, computeAmounts, maintenanceSubscriptionPrice, purchasableOptions, type Order, yen } from "@/lib/model";
+import { basePlanPrice, computeAmounts, maintenanceSubscriptionPrice, purchasableOptions, yen } from "@/lib/model";
 import { AdminChat } from "@/components/admin/AdminChat";
 import { EstimatePanel } from "@/components/admin/EstimatePanel";
 import { ContractPanel } from "@/components/admin/ContractPanel";
+import { ProjectSwitcher } from "@/components/ProjectSwitcher";
+import { useAdminProjects } from "@/components/useAdminProjects";
+import { projectsCollection, projectTitle, projectWriteBase, type Project } from "@/lib/projects";
+import { ProjectManager } from "@/components/admin/ProjectManager";
 
 type AdminUser = { uid: string; email?: string; displayName?: string; photoURL?: string };
 type AdminTab = "chat" | "purchase" | "subscription" | "estimate" | "contract" | "profile" | "system";

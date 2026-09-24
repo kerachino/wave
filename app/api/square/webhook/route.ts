@@ -14,11 +14,8 @@
 import { NextResponse } from "next/server";
 import { FieldValue, type Firestore } from "firebase-admin/firestore";
 import { adminDb, isFirebaseAdminConfigured } from "@/lib/firebase-admin";
-import {
-  completedPaymentAmount,
-  isSquareWebhookConfigured,
-  verifySquareSignature,
-} from "@/lib/square";
+import { completedPaymentAmount, isSquareWebhookConfigured, verifySquareSignature } from "@/lib/square";
+import { projectsCollection } from "@/lib/projects";
 import type { Order, SquareInvoiceInfo } from "@/lib/model";
 
 export const runtime = "nodejs";
@@ -48,10 +45,14 @@ type SquareWebhookEvent = {
 
 type InvoiceTarget = {
   uid: string;
+  /** 書き戻し先の Firestore コレクション（projects / orders） */
+  collection: "projects" | "orders";
+  /** projects であればドキュメントID、orders であれば uid */
+  documentId: string;
   kind: "project" | "subscription";
 };
 
-/** Webhook の請求書IDから、対象のお客さま（orders/{uid}）を特定します */
+/** Webhook の請求書IDから、対象のお客さま・プロジェクトを特定します */
 async function findInvoiceTarget(
   db: Firestore,
   invoiceId: string,
@@ -59,27 +60,44 @@ async function findInvoiceTarget(
   // 請求書発行時に作成した対応表（square_invoices/{invoiceId}）
   const mapping = await db.collection("square_invoices").doc(invoiceId).get();
   if (mapping.exists) {
-    const data = mapping.data() as { uid?: string; kind?: string };
+    const data = mapping.data() as {
+      uid?: string;
+      kind?: string;
+      projectId?: string;
+      collection?: string;
+    };
     if (data.uid) {
+      const useProjects = data.collection === "projects" && Boolean(data.projectId);
       return {
         uid: data.uid,
+        collection: useProjects ? "projects" : "orders",
+        documentId: useProjects ? (data.projectId as string) : data.uid,
         kind: data.kind === "subscription" ? "subscription" : "project",
       };
     }
   }
 
-  // 対応表がない場合の保険（orders の請求書情報から探す）
-  for (const [field, kind] of [
-    ["projectInvoice", "project"],
-    ["subscriptionInvoice", "subscription"],
-  ] as const) {
-    const found = await db
-      .collection("orders")
-      .where(`${field}.id`, "==", invoiceId)
-      .limit(1)
-      .get();
-    if (!found.empty) {
-      return { uid: found.docs[0].id, kind };
+  // 対応表がない場合の保険（projects / orders の請求書情報から探す）
+  for (const collection of [projectsCollection, "orders"] as const) {
+    for (const [field, kind] of [
+      ["projectInvoice", "project"],
+      ["subscriptionInvoice", "subscription"],
+    ] as const) {
+      const found = await db
+        .collection(collection)
+        .where(`${field}.id`, "==", invoiceId)
+        .limit(1)
+        .get();
+      if (!found.empty) {
+        const documentId = found.docs[0].id;
+        return {
+          // projects/{projectId} の uid はドキュメント内に保存されています
+          uid: (found.docs[0].data() as { uid?: string }).uid ?? documentId,
+          collection: collection as "projects" | "orders",
+          documentId,
+          kind,
+        };
+      }
     }
   }
   return null;
@@ -147,11 +165,13 @@ export async function POST(request: Request) {
     return new NextResponse("unknown invoice", { status: 200 });
   }
 
-  const orderRef = db.collection("orders").doc(target.uid);
+  const orderRef = db.collection(target.collection).doc(target.documentId);
   const snapshot = await orderRef.get();
   if (!snapshot.exists) {
     console.error("Webhook の対象注文が見つかりませんでした:", {
       uid: target.uid,
+      collection: target.collection,
+      documentId: target.documentId,
       invoiceId,
     });
     return new NextResponse("unknown order", { status: 200 });

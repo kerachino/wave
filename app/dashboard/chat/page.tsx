@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
 import {
   db,
@@ -14,6 +14,7 @@ import {
   type ChatMessage,
 } from "@/lib/firebase";
 import { isAccessUnlocked, type Order } from "@/lib/model";
+import { projectsCollection, type Project } from "@/lib/projects";
 
 export default function DashboardChatPage() {
   const router = useRouter();
@@ -23,22 +24,37 @@ export default function DashboardChatPage() {
   const [connecting, setConnecting] = useState(true);
   const [error, setError] = useState("");
   const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
-  const [order, setOrder] = useState<Order | null>(null);
+  const [accessUnlocked, setAccessUnlocked] = useState(false);
   const [orderReady, setOrderReady] = useState(!isFirebaseConfigured);
   const scrollRef = useRef<HTMLDivElement>(null);
   const receivedMessages = useRef(false);
   const messageIds = useRef<string[]>([]);
 
-  // お支払い状況（制限の解除状態）を購読する
+  // ---- チャットはユーザー単位.room なので、支払い済みの有無は
+  // いずれかのプロジェクト（本契約 or 維持費）で判定します。
   useEffect(() => {
-    if (!user || !db || !isFirebaseConfigured) return;
+    if (!user) return;
+    const firestore = db;
+    if (!firestore || !isFirebaseConfigured) return;
+    const legacyRef = doc(firestore, "orders", user.uid);
     return onSnapshot(
-      doc(db, "orders", user.uid),
+      query(
+        collection(firestore, projectsCollection),
+        where("uid", "==", user.uid),
+      ),
       (snapshot) => {
-        setOrder(snapshot.exists() ? (snapshot.data() as Order) : null);
+        const list = snapshot.docs.map((item) => item.data() as Project);
+        setAccessUnlocked(list.some((project) => isAccessUnlocked(project)));
         setOrderReady(true);
       },
-      () => setOrderReady(true),
+      // 購読できない場合は旧 orders/{uid} を見ます。
+      () =>
+        onSnapshot(legacyRef, (legacy) => {
+          setAccessUnlocked(
+            legacy.exists() ? isAccessUnlocked(legacy.data() as Order) : false,
+          );
+          setOrderReady(true);
+        }),
     );
   }, [user]);
 
@@ -100,7 +116,7 @@ export default function DashboardChatPage() {
 
   if (loading || !user || !orderReady)
     return <p className="text-sm text-ink-mute">読み込み中...</p>;
-  const unlocked = isAccessUnlocked(order);
+  const unlocked = accessUnlocked;
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">

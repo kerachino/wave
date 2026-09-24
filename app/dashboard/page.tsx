@@ -1,31 +1,55 @@
 "use client";
-import { useEffect, useState } from "react";
+
+// ============================================================
+// マイページ「概要」
+//
+// ・契約の金額や内容は表示せず、進行ステップと
+//   「本契約・維持費が完了しているか」だけを表示します。
+// ・1人のお客さまが複数のご依頼を持てるため、ProjectSwitcher で切替できます。
+// ============================================================
+
+import Link from "next/link";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { doc, onSnapshot } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
-import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { isAccessUnlocked, yen, type Order } from "@/lib/model";
+import { ProjectSwitcher } from "@/components/ProjectSwitcher";
+import { useProjects } from "@/components/useProjects";
+import { isFirebaseConfigured } from "@/lib/firebase";
+import {
+  contractLabel,
+  projectPhase,
+  projectSteps,
+  projectTitle,
+  subscriptionLabel,
+  type ProjectStep,
+} from "@/lib/projects";
+
 export default function DashboardPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
-  const [order, setOrder] = useState<Order | null>(null);
+  const {
+    projects,
+    selected,
+    selectedId,
+    select,
+    loading: projectsLoading,
+  } = useProjects(user?.uid);
+
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
-    if (!user || !db || !isFirebaseConfigured) return;
-    return onSnapshot(doc(db, "orders", user.uid), (snapshot) =>
-      setOrder(snapshot.exists() ? (snapshot.data() as Order) : null),
-    );
   }, [loading, user, router]);
+
   if (loading || !user)
-    return (
-      <div className="mx-auto max-w-4xl px-4 py-16 text-sm text-ink-mute">
-        読み込み中...
-      </div>
-    );
-  const unlocked = isAccessUnlocked(order);
+    return <p className="text-sm text-ink-mute">読み込み中...</p>;
+
+  const phase = projectPhase(selected);
+  const steps = projectSteps(selected);
+  const contractDone = phase.contract === "paid";
+  const subscriptionDone = phase.subscription === "paid";
+
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <div>
+    <div className="mx-auto max-w-4xl space-y-6">
+      <header>
         <p className="text-xs font-bold tracking-[0.18em] text-brand">
           OVERVIEW
         </p>
@@ -33,89 +57,204 @@ export default function DashboardPage() {
           ご契約の進行状況
         </h1>
         <p className="mt-2 text-sm text-ink-soft">{user.email}</p>
-      </div>
-      {!order ? (
-        <section className="rounded-3xl border border-line bg-white p-8 shadow-card">
-          <h2 className="font-maru text-xl font-bold text-ink">
-            購入許可をお待ちください
-          </h2>
-          <p className="mt-3 text-sm leading-7 text-ink-soft">
-            運営者が内容とオプションを確認した後、このページに料金と決済ボタンが表示されます。
-          </p>
-        </section>
+      </header>
+
+      {!isFirebaseConfigured ? (
+        <Notice
+          title="マイページは準備中です"
+          body="Firebase の設定完了後、ご依頼の進捗と支払い状況をご覧いただけます。"
+        />
+      ) : projectsLoading ? (
+        <p className="text-sm text-ink-mute">読み込み中...</p>
+      ) : projects.length === 0 ? (
+        <Notice
+          title="ご依頼がまだ登録されていません"
+          body="お問い合わせフォームからご相談ください。運営者がご依頼を登録すると、このページにステップと完了状況が表示されます。"
+        />
       ) : (
-        <OrderCard order={order} />
+        <>
+          <ProjectSwitcher
+            projects={projects}
+            selectedId={selectedId}
+            onSelect={select}
+            className="w-full justify-between sm:w-auto"
+          />
+
+          <section className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold tracking-[0.14em] text-brand">
+                  CURRENT PROJECT
+                </p>
+                <h2 className="mt-2 font-maru text-xl font-bold text-ink">
+                  {projectTitle(selected)}
+                </h2>
+              </div>
+              <span className="rounded-full bg-cream px-3 py-1 text-xs font-bold text-ink-soft">
+                {projects.length > 1
+                  ? `全${projects.length}件のご依頼`
+                  : "1件のご依頼"}
+              </span>
+            </div>
+
+            {/* 本契約・維持費の完了状況（金額は表示しません） */}
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              <StatusCard
+                title="本契約"
+                done={contractDone}
+                detail={contractLabel(phase)}
+                description="ホームページ制作のご契約とお支払い"
+              />
+              <StatusCard
+                title="維持費サポート"
+                done={subscriptionDone}
+                detail={subscriptionLabel(phase)}
+                description="公開後の保守・更新サポート"
+              />
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
+            <h2 className="font-maru text-xl font-bold text-ink">
+              進行ステップ
+            </h2>
+            <ol className="mt-5 space-y-3">
+              {steps.map((step) => (
+                <StepRow key={step.no} step={step} />
+              ))}
+            </ol>
+            <p className="mt-5 rounded-2xl bg-cream px-4 py-3 text-xs leading-6 text-ink-soft">
+              契約の金額や详细内容はお支払い画面でご確認いただけます。切り替えている依頼以外は、この画面には表示されません。
+            </p>
+          </section>
+
+          <section className="rounded-3xl border border-line bg-white p-6 shadow-card">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-maru text-xl font-bold text-ink">
+                次の手続き
+              </h2>
+              <span
+                className={`rounded-full px-3 py-1 text-xs font-bold ${
+                  phase.unlocked
+                    ? "bg-brand-soft text-brand-deep"
+                    : "bg-cream text-ink-mute"
+                }`}
+              >
+                {phase.unlocked ? "利用開始できます" : "お支払い待ち"}
+              </span>
+            </div>
+            <p className="mt-2 text-sm leading-7 text-ink-soft">
+              {!contractDone
+                ? "取引条件をご確認のうえ、チェックを入れてお支払いへ進んでください。"
+                : phase.published
+                  ? "サイト公開後のご相談は、チャットで受け付けています。"
+                  : "担当者とチャットで制作・公開を進めます。"}
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {!contractDone && (
+                <Link
+                  href="/dashboard/payment"
+                  className="rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
+                >
+                  お支払い画面へ進む
+                </Link>
+              )}
+              <Link
+                href={phase.unlocked ? "/dashboard/chat" : "/dashboard/payment"}
+                className="rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand transition hover:bg-brand-soft"
+              >
+                {phase.unlocked ? "チャットを開く" : "手続きを確認"}
+              </Link>
+            </div>
+          </section>
+        </>
       )}
-      <section className="rounded-3xl border border-line bg-white p-6 shadow-card">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-maru text-xl font-bold text-ink">
-            担当者に相談する
-          </h2>
-          <span
-            className={`rounded-full px-3 py-1 text-xs font-bold ${unlocked ? "bg-brand-soft text-brand-deep" : "bg-cream text-ink-mute"}`}
-          >
-            {unlocked ? "制限解除済み" : "お支払い待ち"}
-          </span>
-        </div>
-        <p className="mt-2 text-sm text-ink-soft">
-          {unlocked
-            ? "ご相談や制作のやり取りは、専用チャットで行えます。"
-            : "お支払いを確認すると、専用チャットなどの機能をご利用いただけます。"}
-        </p>
-        <button
-          onClick={() =>
-            router.push(unlocked ? "/dashboard/chat" : "/dashboard/payment")
-          }
-          className="mt-5 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-dark"
-        >
-          {unlocked ? "チャットを開く" : "お支払いへ進む"}
-        </button>
-      </section>
     </div>
   );
 }
-function OrderCard({ order }: { order: Order }) {
-  const router = useRouter();
+
+
+function Notice({ title, body }: { title: string; body: string }) {
   return (
-    <section className="rounded-3xl border border-line bg-white p-6 shadow-card">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-maru text-xl font-bold text-ink">購入内容</h2>
-        <span className="rounded-full bg-brand-soft px-3 py-1 text-xs font-bold text-brand-deep">
-          {order.paymentStatus === "paid" ? "契約完了" : "決済待ち"}
-        </span>
-      </div>
-      <div className="mt-5 space-y-3 text-sm">
-        <div className="flex justify-between">
-          <span className="text-ink-soft">基本プラン</span>
-          <strong>{yen(order.basePrice)}</strong>
-        </div>
-        {order.options.map((option) => (
-          <div className="flex justify-between" key={option.id}>
-            <span className="text-ink-soft">{option.name}</span>
-            <strong>{yen(option.price)}</strong>
-          </div>
-        ))}
-        <div className="flex justify-between border-t border-line pt-3 font-bold">
-          <span>合計</span>
-          <span>{yen(order.totalPrice)}</span>
-        </div>
-        <div className="flex justify-between text-brand">
-          <span>今回のお支払い（前払い・全額）</span>
-          <strong>{yen(order.firstAmount)}</strong>
-        </div>
-      </div>
-      {order.paymentStatus !== "paid" ? (
-        <button
-          onClick={() => router.push("/dashboard/payment")}
-          className="mt-6 w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white hover:bg-brand-dark"
-        >
-          Squareで請求書を受け取る
-        </button>
-      ) : (
-        <p className="mt-6 rounded-xl bg-brand-soft px-4 py-3 text-xs text-brand-deep">
-          お支払いを確認しました。利用制限は解除されています。
-        </p>
-      )}
+    <section className="rounded-3xl border border-line bg-white p-8 shadow-card">
+      <h2 className="font-maru text-xl font-bold text-ink">{title}</h2>
+      <p className="mt-3 text-sm leading-7 text-ink-soft">{body}</p>
+      <Link
+        href="/contact"
+        className="mt-6 inline-block rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand"
+      >
+        お問い合わせ
+      </Link>
     </section>
   );
 }
+
+/** 本契約／維持費の完了状況（金額は表示しません） */
+function StatusCard({
+  title,
+  done,
+  detail,
+  description,
+}: {
+  title: string;
+  done: boolean;
+  detail: string;
+  description: string;
+}) {
+  return (
+    <div
+      className={`rounded-2xl border p-5 ${
+        done ? "border-brand/40 bg-brand-soft/50" : "border-line bg-cream/40"
+      }`}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <p className="font-maru text-base font-bold text-ink">{title}</p>
+        <span
+          className={`rounded-full px-3 py-1 text-xs font-bold ${
+            done
+              ? "bg-brand text-white"
+              : "bg-white text-ink-mute shadow-sm"
+          }`}
+        >
+          {done ? "完了" : detail}
+        </span>
+      </div>
+      <p className="mt-2 text-xs leading-6 text-ink-soft">{description}</p>
+    </div>
+  );
+}
+
+function StepRow({ step }: { step: ProjectStep }) {
+  const marker =
+    step.state === "done"
+      ? "完了"
+      : step.state === "current"
+        ? "進行中"
+        : "未着手";
+  const markerClass =
+    step.state === "done"
+      ? "bg-brand text-white"
+      : step.state === "current"
+        ? "bg-brand-soft text-brand-deep"
+        : "bg-white text-ink-mute shadow-sm";
+  return (
+    <li className="flex items-start gap-4 rounded-2xl border border-line bg-cream/40 p-4">
+      <span
+        className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold ${markerClass}`}
+        aria-hidden="true"
+      >
+        {step.state === "done" ? "✓" : step.no}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          <p className="font-bold text-ink">{step.title}</p>
+          <span className="text-xs font-bold text-brand-deep">{marker}</span>
+        </div>
+        <p className="mt-1 text-xs leading-6 text-ink-soft">
+          {step.description}
+        </p>
+      </div>
+    </li>
+  );
+}
+

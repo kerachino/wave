@@ -7,12 +7,17 @@
 //
 // 契約条件（取引条件の明示）への同意がない場合は発行しません。
 // 同意したときは「いつ・誰が・何に同意したか」を
-// orders/{uid}.projectConsent（または subscriptionConsent）と
+// projects/{projectId}.projectConsent（または subscriptionConsent）と
 // purchase_consents コレクションに記録します（サーバーのみ書き込み可）。
 //
 // POST /api/square/invoice
 //   Authorization: Bearer <Firebase ID トークン>
-//   body: { "kind": "project" | "subscription", "agreed": true, "version": "..." }
+//   body: {
+//     "kind": "project" | "subscription",
+//     "agreed": true,
+//     "version": "...",
+//     "projectId": "..."  // 旧 orders/{uid} のデータを使う場合は省略
+//   }
 // ============================================================
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
@@ -38,6 +43,7 @@ import {
   yen,
 } from "@/lib/model";
 import { buildContractDisclosures, contractVersion } from "@/lib/contract";
+import { projectsCollection } from "@/lib/projects";
 import { site } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -134,6 +140,7 @@ export async function POST(request: Request) {
     kind?: unknown;
     agreed?: unknown;
     version?: unknown;
+    projectId?: unknown;
   };
   const kind: InvoiceKind | null =
     body.kind === "project"
@@ -169,7 +176,17 @@ export async function POST(request: Request) {
     );
   }
 
-  const orderRef = db.collection("orders").doc(uid);
+  // ---- 対象のご依頼（プロジェクト）を特定する ----
+  // projectId があれば projects/{projectId}（uid が一致するもののみ）を、
+  // 無ければ旧 orders/{uid} を対象にします（移行前の既存データ）。
+  const requestedProjectId =
+    typeof body.projectId === "string" ? body.projectId.trim() : "";
+  if (body.projectId !== undefined && !requestedProjectId) {
+    return errorResponse("ご依頼の指定が正しくありません。", 400);
+  }
+  const orderRef = requestedProjectId
+    ? db.collection(projectsCollection).doc(requestedProjectId)
+    : db.collection("orders").doc(uid);
   const snapshot = await orderRef.get();
   if (!snapshot.exists) {
     return errorResponse(
@@ -178,6 +195,15 @@ export async function POST(request: Request) {
     );
   }
   const order = snapshot.data() as Order;
+  if ((order.uid ?? uid) !== uid) {
+    console.error("権限のないプロジェクトへの購入要求を拒否しました:", {
+      uid,
+      projectId: requestedProjectId,
+    });
+    return errorResponse("ご依頼の内容を確認できませんでした。", 403);
+  }
+  // 同意ログに「どのご依頼か」を残すための識別子
+  const projectId = requestedProjectId || uid;
 
   const invoiceField: "projectInvoice" | "subscriptionInvoice" =
     kind === "project" ? "projectInvoice" : "subscriptionInvoice";
@@ -240,6 +266,7 @@ export async function POST(request: Request) {
   const consent = {
     version: contractVersion,
     uid,
+    projectId,
     email,
     displayName: displayName ?? "",
     kind,
@@ -266,10 +293,11 @@ export async function POST(request: Request) {
     await db.collection("purchase_consents").add({
       ...consent,
       orderUid: uid,
+      projectId,
       createdAt: FieldValue.serverTimestamp(),
     });
   } catch (error) {
-    // 監査ログの失敗で購入を止めない（同意は orders 側に残っている）
+    // 同意ログの失敗で購入を止めない（同意は対象ドキュメント側に残っている）
     console.error("同意ログの保存に失敗しました:", error);
   }
 
@@ -329,13 +357,15 @@ export async function POST(request: Request) {
       { merge: true },
     );
 
-    // ---- 4. Webhook から顧客を特定するための対応表 ----
+    // ---- 4. Webhook から顧客・プロジェクトを特定するための対応表 ----
     await db
       .collection("square_invoices")
       .doc(invoice.id)
       .set(
         {
           uid,
+          projectId,
+          collection: requestedProjectId ? projectsCollection : "orders",
           kind,
           invoiceId: invoice.id,
           squareOrderId: invoice.orderId ?? "",

@@ -6,7 +6,9 @@ rules_version = '2';
 //
 // ・chat_rooms/{roomId}                    … チャットルーム
 // ・chat_rooms/{roomId}/messages/{id}      … メッセージ
-// ・orders/{uid}                           … 購入内容・契約条件・同意ログ・決済状況（書き込みは運営のみ）
+// ・projects/{projectId}                     … 1件のご依頼（購入内容・契約条件・同意ログ・決済状況）
+// ・orders/{uid}                            … 既存の依頼（移行前のデータ。読み取りのみ）
+
 // ・purchase_consents/{id}                 … 同意ログの追記専用アーカイブ（サーバーのみ）
 // ・users/{uid}                            … ユーザー情報（isAdmin など）
 // ・quotes/{quoteId}                       … 見積書（書き込みは運営のみ）
@@ -48,9 +50,18 @@ service cloud.firestore {
       }
     }
 
-    // ---- 購入内容・契約条件・同意ログ ----
-    // お客さまは自分の内容を読むだけ。書き込みは運営（isAdmin）のみで、
-    // 決済確定・同意ログはサーバー（Admin SDK）が記録します。
+    // ---- 1件のご依頼（プロジェクト） ----
+    // お客さまは自分の uid を持つ依頼を読むだけ。書き込みは運営のみです。
+    match /projects/{projectId} {
+      allow read: if request.auth != null
+        && (resource.data.uid == request.auth.uid
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+      allow write: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    // ---- 旧 orders（移行前） ----
+    // 既存のデータ。新規の保存先ではありません。
     match /orders/{uid} {
       allow read: if request.auth != null
         && (request.auth.uid == uid
