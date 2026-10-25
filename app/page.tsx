@@ -5,22 +5,15 @@ import {
   CardIcon,
   ChatIcon,
   CheckIcon,
-  ClockIcon,
-  DocIcon,
   HouseIcon,
   MailIcon,
   YenIcon,
 } from "@/components/icons";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { FlowSteps } from "@/components/FlowSteps";
-import { Container } from "@/components/ui";
-import { faqs, maintenance } from "@/lib/site";
-import {
-  basePlanFeatures,
-  basePlanPrice,
-  purchasableOptions,
-  yen,
-} from "@/lib/model";
+import { Card, Container, SectionHeading } from "@/components/ui";
+import { basePlan, faqs, maintenance, planExamples } from "@/lib/site";
+import { basePlanFeatures, basePlanPrice, yen } from "@/lib/model";
 
 const heroPoints = [
   {
@@ -287,132 +280,100 @@ export default function Home() {
         </Container>
       </section> */}
       {/* 料金プラン */}
-      <section id="plan" className="scroll-mt-24 border-y border-line bg-cream">
-        <Container className="py-14 sm:py-20">
-          <p className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep ring-1 ring-line">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full bg-midori"
-            />
-            料金
-          </p>
-          <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              <span className="text-brand">最短1ページから</span>{" "}
-              <span className="text-ink">低価格</span>
-            </h2>
-            <p className="max-w-md text-sm leading-8 text-ink-soft">
-              1ページから制作。余計な機能は足さず、必要な分だけ。
-            </p>
-          </div>
-          <div className="mx-auto mt-10 grid max-w-5xl gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-            <div className="relative overflow-hidden rounded-3xl bg-brand-deep p-6 text-white shadow-lift sm:p-8">
+      <section
+        id="plan"
+        className="scroll-mt-24 border-y border-line bg-cream relative overflow-hidden"
+      >
+        {/* 装飾背景：控えめに2つだけ（ヒーローと区別） */}
+        <div
+          aria-hidden="true"
+          className="absolute -top-24 right-[-12%] size-[48rem] bg-brand/10 rounded-full blur-[100px]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-24 left-[-12%] size-[40rem] bg-midori/10 rounded-full blur-[100px]"
+        />
+        <Container className="py-20 sm:py-28 relative z-10">
+          <SectionHeading
+            eyebrow="料金"
+            title="料金プラン"
+            description={`まずは${yen(basePlanPrice)}（税込）の基本プランから。1ページ制作なので低価格で始められ、必要な機能だけを後から付け足せます。`}
+            center={true}
+          />
+          <div className="mx-auto mt-16 max-w-5xl">
+            <Card className="relative overflow-hidden border-2 border-brand/30 bg-white p-8 sm:p-12 shadow-lift transition-all duration-300 hover:-translate-y-1 hover:shadow-soft">
+              {/* 上部アクセントライン */}
               <div
                 aria-hidden="true"
-                className="aurora pointer-events-none absolute -right-20 -top-28 size-72 opacity-30"
+                className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-brand via-midori to-brand"
               />
-              <div className="relative">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="inline-block rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold tracking-wider ring-1 ring-white/20">
-                    基本プラン
-                  </p>
-                  {/* <p className="rounded-full bg-midori px-3 py-1 text-[11px] font-bold text-white">
-                    一番人気
-                  </p> */}
-                </div>
-                <p className="mt-4 font-maru text-4xl font-bold tracking-tight sm:text-5xl">
-                  {yen(basePlanPrice)}
-                  <span className="ml-1 align-middle text-sm font-bold text-white/70">
-                    （税込）
-                  </span>
-                </p>
-                <p className="mt-2 text-sm leading-7 text-white/75">
-                  お店や会社の紹介ページを最短スピードで公開。
-                </p>
-                <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-                  {basePlanFeatures.map((f) => (
-                    <li
-                      key={f}
-                      className="flex items-start gap-2 rounded-xl bg-white px-3 py-2.5 text-[13px] font-bold leading-6 text-brand-deep"
-                    >
-                      <CheckIcon className="mt-1 size-4 shrink-0 text-midori-dark" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-5 flex flex-col gap-2.5 sm:flex-row">
-                  <Link
-                    href="/contact"
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-midori px-6 py-3 text-sm font-bold text-white transition-all hover:-translate-y-0.5 hover:brightness-105"
-                  >
-                    このプランで相談する <ArrowIcon className="size-4" />
-                  </Link>
-                  <Link
-                    href="/price"
-                    className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-all hover:-translate-y-0.5 hover:bg-white/15"
-                  >
-                    詳しくは料金ページへ <ArrowIcon className="size-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div className="rounded-3xl border border-line bg-white p-6 shadow-card">
-                <h3 className="flex items-center gap-2 font-maru text-base font-bold text-ink">
-                  <span className="grid size-8 place-items-center rounded-xl bg-brand-soft text-brand">
-                    <DocIcon className="size-4" />
-                  </span>
-                  付け足しオプション（例）
-                </h3>
-                <ul className="mt-4 space-y-2 text-sm">
-                  {purchasableOptions.slice(0, 4).map((o) => (
-                    <li
-                      key={o.id}
-                      className="flex items-center justify-between gap-3 rounded-2xl bg-cream px-4 py-3"
-                    >
-                      <span className="text-[13px] font-bold text-ink">
-                        {o.name}
+              <div className="relative z-10">
+                {/* 左右2カラム：左に金額・CTA、右に内容 */}
+                <div className="grid gap-8 sm:gap-10 lg:grid-cols-2 lg:items-start">
+                  {/* 左：金額エリア */}
+                  <div className="space-y-6">
+                    <p className="inline-block rounded-full bg-brand-soft px-4 py-1.5 text-xs font-bold tracking-wider text-brand-deep ring-1 ring-inset ring-brand/20">
+                      基本プラン
+                    </p>
+                    <div className="flex items-baseline gap-2">
+                      <p className="font-maru text-5xl font-bold tracking-tight text-ink sm:text-7xl">
+                        <span className="text-gradient">
+                          {yen(basePlanPrice)}
+                        </span>
+                      </p>
+                      <span className="text-sm font-bold text-ink-mute">
+                        （税込）
                       </span>
-                      <span className="whitespace-nowrap rounded-full bg-white px-2.5 py-1 text-[12px] font-bold text-brand-deep ring-1 ring-line">
-                        {o.displayPrice ?? `${yen(o.defaultPrice)}〜`}
+                    </div>
+                    <p className="max-w-sm text-sm leading-7 text-ink-soft">
+                      {basePlan.description}
+                    </p>
+                    <Link
+                      href="/contact"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-4 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
+                    >
+                      {basePlan.cta} <ArrowIcon className="size-4" />
+                    </Link>
+                    <p className="text-center text-xs leading-6 text-ink-soft">
+                      付け足しオプションやお見積もりの詳細は、{" "}
+                      <span className="font-bold text-brand underline decoration-brand/30 underline-offset-4 hover:text-brand-dark">
+                        料金ページ
                       </span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href="/price"
-                  className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-full bg-brand-soft px-4 py-2.5 text-xs font-bold text-brand-deep transition-all hover:-translate-y-0.5 hover:bg-cream-deep"
-                >
-                  すべての料金を見る <ArrowIcon className="size-4" />
-                </Link>
-              </div>
-              <div className="rounded-3xl border border-line bg-white p-6 shadow-card">
-                <h3 className="flex items-center gap-2 font-maru text-base font-bold text-ink">
-                  <span className="grid size-8 place-items-center rounded-xl bg-midori-soft text-midori-dark">
-                    <ClockIcon className="size-4" />
-                  </span>
-                  維持費（月額）
-                </h3>
-                <div className="mt-3 flex items-baseline gap-2">
-                  <span className="font-maru text-2xl font-bold text-ink">
-                    {maintenance.price}
-                  </span>
-                  <span className="rounded-full bg-cream px-2.5 py-0.5 text-[11px] font-bold text-ink-soft ring-1 ring-line">
-                    公開に必要
-                  </span>
+                      でご確認ください。
+                    </p>
+                  </div>
+
+                  {/* 右：プラン内容 */}
+                  <div className="space-y-6">
+                    <div>
+                      <h4 className="font-maru text-lg font-bold text-ink">
+                        含まれる機能
+                      </h4>
+                      <ul className="mt-4 gap-3">
+                        {basePlanFeatures.map((feature) => (
+                          <li key={feature} className="flex items-start gap-3">
+                            <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-brand-soft text-brand-dark">
+                              <CheckIcon className="size-3.5" />
+                            </span>
+                            <span className="text-sm leading-7 text-ink">
+                              {feature}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="rounded-2xl border border-line bg-brand-soft/50 p-4">
+                      <p className="text-xs font-bold text-brand-deep uppercase tracking-wider">
+                        お支払い
+                      </p>
+                      <p className="mt-1 text-sm leading-7 text-ink-soft">
+                        銀行振込またはクレジットカード。制作開始前の前払いとなります。
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-1 text-xs leading-6 text-ink-soft">
-                  {maintenance.priceNote}
-                  。小さな修正・更新と困ったときの相談が含まれます。
-                </p>
-                <Link
-                  href="/price#maintenance"
-                  className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-brand hover:text-brand-deep"
-                >
-                  維持費の内容を見る <ArrowIcon className="size-4" />
-                </Link>
               </div>
-            </div>
+            </Card>
           </div>
         </Container>
       </section>
