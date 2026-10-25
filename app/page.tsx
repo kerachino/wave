@@ -316,9 +316,9 @@ export default function Home() {
                   <p className="inline-block rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold tracking-wider ring-1 ring-white/20">
                     基本プラン
                   </p>
-                  <p className="rounded-full bg-midori px-3 py-1 text-[11px] font-bold text-white">
+                  {/* <p className="rounded-full bg-midori px-3 py-1 text-[11px] font-bold text-white">
                     一番人気
-                  </p>
+                  </p> */}
                 </div>
                 <p className="mt-4 font-maru text-4xl font-bold tracking-tight sm:text-5xl">
                   {yen(basePlanPrice)}
@@ -327,7 +327,7 @@ export default function Home() {
                   </span>
                 </p>
                 <p className="mt-2 text-sm leading-7 text-white/75">
-                  お店や会社の紹介ページを最短スピードで公開。1ページから制作可能です。
+                  お店や会社の紹介ページを最短スピードで公開。
                 </p>
                 <ul className="mt-5 grid gap-2 sm:grid-cols-2">
                   {basePlanFeatures.map((f) => (
