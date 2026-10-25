@@ -47,6 +47,12 @@ export function Header() {
           >
             ✉ お問い合わせ
           </Link>
+          <Link
+            href="/login"
+            className="ml-3 inline-flex items-center gap-1.5 rounded-full border border-line bg-white px-5 py-2.5 text-sm font-bold text-brand shadow-soft transition-all hover:bg-cream"
+          >
+            🔑 ログイン
+          </Link>
         </nav>
 
         {/* モバイル開閉ボタン */}
@@ -112,6 +118,13 @@ export function Header() {
                 className="rounded-xl bg-[#f2688c] px-5 py-3 text-center text-sm font-bold text-white shadow-soft"
               >
                 お問い合わせ
+              </Link>
+              <Link
+                href="/login"
+                onClick={() => setOpen(false)}
+                className="rounded-xl border border-line bg-white px-5 py-3 text-center text-sm font-bold text-brand"
+              >
+                ログイン
               </Link>
               <a
                 href={`mailto:${site.email}`}

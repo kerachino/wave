@@ -16,7 +16,6 @@ import { FlowSteps } from "@/components/FlowSteps";
 import { Container } from "@/components/ui";
 import { faqs, maintenance } from "@/lib/site";
 import {
-  basePlanDescription,
   basePlanFeatures,
   basePlanPrice,
   purchasableOptions,
@@ -147,7 +146,7 @@ export default function Home() {
         </Container>
       </section>
       {/* 選ばれる理由（ナビ：サービスの特徴） */}
-      <section id="features" className="scroll-mt-24 bg-white">
+      {/* <section id="features" className="scroll-mt-24 bg-white">
         <Container className="py-14 sm:py-20">
           <p className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-4 py-1.5 text-xs font-bold tracking-[0.22em] text-brand-deep">
             <span
@@ -185,9 +184,6 @@ export default function Home() {
               <p className="mt-2 text-[13px] leading-7 text-ink-soft">
                 ホームページ制作の相場は10〜30万円。小回りと低コストで、低価格を実現しています。
               </p>
-              {/* <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-brand-soft/60 px-3 py-1 text-[11px] font-bold text-brand-deep">
-                お見積もり無料
-              </p> */}
             </div>
             <div className="relative overflow-hidden rounded-3xl border border-line bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-lift">
               <span
@@ -211,9 +207,6 @@ export default function Home() {
               <p className="mt-2 text-[13px] leading-7 text-ink-soft">
                 契約・お支払い、やり取りは当アプリ上で行います。
               </p>
-              {/* <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-midori-soft/70 px-3 py-1 text-[11px] font-bold text-midori-dark">
-                来店・対面の打ち合わせ不要
-              </p> */}
             </div>
             <div className="relative overflow-hidden rounded-3xl border border-line bg-white p-6 shadow-card transition-all hover:-translate-y-1 hover:shadow-lift">
               <span
@@ -238,9 +231,6 @@ export default function Home() {
                 維持費プラン（{maintenance.price}
                 ）で修正・更新に対応。「困った」をそのままにしません。
               </p>
-              {/* <p className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-cream px-3 py-1 text-[11px] font-bold text-brand-deep ring-1 ring-line">
-                月1回程度の修正・相談つき
-              </p> */}
             </div>
           </div>
           <div className="mx-auto mt-6 grid max-w-5xl gap-4 lg:grid-cols-2">
@@ -295,7 +285,7 @@ export default function Home() {
             </div>
           </div>
         </Container>
-      </section>
+      </section> */}
       {/* 料金プラン */}
       <section id="plan" className="scroll-mt-24 border-y border-line bg-cream">
         <Container className="py-14 sm:py-20">
@@ -304,15 +294,14 @@ export default function Home() {
               aria-hidden="true"
               className="size-1.5 rounded-full bg-midori"
             />
-            PLAN
+            料金
           </p>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              {/* まずは{yen(basePlanPrice)}から。 */}
-              <span className="text-brand">必要な分だけ</span>
+              <span className="text-brand">最短1ページから</span> <span className="text-ink">低価格</span>
             </h2>
             <p className="max-w-md text-sm leading-8 text-ink-soft">
-              基本の1ページに必要な機能だけをプラス。
+              1ページから制作。余計な機能は足さず、必要な分だけ。
             </p>
           </div>
           <div className="mx-auto mt-10 grid max-w-5xl gap-4 lg:grid-cols-[1.1fr_0.9fr]">
@@ -337,7 +326,7 @@ export default function Home() {
                   </span>
                 </p>
                 <p className="mt-2 text-sm leading-7 text-white/75">
-                  {basePlanDescription}
+                  お店や会社の紹介ページを最短スピードで公開。1ページから制作可能です。
                 </p>
                 <ul className="mt-5 grid gap-2 sm:grid-cols-2">
                   {basePlanFeatures.map((f) => (
@@ -361,7 +350,7 @@ export default function Home() {
                     href="/price"
                     className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-white/10 px-6 py-3 text-sm font-bold text-white ring-1 ring-white/25 transition-all hover:-translate-y-0.5 hover:bg-white/15"
                   >
-                    料金の詳細を見る
+                    詳しくは料金ページへ <ArrowIcon className="size-4" />
                   </Link>
                 </div>
               </div>
@@ -372,7 +361,7 @@ export default function Home() {
                   <span className="grid size-8 place-items-center rounded-xl bg-brand-soft text-brand">
                     <DocIcon className="size-4" />
                   </span>
-                  よく選ばれる付け足し
+                  付け足しオプション（例）
                 </h3>
                 <ul className="mt-4 space-y-2 text-sm">
                   {purchasableOptions.slice(0, 4).map((o) => (
@@ -401,7 +390,7 @@ export default function Home() {
                   <span className="grid size-8 place-items-center rounded-xl bg-midori-soft text-midori-dark">
                     <ClockIcon className="size-4" />
                   </span>
-                  公開後の維持費
+                  維持費（月額）
                 </h3>
                 <div className="mt-3 flex items-baseline gap-2">
                   <span className="font-maru text-2xl font-bold text-ink">
