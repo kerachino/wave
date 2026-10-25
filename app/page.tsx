@@ -294,12 +294,12 @@ export default function Home() {
           className="absolute -bottom-24 left-[-12%] size-[40rem] bg-midori/10 rounded-full blur-[100px]"
         />
         <Container className="py-20 sm:py-28 relative z-10">
-          <SectionHeading
+          {/* <SectionHeading
             eyebrow="PRICING"
             title="料金プラン"
             description={`プランは一つ。必要な機能だけを付け足し。`}
             center={false}
-          />
+          /> */}
           <div className="mx-auto mt-16 max-w-5xl">
             <Card className="relative overflow-hidden border-2 border-brand/30 bg-white p-8 sm:p-12 shadow-lift transition-all duration-300 hover:-translate-y-1 hover:shadow-soft">
               {/* 上部アクセントライン */}
