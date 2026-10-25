@@ -295,10 +295,10 @@ export default function Home() {
         />
         <Container className="py-20 sm:py-28 relative z-10">
           <SectionHeading
-            eyebrow="料金"
+            eyebrow="PRICING"
             title="料金プラン"
-            description={`まずは${yen(basePlanPrice)}（税込）の基本プランから。1ページ制作なので低価格で始められ、必要な機能だけを後から付け足せます。`}
-            center={true}
+            description={`プランは一つ。必要な機能だけを付け足し。`}
+            center={false}
           />
           <div className="mx-auto mt-16 max-w-5xl">
             <Card className="relative overflow-hidden border-2 border-brand/30 bg-white p-8 sm:p-12 shadow-lift transition-all duration-300 hover:-translate-y-1 hover:shadow-soft">
@@ -329,10 +329,10 @@ export default function Home() {
                       {basePlan.description}
                     </p>
                     <Link
-                      href="/contact"
+                      href="/price"
                       className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-6 py-4 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(37_99_235_/_0.55)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
                     >
-                      {basePlan.cta} <ArrowIcon className="size-4" />
+                      詳しい料金ページへ <ArrowIcon className="size-4" />
                     </Link>
                     <p className="text-center text-xs leading-6 text-ink-soft">
                       付け足しオプションやお見積もりの詳細は、{" "}
