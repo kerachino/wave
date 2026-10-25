@@ -282,7 +282,7 @@ export default function Home() {
       {/* 料金プラン */}
       <section
         id="plan"
-        className="scroll-mt-24 border-y border-line bg-cream relative overflow-hidden"
+        className="scroll-mt-24 border-y border-line bg-cream relative overflow-hidden py-20 sm:py-28 px-4 sm:px-6 lg:px-8"
       >
         {/* 装飾背景：控えめに2つだけ（ヒーローと区別） */}
         <div
@@ -293,14 +293,7 @@ export default function Home() {
           aria-hidden="true"
           className="absolute -bottom-24 left-[-12%] size-[40rem] bg-midori/10 rounded-full blur-[100px]"
         />
-        <Container className="py-20 sm:py-28 relative z-10">
-          {/* <SectionHeading
-            eyebrow="PRICING"
-            title="料金プラン"
-            description={`プランは一つ。必要な機能だけを付け足し。`}
-            center={false}
-          /> */}
-          <div className="mx-auto mt-16 max-w-5xl">
+          <div className="mx-auto mt-16 max-w-7xl">
             <Card className="relative overflow-hidden border-2 border-brand/30 bg-white p-8 sm:p-12 shadow-lift transition-all duration-300 hover:-translate-y-1 hover:shadow-soft">
               {/* 上部アクセントライン */}
               <div
@@ -375,7 +368,6 @@ export default function Home() {
               </div>
             </Card>
           </div>
-        </Container>
       </section>
       {/* ご依頼から公開までの流れ */}
       <FlowSteps />
