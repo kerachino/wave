@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { site } from "@/lib/site";
 
 /** ロゴマーク（吹き出し×家 = 相談と制作のセットを表現） */
@@ -55,12 +56,20 @@ export function Wordmark() {
   );
 }
 
-/** ヘッダー用ロゴ */
+/** ヘッダー用ロゴ（logo.png） */
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <LogoMark className="size-10" />
-      <Wordmark />
+      <Image
+        src="/logo.png"
+        alt={site.name}
+        width={40}
+        height={40}
+        className="size-10"
+      />
+      <span className="font-maru text-lg font-bold tracking-tight text-ink">
+        {site.name}
+      </span>
     </span>
   );
 }
