@@ -123,7 +123,7 @@ export default function Home() {
               <div className="relative flex items-end justify-center gap-3">
                 <div className="relative w-[78%] overflow-hidden rounded-2xl border-[6px] border-ink bg-white shadow-lift">
                   <Image
-                    src="/header.png"
+                    src="/header.jpg"
                     alt="制作したカフェサイトのイメージ"
                     width={1000}
                     height={640}
@@ -133,7 +133,7 @@ export default function Home() {
                 </div>
                 <div className="relative w-[22%] overflow-hidden rounded-2xl border-4 border-ink bg-white shadow-lift">
                   <Image
-                    src="/header.png"
+                    src="/header2.jpg"
                     alt="スマートフォン表示のイメージ"
                     width={300}
                     height={620}
@@ -298,7 +298,8 @@ export default function Home() {
           </p>
           <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <h2 className="max-w-xl font-maru text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              <span className="text-brand">最短1ページから</span> <span className="text-ink">低価格</span>
+              <span className="text-brand">最短1ページから</span>{" "}
+              <span className="text-ink">低価格</span>
             </h2>
             <p className="max-w-md text-sm leading-8 text-ink-soft">
               1ページから制作。余計な機能は足さず、必要な分だけ。
