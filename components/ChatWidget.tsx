@@ -24,7 +24,8 @@ export function ChatWidget() {
   const pathname = usePathname();
   // URL末尾が #chat の場合は最初から開いておく（初期化時に判定）
   const [open, setOpen] = useState(
-    typeof window !== "undefined" && window.location.hash === "#chat",
+    typeof window !== "undefined" &&
+      (window.location.hash === "#chat" || pathname === "/contact"),
   );
   const [view, setView] = useState<ViewState>({ status: "idle" });
   const [messages, setMessages] = useState<ChatMessage[]>([]);

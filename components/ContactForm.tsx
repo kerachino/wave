@@ -8,7 +8,6 @@ import {
   FiCheck,
   FiChevronDown,
   FiDollarSign,
-  FiHelpCircle,
   FiImage,
   FiLayers,
   FiLink,
@@ -30,8 +29,6 @@ import {
   contactColorOptions,
   contactDeadlineOptions,
   contactIndustryOptions,
-  contactInquiryTypes,
-  type ContactInquiryTypeId,
   contactNeededPagesOptions,
   contactPageCountOptions,
   contactPreparedOptions,
@@ -40,7 +37,6 @@ import {
 } from "@/lib/site";
 
 type FormState = {
-  inquiryType: ContactInquiryTypeId | "";
   company: string;
   name: string;
   email: string;
@@ -61,7 +57,6 @@ type FormState = {
 };
 
 const initial: FormState = {
-  inquiryType: "",
   company: "",
   name: "",
   email: "",
@@ -87,10 +82,10 @@ const inputClass =
 const labelClass = "block text-sm font-medium text-ink";
 
 const requiredBadge =
-  "ml-1 inline-block rounded-md bg-brand-soft px-1.5 py-0.5 align-middle text-[11px] font-semibold leading-4 text-brand-deep";
+  "ml-1 inline-block rounded-md bg-red-50 px-1.5 py-0.5 align-middle text-[11px] font-semibold leading-4 text-red-600";
 
 const optionalBadge =
-  "ml-1 inline-block rounded-md bg-ink/5 px-1.5 py-0.5 align-middle text-[11px] font-semibold leading-4 text-ink-soft";
+  "ml-1 inline-block rounded-md px-1.5 py-0.5 align-middle text-[11px] font-semibold leading-4 text-ink/40";
 
 const iconChip =
   "grid size-6 shrink-0 place-items-center rounded-full bg-brand-soft text-brand-deep";
@@ -288,60 +283,28 @@ export function ContactForm() {
         aria-hidden="true"
       />
 
-      {/* STEP 1：何の問い合わせか（必須） */}
-      <div>
-        <FieldLabel icon={FiHelpCircle}>
-          何についてのお問い合わせですか{" "}
-          <span className={requiredBadge}>必須</span>
-        </FieldLabel>
-        <div className="mt-2 grid gap-2 sm:grid-cols-2">
-          {contactInquiryTypes.map((type) => {
-            const selected = form.inquiryType === type.id;
-            return (
-              <label
-                key={type.id}
-                className={`cursor-pointer rounded-2xl border p-4 transition-all ${
-                  selected
-                    ? "border-brand bg-brand-soft/50 shadow-card ring-2 ring-brand/20"
-                    : "border-line bg-white hover:border-brand/40"
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="contact-inquiry-type"
-                  value={type.id}
-                  checked={selected}
-                  onChange={(e) =>
-                    update(
-                      "inquiryType",
-                      e.target.value as ContactInquiryTypeId,
-                    )
-                  }
-                  className="sr-only"
-                />
-                <span className="flex items-center gap-2 text-sm font-bold text-ink">
-                  <span
-                    className={`grid size-5 shrink-0 place-items-center rounded-full border-2 ${
-                      selected
-                        ? "border-brand bg-brand text-white"
-                        : "border-line"
-                    }`}
-                  >
-                    {selected && <CheckIcon className="size-3" />}
-                  </span>
-                  {type.label}
-                </span>
-                <span className="mt-1 block pl-7 text-xs leading-5 text-ink-soft">
-                  {type.description}
-                </span>
-              </label>
-            );
-          })}
-        </div>
-      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <div>
         <label htmlFor="contact-company" className={labelClass}>
+
           <FieldLabel icon={FiBriefcase}>
             会社名・事業所名 <span className={optionalBadge}>任意</span>
           </FieldLabel>
@@ -411,9 +374,7 @@ export function ContactForm() {
         />
       </div>
 
-      {/* ご希望の内容：制作の相談・見積もり依頼（任意） */}
-      {form.inquiryType === "consult" && (
-        <fieldset className="rounded-2xl border border-line bg-cream/50 p-5 sm:p-6">
+
           <legend className="px-2 text-sm font-bold text-ink">
             作りたい内容について <span className={optionalBadge}>任意</span>
           </legend>
@@ -589,8 +550,7 @@ export function ContactForm() {
               />
             </div>
           </div>
-        </fieldset>
-      )}
+
 
       <div>
         <label htmlFor="contact-message" className={labelClass}>

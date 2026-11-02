@@ -1,11 +1,10 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import {
   contactBudgetOptions,
   contactColorOptions,
   contactDeadlineOptions,
   contactIndustryOptions,
-  contactInquiryTypes,
   contactNeededPagesOptions,
   contactPageCountOptions,
   contactPreparedOptions,
@@ -56,7 +55,6 @@ export async function POST(request: Request) {
   }
 
   const {
-    inquiryType,
     company,
     name,
     email,
@@ -75,7 +73,6 @@ export async function POST(request: Request) {
     message,
     _spam,
   } = (body ?? {}) as {
-    inquiryType?: unknown;
     company?: unknown;
     name?: unknown;
     email?: unknown;
@@ -104,10 +101,6 @@ export async function POST(request: Request) {
   }
 
   const errors: string[] = [];
-  const inquiryTypeIds: string[] = contactInquiryTypes.map((t) => t.id);
-  if (typeof inquiryType !== "string" || !inquiryTypeIds.includes(inquiryType)) {
-    errors.push("お問い合わせの種類を選択してください。");
-  }
   if (typeof company !== "string" || company.trim() === "") {
     errors.push("会社名・事業所名を入力してください。");
   }
@@ -204,9 +197,6 @@ export async function POST(request: Request) {
     );
   }
 
-  const inquiryTypeLabel =
-    contactInquiryTypes.find((t) => t.id === inquiryType)?.label ??
-    String(inquiryType ?? "");
   const companyText = String(company).trim();
   const nameText = String(name).trim();
   const emailText = String(email).trim();
@@ -233,28 +223,12 @@ export async function POST(request: Request) {
   const referenceText = referenceUrlText !== "" ? referenceUrlText : "（未回答）";
   const messageText = String(message).trim();
 
-  const detailLines =
-    inquiryType === "consult"
-      ? [
-          `業種　　　　　　　：${industryText}`,
-          `サイトの用途　　　：${purposeText}`,
-          `ターゲット像　　　：${targetText}`,
-          `必要なページ　　　：${neededPagesText}`,
-          `ページ数・枚数　　：${pageCountText}`,
-          `色・雰囲気　　　　：${colorText}`,
-          `対応希望　　　　　：${requestsText}`,
-          `用意しているもの　：${preparedText}`,
-          `予算の目安　　　　：${budgetText}`,
-          `希望の時期　　　　：${deadlineText}`,
-          `参考URL　　　　 　：${referenceText}`,
-        ]
-      : [];
+  const detailLines: string[] = [];
 
   const transcript =
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
     `【ホームページ制作 お問い合わせ】\n` +
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-    `お問い合わせ種別：${inquiryTypeLabel}\n` +
     `会社名・事業所名：${companyText}\n` +
     `お名前　　　　　：${nameText}\n` +
     `メールアドレス　：${emailText}\n` +
@@ -272,7 +246,7 @@ export async function POST(request: Request) {
       from: `${site.name} お問い合わせフォーム <${SMTP.user}>`,
       to: SMTP.to,
       replyTo: emailText,
-      subject: `【ホームページ制作】${inquiryTypeLabel}：${companyText}（${nameText} 様）`,
+      subject: `【ホームページ制作】お問い合わせ：${companyText}（${nameText} 様）`,
       text: transcript,
     });
 
