@@ -71,7 +71,8 @@ npm run dev
 2. 認証プロバイダで「Google」を有効化
 3. `NEXT_PUBLIC_FIREBASE_*` を Firebase SDK の設定からコピー
 4. `firestore.rules` の内容を Firestore > Rules に貼り付け
-5. チャットのルームは `chat_rooms/{uid}/messages` に保存。匿名ログインで uid を発行するため、Firebase コンソールで「匿名認証」も有効化してください
+5. Firebase コンソールで「匿名認証」も有効化してください。チャット開始時に匿名ユーザーを作成し、ログイン画面でGoogleログインすると同じFirebase UIDのままGoogleアカウントへリンクします。チャット履歴とユーザー情報はそのUIDに紐づくため、管理画面でも別ユーザーにはなりません
+6. Googleリンク後にユーザーのメールアドレス等をFirestoreへ反映するため、`firestore.rules` の最新内容を適用してください。リンクできない場合（Googleアカウントがすでに別UIDに紐づいている等）は、別アカウントでログインする必要があります
 
 ### Square（オンライン決済）の設定
 

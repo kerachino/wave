@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { signInWithPopup, type User } from "firebase/auth";
+import {
+  linkWithPopup,
+  signInWithPopup,
+  type User,
+} from "firebase/auth";
 import {
   isFirebaseConfigured,
   auth,
@@ -15,9 +19,11 @@ import {
 export function GoogleLoginButton({
   onSuccess,
   onError,
+  authReady = true,
 }: {
   onSuccess?: (user: User) => void;
   onError?: (error: unknown) => void;
+  authReady?: boolean;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -36,11 +42,15 @@ export function GoogleLoginButton({
 
   const currentAuth = auth;
   const currentProvider = googleProvider;
+  const isAnonymous = currentAuth.currentUser?.isAnonymous ?? false;
 
   async function handleLogin() {
     setLoading(true);
     try {
-      const result = await signInWithPopup(currentAuth, currentProvider);
+      const currentUser = currentAuth.currentUser;
+      const result = currentUser?.isAnonymous
+        ? await linkWithPopup(currentUser, currentProvider)
+        : await signInWithPopup(currentAuth, currentProvider);
       onSuccess?.(result.user);
     } catch (error) {
       onError?.(error);
@@ -53,15 +63,17 @@ export function GoogleLoginButton({
     <button
       type="button"
       onClick={handleLogin}
-      disabled={loading}
+      disabled={loading || !authReady}
       className="flex w-full items-center justify-center gap-3 rounded-xl border border-line bg-white px-5 py-4 text-sm font-bold text-ink shadow-card transition-colors hover:bg-cream/70 disabled:opacity-60"
     >
-      {loading ? (
-        <span className="animate-pulse">ログイン中...</span>
+      {loading || !authReady ? (
+        <span className="animate-pulse">
+          {!authReady ? "認証状態を確認中..." : "ログイン中..."}
+        </span>
       ) : (
         <>
           <GoogleIcon />
-          Googleでログイン
+          {isAnonymous ? "Googleアカウントを連携" : "Googleでログイン"}
         </>
       )}
     </button>

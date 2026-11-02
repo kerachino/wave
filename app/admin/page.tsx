@@ -1,26 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, serverTimestamp, setDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot, setDoc, doc } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
-import { basePlanPrice, computeAmounts, maintenanceSubscriptionPrice, purchasableOptions, yen } from "@/lib/model";
+import { basePlanPrice, computeAmounts, maintenanceSubscriptionPrice, purchasableOptions, yen, type Order } from "@/lib/model";
 import { AdminChat } from "@/components/admin/AdminChat";
 import { EstimatePanel } from "@/components/admin/EstimatePanel";
 import { ContractPanel } from "@/components/admin/ContractPanel";
-import { ProjectSwitcher } from "@/components/ProjectSwitcher";
-import { useAdminProjects } from "@/components/useAdminProjects";
-import { projectsCollection, projectTitle, projectWriteBase, type Project } from "@/lib/projects";
-import { ProjectManager } from "@/components/admin/ProjectManager";
 
 type AdminUser = { uid: string; email?: string; displayName?: string; photoURL?: string };
 type AdminTab = "chat" | "purchase" | "subscription" | "estimate" | "contract" | "profile" | "system";
 type CustomOption = { id: string; name: string; price: number; defaultPrice: number };
 
 export default function AdminPage() {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, loading, sessionId } = useAuth();
   const [password, setPassword] = useState("");
-  const [verified, setVerified] = useState(false);
+  const [verifiedSessionId, setVerifiedSessionId] = useState<number | null>(null);
+  const [verifyingPassword, setVerifyingPassword] = useState(false);
   const [passwordError, setPasswordError] = useState("");
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [selectedUid, setSelectedUid] = useState("");
@@ -35,18 +32,24 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
 
+  const verified = verifiedSessionId === sessionId;
+
   useEffect(() => {
     if (!user || !isAdmin || !verified || !db) return;
     return onSnapshot(collection(db, "users"), (snapshot) => {
       const next = snapshot.docs.map((item) => ({ uid: item.id, ...item.data() })) as AdminUser[];
       next.sort((a, b) => (a.displayName || a.email || a.uid).localeCompare(b.displayName || b.email || b.uid, "ja"));
       setUsers(next);
-      setSelectedUid((current) => current || next[0]?.uid || "");
+      setSelectedUid((current) =>
+        next.some((item) => item.uid === current) ? current : next[0]?.uid || "",
+      );
+    }, () => {
+      setMessage("ユーザー一覧を読み込めませんでした。");
     });
   }, [user, isAdmin, verified]);
 
   useEffect(() => {
-    if (!selectedUid || !verified || !db) return;
+    if (!user || !isAdmin || !selectedUid || !verified || !db) return;
     return onSnapshot(doc(db, "orders", selectedUid), (snapshot) => {
       const next = snapshot.exists() ? snapshot.data() as Order : null;
       setOrder(next);
@@ -57,7 +60,7 @@ export default function AdminPage() {
       setPurchaseEditing(!next);
       setSubscriptionEditing(!next?.subscriptionApproved);
     });
-  }, [selectedUid, verified]);
+  }, [user, isAdmin, selectedUid, verified]);
 
   const selectedUser = users.find((item) => item.uid === selectedUid);
   const options = [...purchasableOptions.filter((option) => selectedIds.includes(option.id)).map((option) => ({ ...option, price: option.defaultPrice })), ...customOptions.filter((option) => option.name.trim() && option.price > 0).map((option) => ({ ...option, defaultPrice: option.price }))];
@@ -65,9 +68,18 @@ export default function AdminPage() {
 
   async function verifyPassword(event: React.FormEvent) {
     event.preventDefault();
-    const response = await fetch("/api/admin/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
-    if (!response.ok) { const data = await response.json().catch(() => ({})); setPasswordError(data.error || "パスワードが正しくありません。"); return; }
-    setVerified(true);
+    setVerifyingPassword(true);
+    setPasswordError("");
+    try {
+      const response = await fetch("/api/admin/verify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password }) });
+      if (!response.ok) { const data = await response.json().catch(() => ({})); setPasswordError(data.error || "パスワードが正しくありません。"); return; }
+      setVerifiedSessionId(sessionId);
+      setPassword("");
+    } catch {
+      setPasswordError("確認に失敗しました。時間をおいて再度お試しください。");
+    } finally {
+      setVerifyingPassword(false);
+    }
   }
 
   function selectUser(uid: string) { setSelectedUid(uid); setOrder(null); setSelectedIds([]); setCustomOptions([]); setNote(""); setMessage(""); setActiveTab("chat"); }
@@ -87,7 +99,7 @@ export default function AdminPage() {
 
   if (loading) return <div className="mx-auto max-w-6xl px-4 py-16 text-sm text-ink-mute">認証中...</div>;
   if (!isAdmin) return <div className="mx-auto max-w-6xl px-4 py-16"><h1 className="font-maru text-2xl font-bold text-ink">管理者専用ページ</h1><p className="mt-3 text-sm text-ink-soft">管理者アカウントでログインしてください。</p></div>;
-  if (!verified) return <div className="mx-auto max-w-md px-4 py-16"><section className="rounded-3xl border border-line bg-white p-8 shadow-card"><p className="text-xs font-bold tracking-[0.18em] text-brand">ADMIN</p><h1 className="mt-2 font-maru text-2xl font-bold text-ink">管理者パスワード</h1><form onSubmit={verifyPassword} className="mt-6 space-y-4"><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="パスワード" className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-sm" /><button className="w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white">管理ページを開く</button>{passwordError && <p className="text-sm text-red-600">{passwordError}</p>}</form></section></div>;
+  if (!verified) return <div className="mx-auto max-w-md px-4 py-16"><section className="rounded-3xl border border-line bg-white p-8 shadow-card"><p className="text-xs font-bold tracking-[0.18em] text-brand">ADMIN</p><h1 className="mt-2 font-maru text-2xl font-bold text-ink">管理者パスワード</h1><form onSubmit={verifyPassword} className="mt-6 space-y-4"><input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="パスワード" disabled={verifyingPassword} className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-sm" /><button disabled={verifyingPassword} className="w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white disabled:opacity-60">{verifyingPassword ? "確認中..." : "管理ページを開く"}</button>{passwordError && <p className="text-sm text-red-600">{passwordError}</p>}</form></section></div>;
 
   return <div className="min-h-[calc(100vh-4rem)] bg-cream/50"><div className="mx-auto flex max-w-7xl flex-col lg:flex-row"><aside className="w-full shrink-0 border-b border-line bg-white p-5 lg:min-h-[calc(100vh-4rem)] lg:w-80 lg:border-b-0 lg:border-r lg:p-7"><div className="flex items-end justify-between"><div><p className="text-xs font-bold tracking-[0.18em] text-brand">ADMIN SPACE</p><h1 className="mt-2 font-maru text-xl font-bold text-ink">ユーザー一覧</h1></div><span className="rounded-full bg-brand-soft px-3 py-1 text-xs text-brand">{users.length}名</span></div><div className="mt-6 space-y-2">{users.map((candidate) => <button key={candidate.uid} type="button" onClick={() => selectUser(candidate.uid)} className={`flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left ${selectedUid === candidate.uid ? "bg-brand text-white" : "hover:bg-cream"}`}><div className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-soft text-sm font-bold text-brand">{(candidate.displayName || candidate.email || "U").slice(0, 1)}</div><span className="min-w-0"><strong className="block truncate text-sm">{candidate.displayName || "名前未設定"}</strong><span className="block truncate text-xs opacity-70">{candidate.email || candidate.uid}</span></span></button>)}</div></aside><main className="min-w-0 flex-1 px-4 py-8 sm:px-8 lg:px-12">{selectedUser ? <><header className="mb-6"><p className="text-xs font-bold tracking-[0.18em] text-brand">ADMIN WORKSPACE</p><h2 className="mt-2 font-maru text-3xl font-bold text-ink">{selectedUser.displayName || "名前未設定"}</h2><p className="mt-2 text-sm text-ink-soft">{selectedUser.email}</p></header><nav className="flex gap-2 overflow-x-auto border-b border-line"><Tab active={activeTab === "chat"} label="チャット" onClick={() => setActiveTab("chat")} /><Tab active={activeTab === "purchase"} label="購入許可" onClick={() => setActiveTab("purchase")} /><Tab active={activeTab === "subscription"} label="維持費サブスク" onClick={() => setActiveTab("subscription")} /><Tab active={activeTab === "estimate"} label="見積もり" onClick={() => setActiveTab("estimate")} /><Tab active={activeTab === "contract"} label="契約条件" onClick={() => setActiveTab("contract")} /><Tab active={activeTab === "profile"} label="ユーザー情報" onClick={() => setActiveTab("profile")} /><Tab active={activeTab === "system"} label="決済設定" onClick={() => setActiveTab("system")} /></nav>{activeTab === "chat" && <AdminChat roomId={selectedUid} />}{activeTab === "contract" && <ContractPanel uid={selectedUid} order={order} customerEmail={selectedUser.email || ""} />}{activeTab === "purchase" && <PurchasePanel order={order} editing={purchaseEditing} selectedIds={selectedIds} setSelectedIds={setSelectedIds} customOptions={customOptions} setCustomOptions={setCustomOptions} note={note} setNote={setNote} amounts={amounts} saving={saving} message={message} onEdit={() => setPurchaseEditing(true)} onCancel={cancelPurchaseEdit} onSave={savePurchase} />}{activeTab === "subscription" && <SubscriptionPanel order={order} editing={subscriptionEditing} price={subscriptionPrice} setPrice={setSubscriptionPrice} saving={saving} message={message} onEdit={() => setSubscriptionEditing(true)} onCancel={() => { setSubscriptionPrice(order?.subscriptionPrice ?? maintenanceSubscriptionPrice); setSubscriptionEditing(false); }} onSave={saveSubscription} />}{activeTab === "estimate" && <EstimatePanel uid={selectedUid} userName={selectedUser.displayName || selectedUser.email || "お客様"} />}{activeTab === "profile" && <ProfilePanel user={selectedUser} order={order} />}{activeTab === "system" && <SystemPanel password={password} />}</> : <p className="rounded-3xl border border-dashed border-line bg-white p-10 text-center text-sm text-ink-soft">ユーザーを選択してください。</p>}</main></div></div>;
 }

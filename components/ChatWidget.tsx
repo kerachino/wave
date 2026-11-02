@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { signInAnonymously } from "firebase/auth";
+import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import {
   isFirebaseConfigured,
   auth,
@@ -23,10 +23,15 @@ type ViewState =
 export function ChatWidget() {
   const pathname = usePathname();
   // URL末尾が #chat の場合は最初から開いておく（初期化時に判定）
-  const [open, setOpen] = useState(
-    typeof window !== "undefined" &&
-      (window.location.hash === "#chat" || pathname === "/contact"),
-  );
+  // server-side: window is undefined, so use pathname only
+  // client-side: check both hash and pathname in useEffect
+  const [open, setOpen] = useState(pathname === "/contact");
+  // クライアント側で #chat ハッシュがある場合はチャットを開く
+  useEffect(() => {
+    if (typeof window === "undefined" || window.location.hash !== "#chat") return;
+    const frameId = window.requestAnimationFrame(() => setOpen(true));
+    return () => window.cancelAnimationFrame(frameId);
+  }, [pathname]);
   const [view, setView] = useState<ViewState>({ status: "idle" });
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
@@ -37,34 +42,66 @@ export function ChatWidget() {
   useEffect(() => {
     if (!open || !isFirebaseConfigured || !auth) return;
     const currentAuth = auth;
-    let unsub: (() => void) | null = null;
+    let unsubscribeChat: (() => void) | null = null;
     let cancelled = false;
+    let activeUid: string | null = null;
+    let creatingAnonymousSession = false;
 
-    async function connect() {
+    function connect(user: NonNullable<typeof currentAuth.currentUser>) {
+      if (cancelled || activeUid === user.uid) return;
+      activeUid = user.uid;
+      unsubscribeChat?.();
+      unsubscribeChat = null;
+      setMessages([]);
       setView({ status: "connecting" });
-      try {
-        const { user } = await signInAnonymously(currentAuth);
-        if (cancelled) return;
-        const roomId = user.uid;
-        await ensureChatRoom(roomId);
-        if (cancelled) return;
-        unsub = subscribeChat(
-          roomId,
-          (list) => {
-            setMessages(list);
-            setView({ status: "ready", roomId });
-          },
-          () => setView({ status: "error" }),
-        );
-      } catch {
-        if (!cancelled) setView({ status: "error" });
-      }
+      void ensureChatRoom(user.uid)
+        .then(() => {
+          if (cancelled || activeUid !== user.uid) return;
+          unsubscribeChat = subscribeChat(
+            user.uid,
+            (list) => {
+              if (activeUid !== user.uid) return;
+              setMessages(list);
+              setView({ status: "ready", roomId: user.uid });
+            },
+            () => {
+              if (activeUid === user.uid) setView({ status: "error" });
+            },
+          );
+          if (!unsubscribeChat) setView({ status: "error" });
+        })
+        .catch(() => {
+          if (!cancelled && activeUid === user.uid) {
+            setView({ status: "error" });
+          }
+        });
     }
-    connect();
+
+    const unsubscribeAuth = onAuthStateChanged(currentAuth, (user) => {
+      if (user) {
+        connect(user);
+        return;
+      }
+      activeUid = null;
+      unsubscribeChat?.();
+      unsubscribeChat = null;
+      setMessages([]);
+      setView({ status: "connecting" });
+      if (creatingAnonymousSession) return;
+      creatingAnonymousSession = true;
+      void signInAnonymously(currentAuth)
+        .catch(() => {
+          if (!cancelled) setView({ status: "error" });
+        })
+        .finally(() => {
+          creatingAnonymousSession = false;
+        });
+    });
 
     return () => {
       cancelled = true;
-      unsub?.();
+      unsubscribeAuth();
+      unsubscribeChat?.();
     };
   }, [open]);
 
