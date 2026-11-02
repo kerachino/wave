@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function ContactPage() {
   const headerDescription =
-    "ホームページ制作のお見積もり依頼は、画面右下のチャットで24時間受け付けています。その他のお問い合わせはメールフォームをご利用ください。お電話での対応は行っておりません。返信は通常2〜3営業日以内にご連絡いたします。";
+    "お見積もり依頼等、画面右下のチャットからお気軽にお問い合わせください。";
 
   const chatDescription =
     "見積もり依頼や制作のご相談は、画面右下のチャットからお気軽にご相談ください。";
