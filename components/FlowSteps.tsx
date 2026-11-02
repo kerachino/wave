@@ -75,7 +75,7 @@ export function FlowSteps() {
             まずは<span className="text-brand">気軽に相談</span>
           </h2>
           <p className="max-w-md text-sm leading-8 text-ink-soft">
-            ご契約・お支払い・やり取りは、本アプリで完結します。
+            ご相談からご契約、お支払いまで、本アプリで完結します。
           </p>
         </div>
 
