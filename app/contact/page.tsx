@@ -41,6 +41,16 @@ export default function ContactPage() {
           <p className="mt-4 text-sm leading-7 text-ink-soft">
             担当者が営業時間内に順次お返事します。
           </p>
+          <p className="mt-3 text-xs leading-6 text-ink-mute">
+            チャット履歴を別の端末でも引き継ぐには、相談前にGoogleログインしてください。
+            匿名のままでは、端末変更やブラウザーのデータ削除後に履歴を開けなくなる場合があります。
+          </p>
+          <Link
+            href="/login?next=/contact"
+            className="mt-5 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-dark"
+          >
+            Googleログインして相談する
+          </Link>
           <p className="mt-2 text-xs font-bold text-brand-deep">
             💡 お見積もり依頼はチャットからどうぞ
           </p>

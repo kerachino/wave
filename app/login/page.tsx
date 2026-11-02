@@ -8,7 +8,9 @@ export default function LoginPage() {
   const { user, loading } = useAuth();
   const [error, setError] = useState("");
   useEffect(() => {
-    if (!loading && user && !user.isAnonymous) router.replace("/dashboard");
+    const next = new URLSearchParams(window.location.search).get("next");
+    const destination = next === "/contact" ? "/contact" : "/dashboard";
+    if (!loading && user && !user.isAnonymous) router.replace(destination);
   }, [loading, user, router]);
   return (
     <div className="mx-auto max-w-md px-4 py-20">
@@ -23,6 +25,10 @@ export default function LoginPage() {
         <div className="mt-8">
           <GoogleLoginButton
             authReady={!loading}
+            onSuccess={() => {
+              const next = new URLSearchParams(window.location.search).get("next");
+              router.replace(next === "/contact" ? "/contact" : "/dashboard");
+            }}
             onError={(loginError) => {
               const code =
                 typeof loginError === "object" &&
