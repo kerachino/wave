@@ -24,34 +24,13 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import { CheckIcon } from "@/components/icons";
-import {
-  contactBudgetOptions,
-  contactColorOptions,
-  contactDeadlineOptions,
-  contactIndustryOptions,
-  contactNeededPagesOptions,
-  contactPageCountOptions,
-  contactPreparedOptions,
-  contactPurposeOptions,
-  contactRequestOptions,
-} from "@/lib/site";
+import { contactInquiryTypes } from "@/lib/site";
 
 type FormState = {
   company: string;
   name: string;
   email: string;
   phone: string;
-  industry: string;
-  purpose: string;
-  target: string;
-  neededPages: string[];
-  pageCount: string;
-  color: string;
-  requests: string[];
-  prepared: string[];
-  budget: string;
-  deadline: string;
-  referenceUrl: string;
   message: string;
   _spam: string;
 };
@@ -61,17 +40,6 @@ const initial: FormState = {
   name: "",
   email: "",
   phone: "",
-  industry: "",
-  purpose: "",
-  target: "",
-  neededPages: [],
-  pageCount: "",
-  color: "",
-  requests: [],
-  prepared: [],
-  budget: "",
-  deadline: "",
-  referenceUrl: "",
   message: "",
   _spam: "",
 };
@@ -283,28 +251,8 @@ export function ContactForm() {
         aria-hidden="true"
       />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       <div>
         <label htmlFor="contact-company" className={labelClass}>
-
           <FieldLabel icon={FiBriefcase}>
             会社名・事業所名 <span className={optionalBadge}>任意</span>
           </FieldLabel>
@@ -373,184 +321,6 @@ export function ContactForm() {
           onChange={(e) => update("phone", e.target.value)}
         />
       </div>
-
-
-          <legend className="px-2 text-sm font-bold text-ink">
-            作りたい内容について <span className={optionalBadge}>任意</span>
-          </legend>
-          <p className="text-xs leading-6 text-ink-soft">
-            分かる範囲でお選びください。分からない場合は空欄のままで大丈夫です。
-          </p>
-
-          {/* 1. お店・会社について */}
-          <p className={sectionTitleClass}>
-            <FiBriefcase className="size-4" aria-hidden="true" />
-            1. お店・会社について
-          </p>
-          <div className="mt-4">
-            <label htmlFor="contact-industry" className={labelClass}>
-              <FieldLabel icon={FiBriefcase}>業種</FieldLabel>
-            </label>
-            <div className="relative mt-2">
-              <select
-                id="contact-industry"
-                className={`${inputClass} appearance-none pr-10`}
-                value={form.industry}
-                onChange={(e) => update("industry", e.target.value)}
-              >
-                <option value="">選択してください（任意）</option>
-                {contactIndustryOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
-              <FiChevronDown
-                className="pointer-events-none absolute right-4 top-1/2 size-4 -translate-y-1/2 text-ink-mute"
-                aria-hidden="true"
-              />
-            </div>
-          </div>
-
-          {/* 2. サイトの目的 */}
-          <p className={sectionTitleClass}>
-            <FiTarget className="size-4" aria-hidden="true" />
-            2. サイトの目的
-          </p>
-          <div className="mt-4">
-            <FieldLabel icon={FiMonitor}>Webサイトの用途</FieldLabel>
-            <PillRadio
-              name="contact-purpose"
-              options={contactPurposeOptions}
-              value={form.purpose}
-              onChange={(v) => update("purpose", v)}
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="contact-target" className={labelClass}>
-              <FieldLabel icon={FiUsers}>
-                ターゲット像（来てほしいお客さま）
-              </FieldLabel>
-            </label>
-            <input
-              id="contact-target"
-              type="text"
-              className={`mt-2 ${inputClass}`}
-              placeholder="例）近所の子育て世代、30代の女性など"
-              value={form.target}
-              onChange={(e) => update("target", e.target.value)}
-            />
-          </div>
-
-          {/* 3. ページ構成 */}
-          <p className={sectionTitleClass}>
-            <FiLayers className="size-4" aria-hidden="true" />
-            3. ページ構成
-          </p>
-          <div className="mt-4">
-            <FieldLabel icon={FiLayers}>
-              必要なページ（複数選択できます）
-            </FieldLabel>
-            <PillCheckbox
-              name="contact-needed-pages"
-              options={contactNeededPagesOptions}
-              values={form.neededPages}
-              onToggle={(v) => toggleInList("neededPages", v)}
-            />
-          </div>
-          <div className="mt-4">
-            <FieldLabel icon={FiPackage}>ページ数・枚数の目安</FieldLabel>
-            <PillRadio
-              name="contact-page-count"
-              options={contactPageCountOptions}
-              value={form.pageCount}
-              onChange={(v) => update("pageCount", v)}
-            />
-          </div>
-
-          {/* 4. デザイン */}
-          <p className={sectionTitleClass}>
-            <FiPenTool className="size-4" aria-hidden="true" />
-            4. デザイン
-          </p>
-          <div className="mt-4">
-            <FieldLabel icon={FiPenTool}>サイトの色・雰囲気</FieldLabel>
-            <PillRadio
-              name="contact-color"
-              options={contactColorOptions}
-              value={form.color}
-              onChange={(v) => update("color", v)}
-            />
-          </div>
-          <div className="mt-4">
-            <label htmlFor="contact-reference-url" className={labelClass}>
-              <FieldLabel icon={FiLink}>参考にしたいサイトのURL</FieldLabel>
-            </label>
-            <input
-              id="contact-reference-url"
-              type="url"
-              inputMode="url"
-              className={`mt-2 ${inputClass}`}
-              placeholder="例）https://example.com（あれば）"
-              value={form.referenceUrl}
-              onChange={(e) => update("referenceUrl", e.target.value)}
-            />
-          </div>
-
-          {/* 5. 素材・作業分担 */}
-          <p className={sectionTitleClass}>
-            <FiImage className="size-4" aria-hidden="true" />
-            5. 素材・作業分担
-          </p>
-          <div className="mt-4">
-            <FieldLabel icon={FiTool}>
-              対応してもらいたいこと（複数選択できます）
-            </FieldLabel>
-            <PillCheckbox
-              name="contact-requests"
-              options={contactRequestOptions}
-              values={form.requests}
-              onToggle={(v) => toggleInList("requests", v)}
-            />
-          </div>
-          <div className="mt-4">
-            <FieldLabel icon={FiPackage}>
-              用意しているもの（複数選択できます）
-            </FieldLabel>
-            <PillCheckbox
-              name="contact-prepared"
-              options={contactPreparedOptions}
-              values={form.prepared}
-              onToggle={(v) => toggleInList("prepared", v)}
-            />
-          </div>
-
-          {/* 6. 予算・時期 */}
-          <p className={sectionTitleClass}>
-            <FiDollarSign className="size-4" aria-hidden="true" />
-            6. 予算・時期
-          </p>
-          <div className="mt-4 grid gap-5 sm:grid-cols-2">
-            <div>
-              <FieldLabel icon={FiDollarSign}>ご予算の目安</FieldLabel>
-              <PillRadio
-                name="contact-budget"
-                options={contactBudgetOptions}
-                value={form.budget}
-                onChange={(v) => update("budget", v)}
-              />
-            </div>
-            <div>
-              <FieldLabel icon={FiCalendar}>ご希望の時期</FieldLabel>
-              <PillRadio
-                name="contact-deadline"
-                options={contactDeadlineOptions}
-                value={form.deadline}
-                onChange={(v) => update("deadline", v)}
-              />
-            </div>
-          </div>
-
 
       <div>
         <label htmlFor="contact-message" className={labelClass}>

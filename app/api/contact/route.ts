@@ -1,17 +1,6 @@
 ﻿import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import {
-  contactBudgetOptions,
-  contactColorOptions,
-  contactDeadlineOptions,
-  contactIndustryOptions,
-  contactNeededPagesOptions,
-  contactPageCountOptions,
-  contactPreparedOptions,
-  contactPurposeOptions,
-  contactRequestOptions,
-  site,
-} from "@/lib/site";
+import { site } from "@/lib/site";
 
 const SMTP = {
   host: process.env.SMTP_HOST,
@@ -59,17 +48,12 @@ export async function POST(request: Request) {
     name,
     email,
     phone,
-    industry,
-    purpose,
-    target,
+    
     neededPages,
     pageCount,
     color,
     requests,
     prepared,
-    budget,
-    deadline,
-    referenceUrl,
     message,
     _spam,
   } = (body ?? {}) as {
@@ -77,17 +61,6 @@ export async function POST(request: Request) {
     name?: unknown;
     email?: unknown;
     phone?: unknown;
-    industry?: unknown;
-    purpose?: unknown;
-    target?: unknown;
-    neededPages?: unknown;
-    pageCount?: unknown;
-    color?: unknown;
-    requests?: unknown;
-    prepared?: unknown;
-    budget?: unknown;
-    deadline?: unknown;
-    referenceUrl?: unknown;
     message?: unknown;
     _spam?: unknown;
   };
@@ -153,28 +126,19 @@ export async function POST(request: Request) {
       return "";
     }
   }
-  checkSingle(industry, contactIndustryOptions, "業種の選択が正しくありません。");
-  checkSingle(purpose, contactPurposeOptions, "Webサイトの用途の選択が正しくありません。");
-  const neededPagesList = checkMulti(
-    neededPages,
-    contactNeededPagesOptions,
-    "必要なページの選択が正しくありません。",
-  );
-  checkSingle(pageCount, contactPageCountOptions, "ページ数の目安が正しくありません。");
-  checkSingle(color, contactColorOptions, "色・雰囲気の選択が正しくありません。");
-  const requestsList = checkMulti(
-    requests,
-    contactRequestOptions,
-    "対応してもらいたいことの選択が正しくありません。",
-  );
-  const preparedList = checkMulti(
-    prepared,
-    contactPreparedOptions,
-    "用意しているものの選択が正しくありません。",
-  );
-  checkSingle(budget, contactBudgetOptions, "ご予算の目安が正しくありません。");
-  checkSingle(deadline, contactDeadlineOptions, "ご希望の時期が正しくありません。");
-  const referenceUrlText = checkUrl(referenceUrl, "参考URLの形式が正しくありません。");
+  
+  
+  
+    
+  
+  
+  
+    
+  
+    
+  
+  
+  
 
   if (errors.length > 0) {
     return NextResponse.json(
@@ -204,23 +168,22 @@ export async function POST(request: Request) {
   function textOrBlank(value: unknown): string {
     return typeof value === "string" && value !== "" ? value : "（未回答）";
   }
-  const industryText = textOrBlank(industry);
-  const purposeText = textOrBlank(purpose);
-  const targetText =
+  
+  
     typeof target === "string" && target.trim() !== ""
-      ? target.trim().slice(0, 200)
+      ? 
       : "（未回答）";
   const neededPagesText =
-    neededPagesList.length > 0 ? neededPagesList.join(" ／ ") : "（未回答）";
-  const pageCountText = textOrBlank(pageCount);
-  const colorText = textOrBlank(color);
+    ;
+  const ;
+  const ;
   const requestsText =
-    requestsList.length > 0 ? requestsList.join(" ／ ") : "（未回答）";
+    ;
   const preparedText =
-    preparedList.length > 0 ? preparedList.join(" ／ ") : "（未回答）";
-  const budgetText = textOrBlank(budget);
-  const deadlineText = textOrBlank(deadline);
-  const referenceText = referenceUrlText !== "" ? referenceUrlText : "（未回答）";
+    ;
+  const ;
+  const ;
+   referenceUrlText !== "" ? referenceUrlText : "（未回答）";
   const messageText = String(message).trim();
 
   const detailLines: string[] = [];
