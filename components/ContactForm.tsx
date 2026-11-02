@@ -298,7 +298,7 @@ export function ContactForm() {
             required
             autoComplete="email"
             className={`mt-2 ${inputClass}`}
-            placeholder="you@example.com"
+            placeholder="hatonoconnect@example.com"
             value={form.email}
             onChange={(e) => update("email", e.target.value)}
           />
@@ -316,7 +316,7 @@ export function ContactForm() {
           type="tel"
           autoComplete="tel"
           className={`mt-2 ${inputClass}`}
-          placeholder="例）090-0000-0000（連絡が取りやすい場合のみ）"
+          placeholder="000-0000-0000"
           value={form.phone}
           onChange={(e) => update("phone", e.target.value)}
         />
@@ -334,7 +334,7 @@ export function ContactForm() {
           rows={8}
           maxLength={5000}
           className={`mt-2 ${inputClass} resize-y`}
-          placeholder="例）店舗のホームページが欲しい。写真やお店の紹介を載せたい。予算は〇〇万円ほど。"
+          placeholder="お問い合わせ内容を入力してください"
           value={form.message}
           onChange={(e) => update("message", e.target.value)}
         />

@@ -40,7 +40,7 @@ export default function OperatorPage() {
       <PageHeader
         eyebrow="運営者情報・プロフィール"
         title="代表プロフィール"
-        description="はっきりお伝えできることが、何よりの安心材料だと思っています。"
+        description=""
       />
 
       {/* プロフィール */}

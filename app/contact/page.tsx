@@ -42,8 +42,8 @@ export default function ContactPage() {
             担当者が営業時間内に順次お返事します。
           </p>
           <p className="mt-3 text-xs leading-6 text-ink-mute">
-            チャット履歴を別の端末でも引き継ぐには、相談前にGoogleログインしてください。
-            匿名のままでは、端末変更やブラウザーのデータ削除後に履歴を開けなくなる場合があります。
+            原則ブラウザを閉じても会話履歴は保存されますが、ログインしていただくと、
+            他の端末でも履歴を引き継ぐことができます。
           </p>
           <Link
             href="/login?next=/contact"

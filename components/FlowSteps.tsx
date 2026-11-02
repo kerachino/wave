@@ -93,12 +93,12 @@ export function FlowSteps() {
                   >
                     {step.no}
                   </span>
-                  <span
+                  {/* <span
                     className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold ${channel.badge}`}
                   >
                     <channel.icon className="size-3.5" />
                     {channel.label}
-                  </span>
+                  </span> */}
                 </div>
                 <p className="mt-4 font-maru text-lg font-bold text-ink">
                   {step.title}
