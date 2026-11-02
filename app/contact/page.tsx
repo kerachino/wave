@@ -46,7 +46,7 @@ export default function ContactPage() {
             他の端末でも履歴を引き継ぐことができます。
           </p>
           <Link
-            href="/login?next=/contact"
+            href="/login?next=%2Fcontact%23chat"
             className="mt-5 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-brand-dark"
           >
             Googleログインして相談する

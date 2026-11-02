@@ -31,7 +31,7 @@ const steps = [
     channel: "mail",
     accent: "bg-brand text-white",
     desc: `まずはお気軽にご相談ください。制作の可否やお見積りをご案内します。`,
-    cta: { href: "/contact", label: "無料で相談する" },
+    cta: { href: "/contact#chat", label: "無料で相談する" },
   },
   {
     no: 2,

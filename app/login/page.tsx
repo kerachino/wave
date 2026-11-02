@@ -9,7 +9,10 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   useEffect(() => {
     const next = new URLSearchParams(window.location.search).get("next");
-    const destination = next === "/contact" ? "/contact" : "/dashboard";
+    const destination =
+      next === "/contact" || next === "/contact#chat"
+        ? next
+        : "/dashboard";
     if (!loading && user && !user.isAnonymous) router.replace(destination);
   }, [loading, user, router]);
   return (
@@ -27,7 +30,11 @@ export default function LoginPage() {
             authReady={!loading}
             onSuccess={() => {
               const next = new URLSearchParams(window.location.search).get("next");
-              router.replace(next === "/contact" ? "/contact" : "/dashboard");
+              router.replace(
+                next === "/contact" || next === "/contact#chat"
+                  ? next
+                  : "/dashboard",
+              );
             }}
             onError={(loginError) => {
               const code =

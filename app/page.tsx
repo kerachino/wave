@@ -92,7 +92,7 @@ export default function Home() {
               </ul>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href="/contact"
+                  href="/contact#chat"
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#f2688c] px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_12px_26px_-10px_rgb(242_104_140_/_0.6)] transition-all hover:-translate-y-0.5 hover:brightness-105"
                 >
                   <MailIcon className="size-5" />
@@ -447,7 +447,7 @@ export default function Home() {
                 気になることをまとめました。ここにない質問はお問い合わせフォームからお気軽にどうぞ。
               </p>
               <Link
-                href="/contact"
+                href="/contact#chat"
                 className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-brand px-6 py-3 text-sm font-bold text-white shadow-soft transition-all hover:-translate-y-0.5 hover:bg-brand-dark"
               >
                 質問を送ってみる <ArrowIcon className="size-4" />

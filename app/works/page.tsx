@@ -69,7 +69,7 @@ export default function WorksPage() {
             </p>
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <ButtonLink
-                href="/contact"
+                href="/contact#chat"
                 variant="accent"
                 size="lg"
                 className="flex-1"

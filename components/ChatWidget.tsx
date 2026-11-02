@@ -26,17 +26,47 @@ export function ChatWidget() {
   // server-side: window is undefined, so use pathname only
   // client-side: check both hash and pathname in useEffect
   const [open, setOpen] = useState(pathname === "/contact");
-  // クライアント側で #chat ハッシュがある場合はチャットを開く
-  useEffect(() => {
-    if (typeof window === "undefined" || window.location.hash !== "#chat") return;
-    const frameId = window.requestAnimationFrame(() => setOpen(true));
-    return () => window.cancelAnimationFrame(frameId);
-  }, [pathname]);
   const [view, setView] = useState<ViewState>({ status: "idle" });
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function openFromChatLink(event: MouseEvent) {
+      if (!(event.target instanceof Element)) return;
+      const link = event.target.closest("a[href]");
+      if (!(link instanceof HTMLAnchorElement)) return;
+      const url = new URL(link.href, window.location.href);
+      if (url.pathname === "/contact" && url.hash === "#chat") {
+        setOpen(true);
+      }
+    }
+
+    function openFromHash() {
+      if (window.location.hash === "#chat") setOpen(true);
+    }
+
+    document.addEventListener("click", openFromChatLink);
+    window.addEventListener("hashchange", openFromHash);
+    const frameId = window.requestAnimationFrame(openFromHash);
+    return () => {
+      document.removeEventListener("click", openFromChatLink);
+      window.removeEventListener("hashchange", openFromHash);
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [pathname]);
+
+  function closeChat() {
+    setOpen(false);
+    if (window.location.hash === "#chat") {
+      window.history.replaceState(
+        window.history.state,
+        "",
+        `${window.location.pathname}${window.location.search}`,
+      );
+    }
+  }
 
   // 開いたときにFirebaseへ接続（未設定の場合は「準備中」表示のみ）
   useEffect(() => {
@@ -141,7 +171,7 @@ export function ChatWidget() {
       {/* フローティングボタン */}
       <button
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => (open ? closeChat() : setOpen(true))}
         aria-label={open ? "チャットを閉じる" : "チャットを開く"}
         className="fixed bottom-5 right-5 z-50 grid size-14 place-items-center rounded-full bg-brand text-white shadow-lift ring-4 ring-brand/15 transition-all hover:scale-105 hover:bg-brand-dark"
       >
@@ -185,7 +215,7 @@ export function ChatWidget() {
             </div>
             <button
               type="button"
-              onClick={() => setOpen(false)}
+              onClick={closeChat}
               aria-label="閉じる"
               className="grid size-8 place-items-center rounded-full text-white/80 hover:bg-white/10"
             >
