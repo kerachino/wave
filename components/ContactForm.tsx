@@ -187,7 +187,9 @@ function PillCheckbox({
               onChange={() => onToggle(option)}
               className="sr-only"
             />
-            {checked && <FiCheck className="size-3.5 shrink-0" aria-hidden="true" />}
+            {checked && (
+              <FiCheck className="size-3.5 shrink-0" aria-hidden="true" />
+            )}
             {option}
           </label>
         );
@@ -341,13 +343,12 @@ export function ContactForm() {
       <div>
         <label htmlFor="contact-company" className={labelClass}>
           <FieldLabel icon={FiBriefcase}>
-            会社名・事業所名 <span className={requiredBadge}>必須</span>
+            会社名・事業所名 <span className={optionalBadge}>任意</span>
           </FieldLabel>
         </label>
         <input
           id="contact-company"
           type="text"
-          required
           autoComplete="organization"
           className={`mt-2 ${inputClass}`}
           placeholder="例）株式会社〇〇 / 〇〇商店"
@@ -522,9 +523,7 @@ export function ContactForm() {
           </div>
           <div className="mt-4">
             <label htmlFor="contact-reference-url" className={labelClass}>
-              <FieldLabel icon={FiLink}>
-                参考にしたいサイトのURL
-              </FieldLabel>
+              <FieldLabel icon={FiLink}>参考にしたいサイトのURL</FieldLabel>
             </label>
             <input
               id="contact-reference-url"

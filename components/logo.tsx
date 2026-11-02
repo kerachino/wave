@@ -56,12 +56,12 @@ export function Wordmark() {
   );
 }
 
-/** ヘッダー用ロゴ（logo.png） */
+/** ヘッダー用ロゴ */
 export function Logo({ className = "" }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <Image
-        src="/logo.png"
+        src="/logo.jpg"
         alt={site.name}
         width={40}
         height={40}
@@ -73,5 +73,3 @@ export function Logo({ className = "" }: { className?: string }) {
     </span>
   );
 }
-
-

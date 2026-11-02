@@ -15,15 +15,15 @@ export default function ContactPage() {
   return (
     <div className="flex flex-col">
       <PageHeader
-        eyebrow="お問い合わせ"
-        title="メール・チャットにて、ご相談受付中"
+        eyebrow="Contact"
+        title="お問い合わせ"
         description="24時間いつでも送信できます。お電話での対応は行っておりませんので、ご了承ください。"
       />
 
       {/* メールフォーム */}
       <Section className="bg-paper">
         <SectionHeading
-          eyebrow="メールでのお問い合わせ"
+          // eyebrow="メールでのお問い合わせ"
           title="お問い合わせフォーム"
         />
         <div className="mx-auto mt-8 max-w-2xl rounded-3xl border border-ink/10 bg-white p-8 shadow-sm">
