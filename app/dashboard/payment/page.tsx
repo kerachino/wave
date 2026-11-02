@@ -193,7 +193,7 @@ function ProjectPayment({
         )}
       </ContractTermsBlock>
       <p className="mt-3 text-center text-xs text-ink-mute">
-        制作開始前に全額をお支払いいただきます。お支払いの確認後、チャットなどの機能をご利用いただけます。
+        制作開始前に全額をお支払いいただきます。チャットはお支払い前でもご利用いただけます。
       </p>
     </section>
   );
@@ -603,7 +603,7 @@ function SquareInvoiceButton({
         </div>
       )}
       <p className="mt-3 text-center text-xs text-ink-mute">
-        請求書は Square からメールで届きます。お支払いの確認後、自動的に制限が解除されます。
+        請求書は Square からメールで届きます。お支払いの確認後、制作開始など次の手続きに進めます。
       </p>
     </div>
   );
@@ -666,9 +666,8 @@ function PaidNotice({ paidAt, amount }: { paidAt?: unknown; amount: number }) {
       <p className="font-bold">お支払いを確認しました（{yen(amount)}）</p>
       <p className="mt-1 text-xs">
         {date ? `${date.toLocaleString("ja-JP")} に確認` : "お支払い確認済み"}
-        ／利用制限は解除されています。
+        ／制作開始など次の手続きに進めます。チャットはお支払い前もご利用いただけます。
       </p>
     </div>
   );
 }
-

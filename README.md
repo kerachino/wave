@@ -70,9 +70,10 @@ npm run dev
 1. [Firebase コンソール](https://console.firebase.google.com) でプロジェクト作成
 2. 認証プロバイダで「Google」を有効化
 3. `NEXT_PUBLIC_FIREBASE_*` を Firebase SDK の設定からコピー
-4. `firestore.rules` の内容を Firestore > Rules に貼り付け
+4. 最新の `firestore.rules` の内容を Firestore > Rules に貼り付けて公開
 5. Firebase コンソールで「匿名認証」も有効化してください。チャット開始時に匿名ユーザーを作成し、ログイン画面でGoogleログインすると同じFirebase UIDのままGoogleアカウントへリンクします。チャット履歴とユーザー情報はそのUIDに紐づくため、管理画面でも別ユーザーにはなりません
-6. Googleリンク後にユーザーのメールアドレス等をFirestoreへ反映するため、`firestore.rules` の最新内容を適用してください。リンクできない場合（Googleアカウントがすでに別UIDに紐づいている等）は、別アカウントでログインする必要があります
+6. Googleリンクできない場合（Googleアカウントがすでに別UIDに紐づいている等）は、別アカウントでログインする必要があります
+7. チャットのメッセージは100文字以内、ユーザーからの送信は5秒に1回までです。この制限は画面側に加えてFirestoreルールでも検証するため、ルールを変更した場合は必ず最新の `firestore.rules` をFirebaseコンソールへ再適用してください
 
 ### Square（オンライン決済）の設定
 
@@ -89,7 +90,7 @@ npm run dev
 3. 購入ボタン（「同意して購入する」）を押すと `/api/square/invoice` が同意を検証し、同意ログを記録してから Square の Invoices API で請求書を作成 → 公開（publish）し、Square がお客さまへ請求書メールを送信
 4. お客さまがお支払いを完了すると、Square から `invoice.payment_made` が `/api/square/webhook` に届く
 5. アプリが署名（`x-square-hmacsha256-signature`）を検証し、`orders/{uid}` を支払い済みに更新して制限（`accessUnlocked`）を解除
-6. マイページのチャットなど、制限されていた機能が利用可能になる
+6. お支払い確認後、制作開始など次の手続きへ進めます（チャットはお支払い前から利用できます）
 
 > 金額はサーバー側の `projects/{projectId}` の内容（基本プラン＋付け足し／維持費）から組み立てます。旧 `orders/{uid}` からの移行データも対象です。
 > 請求書の再発行は行わず、発行済みの請求書を再利用します（二重請求の防止）。

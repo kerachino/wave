@@ -43,17 +43,43 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == uid;
     }
 
+    function validChatMessage() {
+      return request.resource.data.keys().hasOnly(['uid', 'sender', 'text', 'createdAt'])
+        && request.resource.data.uid is string
+        && request.resource.data.sender in ['user', 'staff']
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 100
+        && request.resource.data.createdAt == request.time;
+    }
+
     // ---- チャットルーム ----
     match /chat_rooms/{roomId} {
-      allow create: if isOwner(roomId) || isStaff();
-      allow read, update, delete: if isOwner(roomId) || isStaff();
+      allow create: if isStaff()
+        || (isOwner(roomId)
+          && request.resource.data.keys().hasOnly(['uid', 'createdAt', 'updatedAt'])
+          && request.resource.data.uid == roomId
+          && request.resource.data.createdAt == request.time
+          && request.resource.data.updatedAt == request.time);
+      allow read, delete: if isOwner(roomId) || isStaff();
+      allow update: if isStaff()
+        || (isOwner(roomId)
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['lastUserMessageAt'])
+          && request.resource.data.lastUserMessageAt == request.time
+          && (!('lastUserMessageAt' in resource.data)
+            || resource.data.lastUserMessageAt <= request.time - duration.value(5, 's')));
       allow list: if isSignedIn();
 
       // ---- メッセージ ----
       match /messages/{messageId} {
         allow read: if isOwner(roomId) || isStaff();
-        allow create: if (isOwner(roomId) || isStaff())
-          && request.resource.data.uid == roomId;
+        allow create: if validChatMessage()
+          && request.resource.data.uid == roomId
+          && ((isOwner(roomId)
+              && request.resource.data.sender == 'user'
+              && getAfter(/databases/$(database)/documents/chat_rooms/$(roomId)).data.lastUserMessageAt == request.time)
+            || (isStaff() && request.resource.data.sender == 'staff'));
       }
     }
 

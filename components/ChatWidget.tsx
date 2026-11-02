@@ -7,6 +7,9 @@ import { onAuthStateChanged, signInAnonymously } from "firebase/auth";
 import {
   isFirebaseConfigured,
   auth,
+  CHAT_MESSAGE_COOLDOWN_MS,
+  CHAT_MESSAGE_MAX_LENGTH,
+  ChatRateLimitError,
   ensureChatRoom,
   subscribeChat,
   sendChatMessage,
@@ -30,7 +33,18 @@ export function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [sendError, setSendError] = useState("");
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return;
+    const timer = window.setTimeout(
+      () => setCooldownSeconds((seconds) => Math.max(0, seconds - 1)),
+      1_000,
+    );
+    return () => window.clearTimeout(timer);
+  }, [cooldownSeconds]);
 
   useEffect(() => {
     function openFromChatLink(event: MouseEvent) {
@@ -146,13 +160,20 @@ export function ChatWidget() {
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     const trimmed = text.trim();
-    if (!trimmed || view.status !== "ready") return;
+    if (!trimmed || view.status !== "ready" || sending || cooldownSeconds > 0) return;
     setSending(true);
+    setSendError("");
     try {
       await sendChatMessage(view.roomId, trimmed);
       setText("");
-    } catch {
-      alert("送信に失敗しました。時間をおいて再度お試しください。");
+      setCooldownSeconds(Math.ceil(CHAT_MESSAGE_COOLDOWN_MS / 1_000));
+    } catch (error) {
+      if (error instanceof ChatRateLimitError) {
+        setCooldownSeconds(error.retryAfterSeconds);
+        setSendError(`連続送信防止のため、あと${error.retryAfterSeconds}秒お待ちください。`);
+      } else {
+        setSendError("送信に失敗しました。時間をおいて再度お試しください。");
+      }
     } finally {
       setSending(false);
     }
@@ -211,7 +232,7 @@ export function ChatWidget() {
             </span>
             <div className="flex-1">
               <p className="text-sm font-bold">チャット相談</p>
-              <p className="text-[11px] text-white/70">担当者がお返事します</p>
+              <p className="text-[11px] text-white/70">100文字まで・送信は5秒ごと</p>
             </div>
             <button
               type="button"
@@ -272,17 +293,31 @@ export function ChatWidget() {
               onSubmit={handleSend}
               className="flex items-center gap-2 border-t border-ink/10 bg-white p-3"
             >
-              <input
-                type="text"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="メッセージを入力"
-                disabled={view.status !== "ready" || sending}
-                className="flex-1 rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-mute focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
-              />
+              <div className="min-w-0 flex-1">
+                <input
+                  type="text"
+                  value={text}
+                  onChange={(event) =>
+                    setText(
+                      Array.from(event.target.value)
+                        .slice(0, CHAT_MESSAGE_MAX_LENGTH)
+                        .join(""),
+                    )
+                  }
+                  maxLength={CHAT_MESSAGE_MAX_LENGTH * 2}
+                  placeholder="メッセージを入力"
+                  disabled={view.status !== "ready" || sending}
+                  className="w-full rounded-full border border-line bg-white px-4 py-2.5 text-sm text-ink placeholder:text-ink-mute focus:border-brand focus:outline-none focus:ring-4 focus:ring-brand/10"
+                  aria-label="メッセージを入力（100文字以内）"
+                />
+                <p className="mt-1 px-3 text-[10px] text-ink-mute">
+                  {Array.from(text).length}/{CHAT_MESSAGE_MAX_LENGTH}
+                  {cooldownSeconds > 0 && ` · ${cooldownSeconds}秒後に送信できます`}
+                </p>
+              </div>
               <button
                 type="submit"
-                disabled={view.status !== "ready" || sending || !text.trim()}
+                disabled={view.status !== "ready" || sending || cooldownSeconds > 0 || !text.trim()}
                 aria-label="送信"
                 className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white shadow-soft transition-colors hover:bg-brand-dark disabled:opacity-40"
               >
@@ -296,6 +331,11 @@ export function ChatWidget() {
                 </svg>
               </button>
             </form>
+          )}
+          {sendError && (
+            <p className="border-t border-ink/5 bg-white px-4 py-2 text-center text-xs text-red-600">
+              {sendError}
+            </p>
           )}
 
           <p className="border-t border-ink/5 bg-cream px-4 py-2 text-[10px] leading-4 text-ink-mute">

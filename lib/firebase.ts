@@ -22,7 +22,9 @@ import {
   orderBy,
   limit,
   onSnapshot,
+  runTransaction,
   serverTimestamp,
+  Timestamp,
   type Firestore,
   type DocumentData,
   type QuerySnapshot,
@@ -78,6 +80,16 @@ export type ChatMessage = {
   text: string;
   createdAt?: Date;
 };
+
+export const CHAT_MESSAGE_MAX_LENGTH = 100;
+export const CHAT_MESSAGE_COOLDOWN_MS = 5_000;
+
+export class ChatRateLimitError extends Error {
+  constructor(public readonly retryAfterSeconds: number) {
+    super(`次のメッセージは${retryAfterSeconds}秒後に送信できます。`);
+    this.name = "ChatRateLimitError";
+  }
+}
 
 /** 指定ルームのメッセージをリアルタイム購読する */
 export function subscribeChat(
@@ -140,13 +152,31 @@ export async function sendChatMessage(
   roomId: string,
   text: string,
 ): Promise<void> {
-  if (!db) return;
+  if (!db) throw new Error("Firebase is not configured.");
+  const trimmed = text.trim();
+  if (!trimmed || Array.from(trimmed).length > CHAT_MESSAGE_MAX_LENGTH) {
+    throw new Error("メッセージは1〜100文字で入力してください。");
+  }
   const roomDoc = doc(db, "chat_rooms", roomId);
-  await addDoc(collection(roomDoc, "messages"), {
-    uid: roomId,
-    sender: "user",
-    text,
-    createdAt: serverTimestamp(),
+  const messageDoc = doc(collection(roomDoc, "messages"));
+  await runTransaction(db, async (transaction) => {
+    const room = await transaction.get(roomDoc);
+    if (!room.exists()) throw new Error("チャットルームが見つかりません。");
+    const lastSentAt = room.data().lastUserMessageAt;
+    if (lastSentAt instanceof Timestamp) {
+      const remainingMs =
+        CHAT_MESSAGE_COOLDOWN_MS - (Date.now() - lastSentAt.toMillis());
+      if (remainingMs > 0) {
+        throw new ChatRateLimitError(Math.ceil(remainingMs / 1_000));
+      }
+    }
+    transaction.update(roomDoc, { lastUserMessageAt: serverTimestamp() });
+    transaction.set(messageDoc, {
+      uid: roomId,
+      sender: "user",
+      text: trimmed,
+      createdAt: serverTimestamp(),
+    });
   });
 }
 
@@ -155,11 +185,15 @@ export async function sendStaffChatMessage(
   roomId: string,
   text: string,
 ): Promise<void> {
-  if (!db) return;
+  if (!db) throw new Error("Firebase is not configured.");
+  const trimmed = text.trim();
+  if (!trimmed || Array.from(trimmed).length > CHAT_MESSAGE_MAX_LENGTH) {
+    throw new Error("メッセージは1〜100文字で入力してください。");
+  }
   await addDoc(collection(doc(db, "chat_rooms", roomId), "messages"), {
     uid: roomId,
     sender: "staff",
-    text,
+    text: trimmed,
     createdAt: serverTimestamp(),
   });
 }

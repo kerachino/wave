@@ -46,6 +46,8 @@ export default function DashboardPage() {
   const steps = projectSteps(selected);
   const contractDone = phase.contract === "paid";
   const subscriptionDone = phase.subscription === "paid";
+  const completedSteps = steps.filter((step) => step.state === "done").length;
+  const progressPercent = Math.round((completedSteps / steps.length) * 100);
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -115,56 +117,67 @@ export default function DashboardPage() {
           </section>
 
           <section className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
-            <h2 className="font-maru text-xl font-bold text-ink">
-              進行ステップ
-            </h2>
-            <ol className="mt-5 space-y-3">
-              {steps.map((step) => (
-                <StepRow key={step.no} step={step} />
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <p className="text-xs font-bold tracking-[0.14em] text-brand">
+                  PROJECT PROGRESS
+                </p>
+                <h2 className="mt-1 font-maru text-xl font-bold text-ink">
+                  進行ステップ
+                </h2>
+              </div>
+              <p className="text-sm font-bold text-ink-soft">
+                <span className="text-lg text-brand">{completedSteps}</span>
+                <span className="mx-1">/</span>
+                {steps.length} ステップ完了
+              </p>
+            </div>
+            <div
+              className="mt-4 h-2 overflow-hidden rounded-full bg-cream"
+              role="progressbar"
+              aria-label="進行ステップ"
+              aria-valuemin={0}
+              aria-valuemax={steps.length}
+              aria-valuenow={completedSteps}
+            >
+              <div
+                className="h-full rounded-full bg-midori transition-[width]"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+            <ol className="mt-5">
+              {steps.map((step, index) => (
+                <li key={step.no}>
+                  <StepRow step={step} />
+                  {index < steps.length - 1 && (
+                    <div className="flex h-8 items-center pl-[1.05rem]" aria-hidden="true">
+                      <span className="h-full border-l-2 border-dashed border-brand/30" />
+                      <span className="-ml-[0.4rem] text-sm font-bold text-brand">
+                        ↓
+                      </span>
+                    </div>
+                  )}
+                </li>
               ))}
             </ol>
             <p className="mt-5 rounded-2xl bg-cream px-4 py-3 text-xs leading-6 text-ink-soft">
-              契約の金額や详细内容はお支払い画面でご確認いただけます。切り替えている依頼以外は、この画面には表示されません。
+              契約の金額や詳細内容はお支払い画面でご確認いただけます。切り替えている依頼以外は、この画面には表示されません。
             </p>
-          </section>
-
-          <section className="rounded-3xl border border-line bg-white p-6 shadow-card">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-maru text-xl font-bold text-ink">
-                次の手続き
-              </h2>
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-bold ${
-                  phase.unlocked
-                    ? "bg-brand-soft text-brand-deep"
-                    : "bg-cream text-ink-mute"
-                }`}
+            <div className="mt-5 flex flex-wrap gap-3 border-t border-line pt-5">
+              <Link
+                href="/dashboard/chat"
+                className="rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
               >
-                {phase.unlocked ? "利用開始できます" : "お支払い待ち"}
-              </span>
-            </div>
-            <p className="mt-2 text-sm leading-7 text-ink-soft">
-              {!contractDone
-                ? "取引条件をご確認のうえ、チェックを入れてお支払いへ進んでください。"
-                : phase.published
-                  ? "サイト公開後のご相談は、チャットで受け付けています。"
-                  : "担当者とチャットで制作・公開を進めます。"}
-            </p>
-            <div className="mt-5 flex flex-wrap gap-3">
+                チャットで担当者に相談
+              </Link>
               {!contractDone && (
                 <Link
                   href="/dashboard/payment"
-                  className="rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
+                  className="rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand transition hover:bg-brand-soft"
                 >
-                  お支払い画面へ進む
+                  お支払い内容を確認
                 </Link>
               )}
-              <Link
-                href={phase.unlocked ? "/dashboard/chat" : "/dashboard/payment"}
-                className="rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand transition hover:bg-brand-soft"
-              >
-                {phase.unlocked ? "チャットを開く" : "手続きを確認"}
-              </Link>
             </div>
           </section>
         </>
@@ -225,36 +238,45 @@ function StatusCard({
 }
 
 function StepRow({ step }: { step: ProjectStep }) {
-  const marker =
-    step.state === "done"
-      ? "完了"
-      : step.state === "current"
-        ? "進行中"
-        : "未着手";
-  const markerClass =
-    step.state === "done"
-      ? "bg-brand text-white"
-      : step.state === "current"
-        ? "bg-brand-soft text-brand-deep"
-        : "bg-white text-ink-mute shadow-sm";
+  const styles = {
+    done: {
+      marker: "完了",
+      row: "border-midori/40 bg-midori-soft/40",
+      icon: "bg-midori text-ink",
+      badge: "bg-white text-midori-dark",
+    },
+    current: {
+      marker: "進行中",
+      row: "border-brand/50 bg-brand-soft/40 ring-1 ring-brand/10",
+      icon: "bg-brand text-white",
+      badge: "bg-brand text-white",
+    },
+    todo: {
+      marker: "これから",
+      row: "border-line bg-cream/30",
+      icon: "bg-white text-ink-mute shadow-sm",
+      badge: "bg-white text-ink-mute",
+    },
+  }[step.state];
   return (
-    <li className="flex items-start gap-4 rounded-2xl border border-line bg-cream/40 p-4">
+    <div className={`flex items-start gap-4 rounded-2xl border p-4 ${styles.row}`}>
       <span
-        className={`grid size-8 shrink-0 place-items-center rounded-full text-xs font-bold ${markerClass}`}
-        aria-hidden="true"
+        className={`grid size-9 shrink-0 place-items-center rounded-full text-xs font-bold ${styles.icon}`}
+        aria-label={`${step.no}番目`}
       >
         {step.state === "done" ? "✓" : step.no}
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <p className="font-bold text-ink">{step.title}</p>
-          <span className="text-xs font-bold text-brand-deep">{marker}</span>
+          <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${styles.badge}`}>
+            {styles.marker}
+          </span>
         </div>
         <p className="mt-1 text-xs leading-6 text-ink-soft">
           {step.description}
         </p>
       </div>
-    </li>
+    </div>
   );
 }
-

@@ -41,7 +41,7 @@ export function legacyProject(uid: string, order: Order): Project {
     ...order,
     id: uid,
     uid,
-    title: "ご依頼（既存）",
+    title: "お支払い",
     legacy: true,
     createdAt: stamp.updatedAt ?? stamp.createdAt,
   };
@@ -109,7 +109,7 @@ export type ProjectPhase = {
   contract: "unset" | "unpaid" | "paid";
   /** 維持費サブスク：未許可／お支払い待ち／完了 */
   subscription: "unapproved" | "unpaid" | "paid";
-  /** チャットなどの利用制限 */
+  /** 決済後に利用可能となる機能 */
   unlocked: boolean;
   /** サイトの公開（公開URLが設定されているか） */
   published: boolean;
@@ -218,4 +218,3 @@ export function projectSteps(project: Project | null | undefined): ProjectStep[]
     },
   ];
 }
-

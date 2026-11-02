@@ -4,7 +4,7 @@
 // Square でお支払いが完了すると `invoice.payment_made` が届きます。
 // 1. 署名（x-square-hmacsha256-signature）を検証する
 // 2. 請求書に対応する顧客（orders/{uid}）を特定する
-// 3. 支払い済みとして記録し、制限を解除する（accessUnlocked = true）
+// 3. 支払い済みとして記録し、決済後の機能制限を解除する（accessUnlocked = true）
 //
 // 通知URLの例: https://hatonoconnect.jp/api/square/webhook
 // Square の Webhook サブスクリプションに登録した URL と

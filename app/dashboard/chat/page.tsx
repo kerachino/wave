@@ -1,62 +1,42 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { collection, doc, onSnapshot, query, where } from "firebase/firestore";
 import { useAuth } from "@/components/AuthProvider";
 import {
   db,
   ensureChatRoom,
   isFirebaseConfigured,
+  CHAT_MESSAGE_COOLDOWN_MS,
+  CHAT_MESSAGE_MAX_LENGTH,
+  ChatRateLimitError,
   sendChatMessage,
   subscribeChat,
   type ChatMessage,
 } from "@/lib/firebase";
-import { isAccessUnlocked, type Order } from "@/lib/model";
-import { projectsCollection, type Project } from "@/lib/projects";
 
 export default function DashboardChatPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [text, setText] = useState("");
-  const [connecting, setConnecting] = useState(true);
+  const [connecting, setConnecting] = useState(isFirebaseConfigured);
   const [error, setError] = useState("");
   const [newMessageIds, setNewMessageIds] = useState<string[]>([]);
-  const [accessUnlocked, setAccessUnlocked] = useState(false);
-  const [orderReady, setOrderReady] = useState(!isFirebaseConfigured);
+  const [sending, setSending] = useState(false);
+  const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const receivedMessages = useRef(false);
   const messageIds = useRef<string[]>([]);
 
-  // ---- チャットはユーザー単位.room なので、支払い済みの有無は
-  // いずれかのプロジェクト（本契約 or 維持費）で判定します。
   useEffect(() => {
-    if (!user) return;
-    const firestore = db;
-    if (!firestore || !isFirebaseConfigured) return;
-    const legacyRef = doc(firestore, "orders", user.uid);
-    return onSnapshot(
-      query(
-        collection(firestore, projectsCollection),
-        where("uid", "==", user.uid),
-      ),
-      (snapshot) => {
-        const list = snapshot.docs.map((item) => item.data() as Project);
-        setAccessUnlocked(list.some((project) => isAccessUnlocked(project)));
-        setOrderReady(true);
-      },
-      // 購読できない場合は旧 orders/{uid} を見ます。
-      () =>
-        onSnapshot(legacyRef, (legacy) => {
-          setAccessUnlocked(
-            legacy.exists() ? isAccessUnlocked(legacy.data() as Order) : false,
-          );
-          setOrderReady(true);
-        }),
+    if (cooldownSeconds <= 0) return;
+    const timer = window.setTimeout(
+      () => setCooldownSeconds((seconds) => Math.max(0, seconds - 1)),
+      1_000,
     );
-  }, [user]);
+    return () => window.clearTimeout(timer);
+  }, [cooldownSeconds]);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
@@ -105,18 +85,28 @@ export default function DashboardChatPage() {
 
   async function submitMessage(event: React.FormEvent) {
     event.preventDefault();
-    if (!user || !text.trim()) return;
+    const trimmed = text.trim();
+    if (!user || !trimmed || sending || cooldownSeconds > 0) return;
+    setError("");
+    setSending(true);
     try {
-      await sendChatMessage(user.uid, text.trim());
+      await sendChatMessage(user.uid, trimmed);
       setText("");
-    } catch {
-      setError("送信に失敗しました。もう一度お試しください。");
+      setCooldownSeconds(Math.ceil(CHAT_MESSAGE_COOLDOWN_MS / 1_000));
+    } catch (caught) {
+      if (caught instanceof ChatRateLimitError) {
+        setCooldownSeconds(caught.retryAfterSeconds);
+        setError(`連続送信防止のため、あと${caught.retryAfterSeconds}秒お待ちください。`);
+      } else {
+        setError("送信に失敗しました。もう一度お試しください。");
+      }
+    } finally {
+      setSending(false);
     }
   }
 
-  if (loading || !user || !orderReady)
+  if (loading || !user)
     return <p className="text-sm text-ink-mute">読み込み中...</p>;
-  const unlocked = accessUnlocked;
   return (
     <div className="mx-auto max-w-4xl">
       <div className="mb-6">
@@ -125,12 +115,9 @@ export default function DashboardChatPage() {
         </p>
         <h1 className="mt-2 font-maru text-3xl font-bold text-ink">チャット</h1>
         <p className="mt-2 text-sm text-ink-soft">
-          担当者とのやり取りをここで確認できます。
+          お支払い前でもご利用いただけます。1回100文字まで、送信は5秒に1回です。
         </p>
       </div>
-      {!unlocked ? (
-        <LockedNotice />
-      ) : (
       <section className="flex h-[min(70vh,40rem)] min-h-[34rem] flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-card">
         <header className="flex items-center gap-3 border-b border-line px-5 py-4">
           <span className="grid size-10 place-items-center rounded-full bg-brand-soft font-bold text-brand">
@@ -172,45 +159,36 @@ export default function DashboardChatPage() {
         >
           <textarea
             value={text}
-            onChange={(event) => setText(event.target.value)}
+            onChange={(event) =>
+              setText(
+                Array.from(event.target.value)
+                  .slice(0, CHAT_MESSAGE_MAX_LENGTH)
+                  .join(""),
+              )
+            }
+            maxLength={CHAT_MESSAGE_MAX_LENGTH * 2}
             rows={1}
             placeholder="メッセージを入力"
+            disabled={connecting || !isFirebaseConfigured || sending}
+            aria-label="メッセージを入力（100文字以内）"
             className="max-h-32 min-h-11 flex-1 resize-none rounded-2xl border border-line bg-cream px-4 py-3 text-sm text-ink outline-none focus:border-brand focus:ring-2 focus:ring-brand/15"
           />
-          <button
-            type="submit"
-            disabled={!text.trim() || connecting || !isFirebaseConfigured}
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark disabled:opacity-40"
-            aria-label="メッセージを送信"
-          >
-            ↑
-          </button>
+          <div className="flex flex-col items-center gap-1">
+            <span className="text-[10px] text-ink-mute">
+              {Array.from(text).length}/{CHAT_MESSAGE_MAX_LENGTH}
+            </span>
+            <button
+              type="submit"
+              disabled={!text.trim() || connecting || sending || cooldownSeconds > 0 || !isFirebaseConfigured}
+              className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark disabled:opacity-40"
+              aria-label="メッセージを送信"
+            >
+              {cooldownSeconds > 0 ? cooldownSeconds : "↑"}
+            </button>
+          </div>
         </form>
       </section>
-      )}
     </div>
-  );
-}
-
-/** お支払い確認前の制限表示 */
-function LockedNotice() {
-  return (
-    <section className="rounded-3xl border border-line bg-white p-8 text-center shadow-card">
-      <p className="text-xs font-bold tracking-[0.18em] text-brand">LOCKED</p>
-      <h2 className="mt-3 font-maru text-xl font-bold text-ink">
-        お支払いの確認後にご利用いただけます
-      </h2>
-      <p className="mt-3 text-sm leading-7 text-ink-soft">
-        ご契約代金のお支払いを確認すると、担当者とのチャットなどの機能がご利用いただけます。
-        Square から届く請求書メール、または下のボタンからお支払いをお願いします。
-      </p>
-      <Link
-        href="/dashboard/payment"
-        className="mt-6 inline-block rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
-      >
-        お支払いへ進む
-      </Link>
-    </section>
   );
 }
 

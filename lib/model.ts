@@ -115,8 +115,7 @@ export function toDate(value: unknown): Date | null {
 }
 
 /**
- * お支払い確認後に利用できる機能（チャットなど）の制限が
- * 解除されているかを判定します。
+ * お支払い確認後に利用できる機能の制限が解除されているかを判定します。
  * Webhook（invoice.payment_made）で `accessUnlocked` が true になります。
  */
 export function isAccessUnlocked(order: Order | null | undefined): boolean {
