@@ -148,7 +148,7 @@ export const basePlanPrice = 9800;
 export const maintenanceSubscriptionPrice = 2000;
 export const basePlanName = "基本プラン";
 export const basePlanDescription =
-  "まずは1ページ。お店や会社の紹介ページを最短スピードで公開します。";
+  "お店や会社の紹介ページを1ページ制作するプランです。必要な機能をオプションで追加できます。";
 export const basePlanFeatures = [
   "1ページ制作（LP・紹介ページ）",
   "スマホ対応",
