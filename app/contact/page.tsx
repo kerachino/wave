@@ -38,7 +38,7 @@ export default function ContactPage() {
             <div className="relative">
               <span className="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-bold">
                 <ChatIcon className="size-4" />
-                おすすめの相談方法
+                チャット
               </span>
               <h2 className="mt-5 font-maru text-2xl font-bold leading-relaxed sm:text-3xl">
                 画面右下のチャットから
