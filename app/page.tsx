@@ -139,90 +139,108 @@ export default function Home() {
         </Container>
 
         {/* 料金プラン（ヒーロー背景の続き） */}
-        <div id="plan" className="relative mt-2 sm:mt-2">
-          <Container className="py-14 sm:py-2">
-            <div className="mx-auto max-w-6xl">
-              <Card className="relative overflow-hidden rounded-3xl border border-line bg-white p-8 shadow-lift transition-all duration-300 hover:-translate-y-1 hover:shadow-soft sm:p-12">
-                {/* 上部アクセントライン */}
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-x-0 top-0 h-[4px] bg-gradient-to-r from-[#f2688c] via-brand to-[#f2688c]"
-                />
-                <div className="relative z-10">
-                  {/* 左右2カラム：左に金額・CTA、右に内容 */}
-                  <div className="grid gap-8 sm:gap-10 lg:grid-cols-2 lg:items-start">
-                    {/* 左：金額エリア */}
-                    <div className="space-y-6">
-                      <p className="inline-block rounded-full bg-midori-soft px-4 py-1.5 text-xs font-bold tracking-wider text-midori-dark ring-1 ring-midori/30">
-                        基本プラン
-                      </p>
-                      <div className="flex items-baseline gap-2">
-                        <p className="font-maru text-5xl font-bold tracking-tight sm:text-7xl">
-                          <span className="text-gradient">
-                            {yen(basePlanPrice)}
-                          </span>
-                        </p>
-                        <span className="text-sm font-bold text-ink-mute">
-                          （税込）
-                        </span>
-                      </div>
-                      <p className="max-w-sm text-sm leading-7 text-ink-soft">
-                        {basePlan.description}
-                      </p>
-                      <Link
-                        href="/price"
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#f2688c] px-6 py-4 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(242_104_140_/_0.6)] transition-all hover:-translate-y-0.5 hover:brightness-105"
-                      >
-                        詳しい料金ページへ <ArrowIcon className="size-4" />
-                      </Link>
-                      {/* <p className="text-center text-xs leading-6 text-ink-soft">
-                        付け足しオプションやお見積もりの詳細は、{" "}
-                        <span className="font-bold text-midori-dark underline decoration-midori/30 underline-offset-4 hover:text-midori">
-                          料金ページ
-                        </span>
-                        でご確認ください。
-                      </p> */}
-                    </div>
+        <div id="plan" className="relative mt-2 scroll-mt-24">
+          <Container className="py-8 sm:py-12">
+            <Card className="relative mx-auto max-w-5xl overflow-hidden rounded-[2rem] border border-white/80 bg-white shadow-lift">
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-[#f2688c] via-brand to-midori"
+              />
+              <div className="grid lg:grid-cols-[0.85fr_1.15fr]">
+                <div className="flex flex-col bg-gradient-to-br from-brand-soft via-white to-[#fff3f6] p-6 sm:p-9 lg:p-10">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 text-xs font-bold text-brand-deep shadow-sm ring-1 ring-brand/10">
+                      <span
+                        aria-hidden="true"
+                        className="size-2 rounded-full bg-[#f2688c]"
+                      />
+                      基本プラン
+                    </span>
+                  </div>
 
-                    {/* 右：プラン内容 */}
-                    <div className="space-y-6">
-                      <div>
-                        <h4 className="font-maru text-lg font-bold text-ink">
-                          プランに含まれる内容
-                        </h4>
-                        <ul className="mt-4 space-y-3">
-                          {basePlanFeatures.map((feature) => (
-                            <li
-                              key={feature}
-                              className="flex items-start gap-3"
-                            >
-                              <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-midori-soft text-midori-dark">
-                                <CheckIcon className="size-3.5" />
-                              </span>
-                              <span className="text-sm leading-7 text-ink">
-                                {feature}
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                      {/* <div className="rounded-2xl border border-midori/20 bg-midori-soft/40 p-4">
-                        <p className="text-xs font-bold text-midori-dark uppercase tracking-wider">
-                          お支払い
-                        </p>
-                        <p className="mt-1 text-sm leading-7 text-ink-soft">
-                          銀行振込またはクレジットカード。制作開始前の前払いとなります。
-                        </p>
-                      </div> */}
-                    </div>
+                  <p className="mt-7 font-maru text-sm font-bold text-ink-soft">
+                    まずは1ページから
+                  </p>
+                  <div className="mt-1 flex flex-wrap items-baseline gap-x-2">
+                    <p className="font-maru text-5xl font-bold tracking-tight text-brand-deep sm:text-6xl">
+                      {yen(basePlanPrice)}
+                    </p>
+                    <span className="text-sm font-bold text-ink-mute">
+                      （税込）
+                    </span>
+                  </div>
+                  <p className="mt-3 max-w-sm text-sm leading-7 text-ink-soft">
+                    {basePlan.description}
+                  </p>
+
+                  <div className="mt-7 flex flex-col gap-3 sm:flex-row lg:flex-col">
+                    <Link
+                      href="/contact#chat"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f2688c] px-5 py-3.5 text-sm font-bold text-white shadow-[0_12px_26px_-10px_rgb(242_104_140_/_0.6)] transition-all hover:-translate-y-0.5 hover:brightness-105"
+                    >
+                      <ChatIcon className="size-4" />
+                      このプランで相談する
+                    </Link>
+                    <Link
+                      href="/price"
+                      className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3.5 text-sm font-bold text-ink ring-1 ring-line transition-colors hover:text-brand-deep hover:ring-brand/40"
+                    >
+                      料金の内訳を見る
+                      <ArrowIcon className="size-4" />
+                    </Link>
                   </div>
                 </div>
-              </Card>
-            </div>
+
+                <div className="flex flex-col justify-center p-6 sm:p-9 lg:p-10">
+                  <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-bold tracking-[0.16em] text-brand">
+                        INCLUDED
+                      </p>
+                      <h2 className="mt-1 font-maru text-xl font-bold text-ink">
+                        基本プランに含まれるもの
+                      </h2>
+                    </div>
+                    <span className="rounded-full bg-midori-soft px-3 py-1 text-xs font-bold text-midori-dark">
+                      必要な機能は後から追加
+                    </span>
+                  </div>
+                  <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+                    {basePlanFeatures.map((feature) => (
+                      <li
+                        key={feature}
+                        className="flex items-start gap-3 rounded-2xl bg-cream/70 px-4 py-3.5"
+                      >
+                        <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-white text-midori-dark shadow-sm">
+                          <CheckIcon className="size-3.5" />
+                        </span>
+                        <span className="text-sm leading-6 text-ink">
+                          {feature}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-5 flex flex-col gap-2 border-t border-line pt-4 text-xs leading-6 text-ink-soft sm:flex-row sm:justify-between sm:gap-5">
+                    <p>
+                      ※モニター価格。サイト公開後は月1,000円程度の維持費が必要です。
+                      <Link
+                        href="/price#maintenance"
+                        className="ml-1 whitespace-nowrap font-bold text-brand-deep underline underline-offset-2 hover:text-brand"
+                      >
+                        詳しくはこちら
+                      </Link>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </Container>
         </div>
       </section>
-      <section id="features" className="scroll-mt-24 border-y border-line bg-white">
+      <section
+        id="features"
+        className="scroll-mt-24 border-y border-line bg-white"
+      >
         <Container className="py-14 sm:py-20">
           <SectionHeading
             eyebrow="FEATURES"
