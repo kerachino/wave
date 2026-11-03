@@ -48,6 +48,54 @@ export default function DashboardPage() {
   const subscriptionDone = phase.subscription === "paid";
   const completedSteps = steps.filter((step) => step.state === "done").length;
   const progressPercent = Math.round((completedSteps / steps.length) * 100);
+  const nextAction =
+    phase.contract === "unset"
+      ? {
+          title: "購入内容を確認しています",
+          description:
+            "運営者が依頼内容と金額を設定中です。内容の相談や追加のご依頼はチャットからお送りください。",
+          label: "チャットで相談する",
+          href: "/dashboard/chat",
+        }
+      : phase.contract === "unpaid"
+        ? {
+            title: "契約内容を確認してお支払いください",
+            description:
+              "お支払い画面で内容と取引条件を確認し、手続きを進められます。",
+            label: "お支払いを確認する",
+            href: "/dashboard/payment",
+          }
+        : !phase.published
+          ? {
+              title: "チャットで制作を進めましょう",
+              description:
+                "素材の共有や仕上がりの確認など、担当者とのやり取りはチャットから行えます。",
+              label: "チャットを開く",
+              href: "/dashboard/chat",
+            }
+          : phase.subscription === "unapproved"
+            ? {
+                title: "公開後サポートの準備中です",
+                description:
+                  "維持費サポートの内容を運営者が確認しています。ご質問はチャットからお送りください。",
+                label: "チャットを開く",
+                href: "/dashboard/chat",
+              }
+            : phase.subscription === "unpaid"
+            ? {
+                title: "維持費サポートのお支払いを確認",
+                description:
+                  "公開後のサイトを維持するため、お支払い画面で手続きをご確認ください。",
+                label: "お支払いを確認する",
+                href: "/dashboard/payment",
+              }
+            : {
+                title: "サイト公開・サポート中です",
+                description:
+                  "修正や更新のご相談、別のサイトや追加購入のご依頼もチャットからお送りいただけます。",
+                label: "チャットで相談する",
+                href: "/dashboard/chat",
+              };
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -70,8 +118,8 @@ export default function DashboardPage() {
         <p className="text-sm text-ink-mute">読み込み中...</p>
       ) : projects.length === 0 ? (
         <Notice
-          title="ご依頼がまだ登録されていません"
-          body="お問い合わせフォームからご相談ください。運営者がご依頼を登録すると、このページにステップと完了状況が表示されます。"
+          title="ご依頼はまだ登録されていません"
+          body="まずはチャットでご相談ください。運営者が依頼を登録すると、契約やお支払いの状況をこのページで確認できます。追加のご依頼も、内容ごとに分けて管理できます。"
         />
       ) : (
         <>
@@ -113,6 +161,34 @@ export default function DashboardPage() {
                 detail={subscriptionLabel(phase)}
                 description="公開後の保守・更新サポート"
               />
+            </div>
+          </section>
+
+          <section className="flex flex-col gap-5 rounded-3xl bg-brand-deep p-6 text-white shadow-lift sm:flex-row sm:items-center sm:justify-between sm:p-8">
+            <div className="max-w-2xl">
+              <p className="text-xs font-bold tracking-[0.16em] text-white/65">
+                NEXT ACTION
+              </p>
+              <h2 className="mt-2 font-maru text-xl font-bold">
+                {nextAction.title}
+              </h2>
+              <p className="mt-2 text-sm leading-7 text-white/80">
+                {nextAction.description}
+              </p>
+            </div>
+            <div className="flex shrink-0 flex-col gap-2 sm:min-w-48">
+              <Link
+                href={nextAction.href}
+                className="rounded-full bg-white px-5 py-3 text-center text-sm font-bold text-brand-deep transition hover:bg-brand-soft"
+              >
+                {nextAction.label}
+              </Link>
+              <Link
+                href="/dashboard/chat"
+                className="rounded-full border border-white/35 px-5 py-2.5 text-center text-xs font-bold text-white transition hover:bg-white/10"
+              >
+                追加購入・別の依頼を相談
+              </Link>
             </div>
           </section>
 
@@ -161,23 +237,21 @@ export default function DashboardPage() {
               ))}
             </ol>
             <p className="mt-5 rounded-2xl bg-cream px-4 py-3 text-xs leading-6 text-ink-soft">
-              契約の金額や詳細内容はお支払い画面でご確認いただけます。切り替えている依頼以外は、この画面には表示されません。
+              契約の金額や詳細内容はお支払い画面でご確認いただけます。複数の依頼がある場合は、ページ上部のメニューから切り替えてください。
             </p>
             <div className="mt-5 flex flex-wrap gap-3 border-t border-line pt-5">
               <Link
                 href="/dashboard/chat"
                 className="rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark"
               >
-                チャットで担当者に相談
+                チャットを開く
               </Link>
-              {!contractDone && (
-                <Link
-                  href="/dashboard/payment"
-                  className="rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand transition hover:bg-brand-soft"
-                >
-                  お支払い内容を確認
-                </Link>
-              )}
+              <Link
+                href="/dashboard/payment"
+                className="rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand transition hover:bg-brand-soft"
+              >
+                お支払いを見る
+              </Link>
             </div>
           </section>
         </>
@@ -193,10 +267,10 @@ function Notice({ title, body }: { title: string; body: string }) {
       <h2 className="font-maru text-xl font-bold text-ink">{title}</h2>
       <p className="mt-3 text-sm leading-7 text-ink-soft">{body}</p>
       <Link
-        href="/contact"
+        href="/contact#chat"
         className="mt-6 inline-block rounded-full border border-brand px-5 py-3 text-sm font-bold text-brand"
       >
-        お問い合わせ
+        チャットで相談する
       </Link>
     </section>
   );

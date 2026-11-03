@@ -52,7 +52,16 @@ export default function DashboardChatPage() {
           roomId,
           (nextMessages) => {
             if (receivedMessages.current) {
-              setNewMessageIds((current) => [...current, ...nextMessages.filter((message) => message.sender === "staff" && !messageIds.current.includes(message.id)).map((message) => message.id)]);
+              setNewMessageIds((current) => [
+                ...current,
+                ...nextMessages
+                  .filter(
+                    (message) =>
+                      message.sender === "staff" &&
+                      !messageIds.current.includes(message.id),
+                  )
+                  .map((message) => message.id),
+              ]);
             }
             receivedMessages.current = true;
             messageIds.current = nextMessages.map((message) => message.id);
@@ -96,7 +105,9 @@ export default function DashboardChatPage() {
     } catch (caught) {
       if (caught instanceof ChatRateLimitError) {
         setCooldownSeconds(caught.retryAfterSeconds);
-        setError(`連続送信防止のため、あと${caught.retryAfterSeconds}秒お待ちください。`);
+        setError(
+          `連続送信防止のため、あと${caught.retryAfterSeconds}秒お待ちください。`,
+        );
       } else {
         setError("送信に失敗しました。もう一度お試しください。");
       }
@@ -114,9 +125,9 @@ export default function DashboardChatPage() {
           DIRECT MESSAGE
         </p>
         <h1 className="mt-2 font-maru text-3xl font-bold text-ink">チャット</h1>
-        <p className="mt-2 text-sm text-ink-soft">
+        {/* <p className="mt-2 text-sm text-ink-soft">
           お支払い前でもご利用いただけます。1回100文字まで、送信は5秒に1回です。
-        </p>
+        </p> */}
       </div>
       <section className="flex h-[min(70vh,40rem)] min-h-[34rem] flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-card">
         <header className="flex items-center gap-3 border-b border-line px-5 py-4">
@@ -149,7 +160,11 @@ export default function DashboardChatPage() {
             </div>
           )}
           {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} isNew={newMessageIds.includes(message.id)} />
+            <MessageBubble
+              key={message.id}
+              message={message}
+              isNew={newMessageIds.includes(message.id)}
+            />
           ))}
           {error && <p className="text-center text-xs text-red-600">{error}</p>}
         </div>
@@ -179,7 +194,13 @@ export default function DashboardChatPage() {
             </span>
             <button
               type="submit"
-              disabled={!text.trim() || connecting || sending || cooldownSeconds > 0 || !isFirebaseConfigured}
+              disabled={
+                !text.trim() ||
+                connecting ||
+                sending ||
+                cooldownSeconds > 0 ||
+                !isFirebaseConfigured
+              }
               className="grid size-11 shrink-0 place-items-center rounded-full bg-brand text-white transition hover:bg-brand-dark disabled:opacity-40"
               aria-label="メッセージを送信"
             >
@@ -192,14 +213,24 @@ export default function DashboardChatPage() {
   );
 }
 
-function MessageBubble({ message, isNew }: { message: ChatMessage; isNew?: boolean }) {
+function MessageBubble({
+  message,
+  isNew,
+}: {
+  message: ChatMessage;
+  isNew?: boolean;
+}) {
   const staff = message.sender === "staff";
   return (
     <div className={`flex ${staff ? "justify-start" : "justify-end"}`}>
       <div
         className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm leading-6 ${staff ? "rounded-tl-sm bg-white text-ink shadow-sm" : "rounded-tr-sm bg-brand text-white"}`}
       >
-        {isNew && <span className="mb-1 block text-[10px] font-bold text-brand">新着</span>}
+        {isNew && (
+          <span className="mb-1 block text-[10px] font-bold text-brand">
+            新着
+          </span>
+        )}
         {message.text}
         {message.createdAt && (
           <p

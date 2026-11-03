@@ -181,6 +181,18 @@ export async function POST(request: Request) {
     target.kind === "subscription" ? "subscriptionInvoice" : "projectInvoice";
   const now = FieldValue.serverTimestamp();
 
+  if (
+    order[field]?.id &&
+    order[field]?.id !== invoiceId
+  ) {
+    console.warn("現在の請求書と一致しないWebhookを無視しました:", {
+      invoiceId,
+      currentInvoiceId: order[field]?.id,
+      projectId: target.documentId,
+    });
+    return new NextResponse("stale invoice", { status: 200 });
+  }
+
   // ---- お支払い完了（invoice.payment_made） ----
   if (event.type === "invoice.payment_made") {
     // 同じイベントが再送されても安全（すでに解除済みなら何もしない）
@@ -227,7 +239,11 @@ export async function POST(request: Request) {
   }
 
   // ---- 請求書のキャンセル・削除（再発行できるようにステータスを合わせる） ----
-  if (event.type === "invoice.canceled" || event.type === "invoice.deleted") {
+  if (
+    event.type === "invoice.canceled" ||
+    event.type === "invoice.deleted" ||
+    invoice.status === "CANCELED"
+  ) {
     await orderRef.set(
       {
         [field]: mergeInvoice(order[field], invoiceId, invoice, {

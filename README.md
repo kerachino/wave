@@ -81,21 +81,22 @@ npm run dev
 1. [Square Developer](https://developer.squareup.com/apps) でアプリを作成し、Sandbox のアクセストークンとロケーションIDを取得
 2. `.env.local` に `SQUARE_ACCESS_TOKEN` / `SQUARE_LOCATION_ID` / `SQUARE_ENVIRONMENT="sandbox"` を設定
 3. Webhooks > Subscriptions で通知URLに `https://<公開URL>/api/square/webhook` を登録し、イベント `invoice.payment_made`（あわせて `invoice.canceled`）を選択
-4. 生成された Signature Key を `SQUARE_WEBHOOK_SIGNATURE_KEY` に、登録した通知URLを `SQUARE_WEBHOOK_NOTIFICATION_URL` に設定
+4. `invoice.payment_made` と `invoice.canceled` を購読し、生成された Signature Key を `SQUARE_WEBHOOK_SIGNATURE_KEY` に、登録した通知URLを `SQUARE_WEBHOOK_NOTIFICATION_URL` に設定
 5. 本番リリース時は `SQUARE_ENVIRONMENT="production"` と本番のトークン・署名キーへ切り替え
 
 #### 決済の流れ
 
-1. 運営者が `/admin` の「購入許可」で金額を、「契約条件」で発注者名・納期・検査完了期日・受領場所を設定
+1. 運営者が `/admin` で依頼ごとに購入内容・許可を設定し、「契約条件」で発注者名・納期・検査完了期日・受領場所を設定。追加購入や複数契約は依頼を別登録し、「追加購入（基本料金なし）」を選ぶ
 2. お客さまがマイページ（`/dashboard/payment`）で取引条件8項目と契約条件を確認し、同意チェックを入れる（チェックがないと購入ボタンは押せません）
 3. 購入ボタン（「同意して購入する」）を押すと `/api/square/invoice` が同意を検証し、同意ログを記録してから Square の Invoices API で請求書を作成 → 公開（publish）し、Square がお客さまへ請求書メールを送信
 4. お客さまがお支払いを完了すると、Square から `invoice.payment_made` が `/api/square/webhook` に届く
-5. アプリが署名（`x-square-hmacsha256-signature`）を検証し、`orders/{uid}` を支払い済みに更新して制限（`accessUnlocked`）を解除
+5. アプリが署名（`x-square-hmacsha256-signature`）を検証し、対象の `projects/{projectId}`（旧データは `orders/{uid}`）を支払い済みに更新して制限（`accessUnlocked`）を解除
 6. お支払い確認後、制作開始など次の手続きへ進めます（チャットはお支払い前から利用できます）
 
 > 金額はサーバー側の `projects/{projectId}` の内容（基本プラン＋付け足し／維持費）から組み立てます。旧 `orders/{uid}` からの移行データも対象です。
 > 請求書の再発行は行わず、発行済みの請求書を再利用します（二重請求の防止）。
 > Firestore のセキュリティルールにより、決済状況・制限解除・同意ログはサーバー（Admin SDK）と運営（isAdmin）だけが書き込めます。
+> 購入許可を取り消す場合、Square請求書が発行済みなら先にSquare側で請求書をキャンセルしてください。`invoice.canceled` の反映後、管理画面から取り消せます。支払い済みの許可は取り消せません。
 
 #### 取引条件の明示と同意ログ
 

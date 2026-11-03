@@ -119,6 +119,7 @@ export function buildContractDisclosures(
   const optionsText = options
     .map((option) => `${option.name}（${yen(option.price)}）`)
     .join("／");
+  const isAdditionalPurchase = project && order?.basePrice === 0;
   const dueDateText = dueDate
     ? formatContractYmd(dueDate)
     : defaultDueDateNote;
@@ -144,12 +145,16 @@ export function buildContractDisclosures(
       no: 3,
       label: "給付の内容",
       value: project
-        ? `ホームページの制作一式（${basePlanName}：${basePlanFeatures.join("／")}）` +
-          (optionsText ? `\n付け足し：${optionsText}` : "") +
+        ? isAdditionalPurchase
+          ? `${order?.title || "追加依頼"}${optionsText ? `\n追加購入内容：${optionsText}` : ""}`
+          : `ホームページの制作一式（${basePlanName}：${basePlanFeatures.join("／")}）` +
+            (optionsText ? `\n付け足し：${optionsText}` : "") +
           `\n${revisionTerms}`
         : "サイト公開後の保守・更新サポート（月額）\n・小さな修正・更新（月1回程度）\n・表示トラブルや修正方法のご相談対応\n・お知らせ・ブログなどの更新は管理ページからご自身で行えます",
       note: project
-        ? "モニター条件：制作事例への掲載・クチコミへのご協力をお願いしています（ご不同意の場合はオプションが追加となります）。"
+        ? isAdditionalPurchase
+          ? "追加依頼の内容・納期は、マイページ内チャットで確認した内容に基づきます。"
+          : "モニター条件：制作事例への掲載・クチコミへのご協力をお願いしています（ご不同意の場合はオプションが追加となります）。"
         : "維持費はサイトの公開に必要な費用です。お支払いが確認できない場合は公開を停止します。",
     },
     {
@@ -158,7 +163,9 @@ export function buildContractDisclosures(
       value: project
         ? order?.contractDeliveryDate
           ? formatContractYmd(order.contractDeliveryDate)
-          : defaultDeliveryLeadTime
+          : isAdditionalPurchase
+            ? "追加依頼の内容に応じてチャットでご案内します"
+            : defaultDeliveryLeadTime
         : "毎月1日から末日までのサポート（初回はご契約日から当月末日まで）",
       note: project
         ? order?.contractDeliveryDate

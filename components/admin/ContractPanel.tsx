@@ -15,9 +15,10 @@
 // ============================================================
 
 import { useState } from "react";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { yen, type Order } from "@/lib/model";
+import { projectsCollection } from "@/lib/projects";
 import {
   buildContractDisclosures,
   contractVersionLabel,
@@ -41,10 +42,14 @@ type ContractDraft = {
 
 export function ContractPanel({
   uid,
+  projectId,
+  legacy,
   order,
   customerEmail,
 }: {
   uid: string;
+  projectId: string;
+  legacy?: boolean;
   order: Order | null;
   customerEmail: string;
 }) {
@@ -72,13 +77,14 @@ export function ContractPanel({
     setMessage("");
     try {
       await setDoc(
-        doc(db, "orders", uid),
+        doc(db, legacy ? "orders" : projectsCollection, legacy ? uid : projectId),
         {
           uid,
           customerName: values.customerName.trim(),
           contractDeliveryDate: values.deliveryDate,
           contractInspectionDeadline: values.inspectionDeadline,
           contractDeliveryPlace: values.deliveryPlace.trim(),
+          updatedAt: serverTimestamp(),
         },
         { merge: true },
       );
@@ -249,4 +255,3 @@ export function ContractPanel({
     </section>
   );
 }
-

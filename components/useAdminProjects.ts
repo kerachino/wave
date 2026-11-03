@@ -1,23 +1,39 @@
 "use client";
 
-// 運営画面用の、ご顧客ごとの依頼（プロジェクト）一覧。
-// Firestore の projects を使い、旧 orders があれば読み取り用の候補として扱います。
+// 運営画面用の依頼一覧。旧 orders があれば読み取り用候補として扱います。
 
 import { useEffect, useState } from "react";
-import { addDoc, collection, doc, onSnapshot, query, serverTimestamp, setDoc, where } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  query,
+  serverTimestamp,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { db, isFirebaseConfigured } from "@/lib/firebase";
 import { basePlanPrice, type Order } from "@/lib/model";
-import { legacyProject, projectsCollection, projectWriteBase, sortProjects, type Project } from "@/lib/projects";
+import {
+  legacyProject,
+  projectsCollection,
+  projectWriteBase,
+  sortProjects,
+  type Project,
+} from "@/lib/projects";
+
+type AdminProjectState = {
+  uid: string;
+  projects: Project[];
+  activeId: string;
+  ready: boolean;
+};
 
 export function useAdminProjects(uid: string, enabled: boolean) {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [activeId, setActiveId] = useState("");
-  const [ready, setReady] = useState(false);
+  const [state, setState] = useState<AdminProjectState | null>(null);
 
   useEffect(() => {
-    setProjects([]);
-    setActiveId("");
-    setReady(false);
     if (!enabled || !uid || !db || !isFirebaseConfigured) return;
 
     let nextProjects: Project[] = [];
@@ -25,14 +41,24 @@ export function useAdminProjects(uid: string, enabled: boolean) {
     const publish = () => {
       const list = nextProjects.length ? nextProjects : legacy ? [legacy] : [];
       const sorted = sortProjects(list);
-      setProjects(sorted);
-      setActiveId((current) => sorted.some((project) => project.id === current) ? current : sorted[0]?.id ?? "");
-      setReady(true);
+      setState((current) => ({
+        uid,
+        projects: sorted,
+        activeId:
+          current?.uid === uid &&
+          sorted.some((project) => project.id === current.activeId)
+            ? current.activeId
+            : sorted[0]?.id ?? "",
+        ready: true,
+      }));
     };
+
     const stopProjects = onSnapshot(
       query(collection(db, projectsCollection), where("uid", "==", uid)),
       (snapshot) => {
-        nextProjects = snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as Project);
+        nextProjects = snapshot.docs.map(
+          (item) => ({ id: item.id, ...item.data() }) as Project,
+        );
         publish();
       },
       () => publish(),
@@ -40,36 +66,58 @@ export function useAdminProjects(uid: string, enabled: boolean) {
     const stopLegacy = onSnapshot(
       doc(db, "orders", uid),
       (snapshot) => {
-        legacy = snapshot.exists() ? legacyProject(uid, snapshot.data() as Order) : null;
+        legacy = snapshot.exists()
+          ? legacyProject(uid, snapshot.data() as Order)
+          : null;
         publish();
       },
       () => publish(),
     );
-    return () => { stopProjects(); stopLegacy(); };
+    return () => {
+      stopProjects();
+      stopLegacy();
+    };
   }, [uid, enabled]);
 
-  const selectedProject = projects.find((project) => project.id === activeId) ?? null;
+  const currentState = state?.uid === uid ? state : null;
+  const projects = currentState?.projects ?? [];
+  const activeId = currentState?.activeId ?? "";
+  const selectedProject =
+    projects.find((project) => project.id === activeId) ?? null;
 
-  async function createProject(title: string) {
-    if (!db || !isFirebaseConfigured || !title.trim()) return false;
-    // 旧データが残っている場合は先に移行し、既存ご依頼を失わないようにします。
+  function selectProject(id: string) {
+    if (!uid) return;
+    setState((current) =>
+      current?.uid === uid ? { ...current, activeId: id } : current,
+    );
+  }
+
+  async function createProject(title: string, isAdditional = false) {
+    if (!db || !isFirebaseConfigured || !uid || !title.trim()) return null;
     const legacy = projects.find((project) => project.legacy);
     if (legacy) {
-      await setDoc(doc(db, projectsCollection, legacy.id), {
-        uid,
-        ...projectWriteBase(legacy),
-        title: legacy.title || "既存のご依頼",
-        createdAt: legacy.createdAt ?? serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      }, { merge: true });
+      await setDoc(
+        doc(db, projectsCollection, legacy.id),
+        {
+          uid,
+          ...projectWriteBase(legacy),
+          title: legacy.title || "既存のご依頼",
+          createdAt: legacy.createdAt ?? serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true },
+      );
     }
-    await addDoc(collection(db, projectsCollection), {
+
+    const basePrice = isAdditional ? 0 : basePlanPrice;
+    const created = await addDoc(collection(db, projectsCollection), {
       uid,
       title: title.trim(),
-      basePrice: basePlanPrice,
+      purchaseKind: isAdditional ? "additional" : "project",
+      basePrice,
       options: [],
-      totalPrice: basePlanPrice,
-      firstAmount: basePlanPrice,
+      totalPrice: basePrice,
+      firstAmount: basePrice,
       remainingAmount: 0,
       status: "pending_payment",
       paymentStatus: "unpaid",
@@ -78,8 +126,22 @@ export function useAdminProjects(uid: string, enabled: boolean) {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
     });
-    return true;
+    setState((current) =>
+      current?.uid === uid ? { ...current, activeId: created.id } : current,
+    );
+    return created.id;
   }
 
-  return { projects, selectedProject, selectedProjectId: activeId, selectProject: setActiveId, createProject, loading: enabled && Boolean(uid) && isFirebaseConfigured && !ready };
+  return {
+    projects,
+    selectedProject,
+    selectedProjectId: activeId,
+    selectProject,
+    createProject,
+    loading:
+      enabled &&
+      Boolean(uid) &&
+      isFirebaseConfigured &&
+      !currentState?.ready,
+  };
 }

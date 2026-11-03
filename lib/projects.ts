@@ -74,6 +74,8 @@ export function projectWriteBase(
 ): Record<string, unknown> {
   if (!project?.legacy) return {};
   return {
+    title: project.title,
+    purchaseKind: project.purchaseKind,
     basePrice: project.basePrice,
     options: project.options ?? [],
     totalPrice: project.totalPrice,

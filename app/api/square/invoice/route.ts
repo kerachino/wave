@@ -235,7 +235,9 @@ export async function POST(request: Request) {
   const lineItems: InvoiceLineItem[] =
     kind === "project"
       ? [
-          { name: basePlanName, amount: order.basePrice },
+          ...(order.basePrice > 0
+            ? [{ name: basePlanName, amount: order.basePrice }]
+            : []),
           ...(order.options ?? []).map((option) => ({
             name: option.name,
             amount: option.price,
@@ -319,11 +321,11 @@ export async function POST(request: Request) {
   const dueDate = invoiceDueDate();
   const title =
     kind === "project"
-      ? `${site.name} ホームページ制作 ご契約代金`
+      ? `${site.name} ${order.basePrice > 0 ? "ホームページ制作" : order.title || "追加依頼"} ご契約代金`
       : `${site.name} 維持費サポート（月額）`;
   const description =
     kind === "project"
-      ? `ホームページ制作のご契約代金（前払い）です。${yen(amount)}`
+      ? `${order.basePrice > 0 ? "ホームページ制作" : order.title || "追加依頼"}のご契約代金（前払い）です。${yen(amount)}`
       : `サイト公開後の維持・更新サポートの月額費用です。${yen(amount)}`;
 
   try {

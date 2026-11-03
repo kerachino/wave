@@ -53,6 +53,8 @@ export type PurchaseConsent = {
 
 export type Order = {
   uid: string;
+  title?: string;
+  purchaseKind?: "project" | "additional";
   basePrice: number;
   options: OrderOption[];
   totalPrice: number;

@@ -57,12 +57,14 @@ export default function DashboardPaymentPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <header>
-        <p className="text-xs font-bold tracking-[0.18em] text-brand">PAYMENT</p>
+        <p className="text-xs font-bold tracking-[0.18em] text-brand">
+          PAYMENT
+        </p>
         <h1 className="mt-2 font-maru text-3xl font-bold text-ink">お支払い</h1>
         <p className="mt-2 text-sm text-ink-soft">
           本契約は原則前払いです。下記の取引条件をご確認のうえ、
-          <span className="font-bold text-ink">同意して購入</span>
-          してください。ボタンを押すと Square からご請求書メールをお送りします。
+          ご購入をお願いします。ボタンを押すと Square
+          からご請求書メールをお送りします。
         </p>
       </header>
 
@@ -79,11 +81,15 @@ export default function DashboardPaymentPage() {
       ) : null}
       {order ? (
         <p className="text-xs text-ink-mute">
-          対象のご依頼：<span className="font-bold text-ink">{projectTitle(order)}</span>
+          対象のご依頼：
+          <span className="font-bold text-ink">{projectTitle(order)}</span>
         </p>
       ) : null}
 
-      <nav className="flex gap-2 border-b border-line" aria-label="支払いメニュー">
+      <nav
+        className="flex gap-2 border-b border-line"
+        aria-label="支払いメニュー"
+      >
         <button
           type="button"
           onClick={() => setTab("project")}
@@ -135,6 +141,7 @@ function ProjectPayment({
   customerEmail: string;
 }) {
   const paid = order.paymentStatus === "paid";
+  const approved = Boolean(order.purchaseApproved || order.legacy || paid);
   const consent = order.projectConsent;
   const [agreed, setAgreed] = useState(false);
   const disclosures = buildContractDisclosures({
@@ -157,41 +164,63 @@ function ProjectPayment({
             本契約のお支払い
           </h2>
         </div>
-        <Status value={paid ? "支払い済み" : "未払い"} />
-      </div>
-      <div className="mt-6 space-y-3 text-sm">
-        <Line label="基本プラン" value={yen(order.basePrice)} />
-        {(order.options ?? []).map((option) => (
-          <Line key={option.id} label={option.name} value={yen(option.price)} />
-        ))}
-        <Line
-          label="お支払い総額（前払い）"
-          value={yen(order.totalPrice)}
-          strong
+        <Status
+          value={
+            paid
+              ? "支払い済み"
+              : approved
+                ? "お支払い待ち"
+                : "購入内容の確認待ち"
+          }
         />
       </div>
-      <ContractTermsBlock
-        disclosures={disclosures}
-        consent={consent}
-        agreed={agreed}
-        onAgreedChange={setAgreed}
-      >
-        {paid ? (
-          <PaidNotice
-            paidAt={order.paidAt}
-            amount={order.paidAmount ?? order.totalPrice}
-          />
-        ) : (
-          <SquareInvoiceButton
-            kind="project"
-            projectId={order.id}
-            legacy={order.legacy}
-            label="同意して購入する"
-            existing={order.projectInvoice}
+      {approved ? (
+        <>
+          <div className="mt-6 space-y-3 text-sm">
+            {order.basePrice > 0 && (
+              <Line label="基本プラン" value={yen(order.basePrice)} />
+            )}
+            {(order.options ?? []).map((option) => (
+              <Line
+                key={option.id}
+                label={option.name}
+                value={yen(option.price)}
+              />
+            ))}
+            <Line
+              label="お支払い総額（前払い）"
+              value={yen(order.totalPrice)}
+              strong
+            />
+          </div>
+          <ContractTermsBlock
+            disclosures={disclosures}
+            consent={consent}
             agreed={agreed}
-          />
-        )}
-      </ContractTermsBlock>
+            onAgreedChange={setAgreed}
+          >
+            {paid ? (
+              <PaidNotice
+                paidAt={order.paidAt}
+                amount={order.paidAmount ?? order.totalPrice}
+              />
+            ) : (
+              <SquareInvoiceButton
+                kind="project"
+                projectId={order.id}
+                legacy={order.legacy}
+                label="同意して購入する"
+                existing={order.projectInvoice}
+                agreed={agreed}
+              />
+            )}
+          </ContractTermsBlock>
+        </>
+      ) : (
+        <p className="mt-6 rounded-2xl bg-cream px-4 py-4 text-sm leading-7 text-ink-soft">
+          運営者が購入内容と金額を確認中です。準備ができると、こちらに内容とお支払いボタンが表示されます。
+        </p>
+      )}
       <p className="mt-3 text-center text-xs text-ink-mute">
         制作開始前に全額をお支払いいただきます。チャットはお支払い前でもご利用いただけます。
       </p>
@@ -233,7 +262,9 @@ function SubscriptionPayment({
           </h2>
         </div>
         <Status
-          value={approved ? (paid ? "支払い済み" : "許可済み・未払い") : "未許可"}
+          value={
+            approved ? (paid ? "支払い済み" : "許可済み・未払い") : "未許可"
+          }
         />
       </div>
       <p className="mt-4 text-sm leading-7 text-ink-soft">
@@ -282,8 +313,6 @@ function SubscriptionPayment({
     </section>
   );
 }
-
-
 
 /**
  * 取引条件の明示（8項目）＋契約条件・注意事項＋同意チェック＋同意ログ。
@@ -510,8 +539,6 @@ function SquareInvoiceButton({
     setMessage("");
     try {
       const token = await user.getIdToken();
-      // legacy は旧 orders/{uid} から読み込んだ依頼のみ true
-      const invoiceScope = legacy ? {} : { projectId };
       const response = await fetch("/api/square/invoice", {
         method: "POST",
         headers: {
@@ -536,7 +563,8 @@ function SquareInvoiceButton({
       };
       if (!response.ok || !data.ok) {
         setError(
-          data.error || "請求書の発行に失敗しました。時間をおいてお試しください。",
+          data.error ||
+            "請求書の発行に失敗しました。時間をおいてお試しください。",
         );
         return;
       }
@@ -564,7 +592,13 @@ function SquareInvoiceButton({
       >
         {sending
           ? "請求書を発行しています..."
-          : invoice
+          : invoice &&
+              ![
+                "CANCELED",
+                "FAILED",
+                "REFUNDED",
+                "PARTIALLY_REFUNDED",
+              ].includes(invoice.status ?? "")
             ? "発行済みの請求書を確認する"
             : label}
       </button>
@@ -603,7 +637,8 @@ function SquareInvoiceButton({
         </div>
       )}
       <p className="mt-3 text-center text-xs text-ink-mute">
-        請求書は Square からメールで届きます。お支払いの確認後、制作開始など次の手続きに進めます。
+        請求書は Square
+        からメールで届きます。お支払いの確認後、制作開始など次の手続きに進めます。
       </p>
     </div>
   );
