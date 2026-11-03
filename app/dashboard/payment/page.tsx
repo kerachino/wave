@@ -17,7 +17,6 @@ import { useProjects } from "@/components/useProjects";
 import { isFirebaseConfigured } from "@/lib/firebase";
 import {
   maintenanceSubscriptionPrice,
-  toDate,
   yen,
   type PurchaseConsent,
   type SquareInvoiceInfo,
@@ -32,7 +31,6 @@ import {
   type ContractDisclosure,
 } from "@/lib/contract";
 
-type PaymentTab = "project" | "subscription";
 type InvoiceKind = "project" | "subscription";
 
 export default function DashboardPaymentPage() {
@@ -44,7 +42,6 @@ export default function DashboardPaymentPage() {
     select,
     loading: projectsLoading,
   } = useProjects(user?.uid);
-  const [tab, setTab] = useState<PaymentTab>("project");
 
   if (loading || !user)
     return <p className="text-sm text-ink-mute">読み込み中...</p>;
@@ -55,56 +52,32 @@ export default function DashboardPaymentPage() {
   const customerEmail = user.email ?? "";
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
-      <header>
-        <p className="text-xs font-bold tracking-[0.18em] text-brand">
+    <div className="mx-auto max-w-5xl space-y-7">
+      <header className="rounded-3xl bg-brand-deep px-6 py-7 text-white shadow-lift sm:px-8">
+        <p className="text-xs font-bold tracking-[0.18em] text-white/65">
           PAYMENT
         </p>
-        <h1 className="mt-2 font-maru text-3xl font-bold text-ink">お支払い</h1>
-        <p className="mt-2 text-sm text-ink-soft">
-          本契約は原則前払いです。下記の取引条件をご確認のうえ、
-          ご購入をお願いします。ボタンを押すと Square
-          からご請求書メールをお送りします。
+        <h1 className="mt-2 font-maru text-3xl font-bold">お支払い</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-7 text-white/80">
+          ご依頼ごとのお支払い状況を確認できます。ブロックを選ぶと内容が開きます。
         </p>
       </header>
 
-      {/* 1人のお客さまが複数のご依頼を持つため、対象を切り替えられます */}
       {!isFirebaseConfigured ? null : projectsLoading ? (
-        <p className="text-sm text-ink-mute">読み込み中...</p>
+        <p className="text-sm text-ink-mute">ご依頼を読み込んでいます...</p>
       ) : projects.length > 1 ? (
-        <ProjectSwitcher
-          projects={projects}
-          selectedId={selectedId}
-          onSelect={select}
-          className="w-full justify-between sm:w-auto"
-        />
+        <section className="rounded-2xl border border-line bg-white p-4 shadow-card sm:p-5">
+          <p className="mb-2 text-xs font-bold tracking-wide text-ink-mute">
+            表示するご依頼
+          </p>
+          <ProjectSwitcher
+            projects={projects}
+            selectedId={selectedId}
+            onSelect={select}
+            className="w-full"
+          />
+        </section>
       ) : null}
-      {order ? (
-        <p className="text-xs text-ink-mute">
-          対象のご依頼：
-          <span className="font-bold text-ink">{projectTitle(order)}</span>
-        </p>
-      ) : null}
-
-      <nav
-        className="flex gap-2 border-b border-line"
-        aria-label="支払いメニュー"
-      >
-        <button
-          type="button"
-          onClick={() => setTab("project")}
-          className={`border-b-2 px-4 py-3 text-sm font-bold ${tab === "project" ? "border-brand text-brand" : "border-transparent text-ink-mute"}`}
-        >
-          本契約
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab("subscription")}
-          className={`border-b-2 px-4 py-3 text-sm font-bold ${tab === "subscription" ? "border-brand text-brand" : "border-transparent text-ink-mute"}`}
-        >
-          維持費サブスク
-        </button>
-      </nav>
       {!order ? (
         <section className="rounded-3xl border border-line bg-white p-8 shadow-card">
           <h2 className="font-maru text-xl font-bold text-ink">
@@ -114,18 +87,39 @@ export default function DashboardPaymentPage() {
             運営者が購入内容と取引条件を設定すると、こちらに表示されます。
           </p>
         </section>
-      ) : tab === "project" ? (
-        <ProjectPayment
-          order={order}
-          customerName={customerName}
-          customerEmail={customerEmail}
-        />
       ) : (
-        <SubscriptionPayment
-          order={order}
-          customerName={customerName}
-          customerEmail={customerEmail}
-        />
+        <>
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold tracking-[0.14em] text-brand">
+                SELECTED PROJECT
+              </p>
+              <h2 className="mt-1 font-maru text-xl font-bold text-ink">
+                {projectTitle(order)}
+              </h2>
+            </div>
+            <p className="text-xs text-ink-mute">
+              {projects.length > 1
+                ? `${projects.length}件のご依頼から表示中`
+                : "ご依頼のお支払い状況"}
+            </p>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <ProjectPayment
+              order={order}
+              customerName={customerName}
+              customerEmail={customerEmail}
+            />
+            <SubscriptionPayment
+              order={order}
+              customerName={customerName}
+              customerEmail={customerEmail}
+            />
+          </div>
+          <p className="text-center text-xs leading-6 text-ink-mute">
+            チャット相談はお支払い前でもご利用いただけます。
+          </p>
+        </>
       )}
     </div>
   );
@@ -140,10 +134,19 @@ function ProjectPayment({
   customerName: string;
   customerEmail: string;
 }) {
-  const paid = order.paymentStatus === "paid";
+  const [expanded, setExpanded] = useState(false);
+  const invoice = order.projectInvoice;
+  const paid =
+    order.paymentStatus === "paid" || invoice?.status === "PAID";
   const approved = Boolean(order.purchaseApproved || order.legacy || paid);
   const consent = order.projectConsent;
   const [agreed, setAgreed] = useState(false);
+  const invoiceAlreadyIssued = Boolean(
+    invoice?.id &&
+      !["CANCELED", "FAILED", "REFUNDED", "PARTIALLY_REFUNDED"].includes(
+        invoice.status ?? "",
+      ),
+  );
   const disclosures = buildContractDisclosures({
     kind: "project",
     order,
@@ -154,76 +157,99 @@ function ProjectPayment({
   });
 
   return (
-    <section className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-bold tracking-[0.14em] text-brand">
-            PROJECT PAYMENT
-          </p>
-          <h2 className="mt-2 font-maru text-xl font-bold text-ink">
-            本契約のお支払い
-          </h2>
-        </div>
-        <Status
-          value={
-            paid
-              ? "支払い済み"
-              : approved
-                ? "お支払い待ち"
-                : "購入内容の確認待ち"
-          }
-        />
-      </div>
-      {approved ? (
-        <>
-          <div className="mt-6 space-y-3 text-sm">
-            {order.basePrice > 0 && (
-              <Line label="基本プラン" value={yen(order.basePrice)} />
-            )}
-            {(order.options ?? []).map((option) => (
-              <Line
-                key={option.id}
-                label={option.name}
-                value={yen(option.price)}
-              />
-            ))}
-            <Line
-              label="お支払い総額（前払い）"
-              value={yen(order.totalPrice)}
-              strong
-            />
+    <section className="overflow-hidden rounded-3xl border border-line bg-white shadow-card">
+      <button
+        type="button"
+        aria-expanded={expanded}
+        onClick={() => setExpanded((value) => !value)}
+        className="flex min-h-36 w-full flex-col items-start justify-between gap-4 p-5 text-left transition hover:bg-cream/50 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-brand sm:p-6"
+      >
+        <div className="flex w-full items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold tracking-[0.14em] text-brand">
+              本契約
+            </p>
+            <h3 className="mt-2 font-maru text-lg font-bold text-ink">
+              {projectTitle(order)}
+            </h3>
           </div>
-          <ContractTermsBlock
-            disclosures={disclosures}
-            consent={consent}
-            agreed={agreed}
-            onAgreedChange={setAgreed}
-          >
-            {paid ? (
-              <PaidNotice
-                paidAt={order.paidAt}
-                amount={order.paidAmount ?? order.totalPrice}
-              />
-            ) : (
-              <SquareInvoiceButton
-                kind="project"
-                projectId={order.id}
-                legacy={order.legacy}
-                label="同意して購入する"
-                existing={order.projectInvoice}
-                agreed={agreed}
-              />
+          <Status
+            value={
+              paid
+                ? "購入済み"
+                : approved
+                  ? "お支払い待ち"
+                  : "内容確認中"
+            }
+          />
+        </div>
+        <div className="flex w-full items-end justify-between gap-3">
+          <p className="text-sm text-ink-soft">
+            {order.basePrice > 0
+              ? `基本プラン${order.options?.length ? `・${order.options.map((option) => option.name).join("・")}` : ""}`
+              : order.options?.map((option) => option.name).join("・") ||
+                "追加依頼"}
+          </p>
+          <div className="flex shrink-0 flex-col items-end gap-1">
+            {!paid && approved && (
+              <span className="text-sm font-bold text-ink">
+                {yen(order.totalPrice)}
+              </span>
             )}
-          </ContractTermsBlock>
-        </>
-      ) : (
-        <p className="mt-6 rounded-2xl bg-cream px-4 py-4 text-sm leading-7 text-ink-soft">
-          運営者が購入内容と金額を確認中です。準備ができると、こちらに内容とお支払いボタンが表示されます。
-        </p>
+            <span className="text-xs font-bold text-brand">
+              {expanded ? "閉じる −" : "詳細を見る ＋"}
+            </span>
+          </div>
+        </div>
+      </button>
+      {expanded && (
+        <div className="border-t border-line bg-cream/30 p-5 sm:p-6">
+          {paid ? (
+            <PurchasedInvoice invoice={invoice} />
+          ) : approved ? (
+            <>
+              <div className="space-y-3 rounded-2xl border border-line bg-white p-4 text-sm">
+                {order.basePrice > 0 && (
+                  <Line label="基本プラン" value={yen(order.basePrice)} />
+                )}
+                {(order.options ?? []).map((option) => (
+                  <Line
+                    key={option.id}
+                    label={option.name}
+                    value={yen(option.price)}
+                  />
+                ))}
+                <Line
+                  label="お支払い総額（前払い）"
+                  value={yen(order.totalPrice)}
+                  strong
+                />
+              </div>
+              <ContractTermsBlock
+                disclosures={disclosures}
+                consent={consent}
+                agreed={agreed}
+                onAgreedChange={setAgreed}
+                consentRequired={!invoiceAlreadyIssued}
+                kind="project"
+              >
+                <SquareInvoiceButton
+                  kind="project"
+                  projectId={order.id}
+                  legacy={order.legacy}
+                  label="取引条件に同意して請求書を発行"
+                  existing={invoice}
+                  agreed={agreed}
+                />
+              </ContractTermsBlock>
+            </>
+          ) : (
+            <p className="rounded-2xl bg-white px-4 py-4 text-sm leading-7 text-ink-soft">
+              運営者が購入内容と金額を確認中です。準備ができると、お支払い内容が表示されます。
+            </p>
+          )}
+        </div>
       )}
-      <p className="mt-3 text-center text-xs text-ink-mute">
-        制作開始前に全額をお支払いいただきます。チャットはお支払い前でもご利用いただけます。
-      </p>
     </section>
   );
 }
@@ -237,10 +263,19 @@ function SubscriptionPayment({
   customerName: string;
   customerEmail: string;
 }) {
+  const [expanded, setExpanded] = useState(false);
   const approved = Boolean(order.subscriptionApproved);
-  const paid = order.subscriptionStatus === "paid";
+  const invoice = order.subscriptionInvoice;
+  const paid =
+    order.subscriptionStatus === "paid" || invoice?.status === "PAID";
   const consent = order.subscriptionConsent;
   const [agreed, setAgreed] = useState(false);
+  const invoiceAlreadyIssued = Boolean(
+    invoice?.id &&
+      !["CANCELED", "FAILED", "REFUNDED", "PARTIALLY_REFUNDED"].includes(
+        invoice.status ?? "",
+      ),
+  );
   const disclosures = buildContractDisclosures({
     kind: "subscription",
     order,
@@ -251,64 +286,85 @@ function SubscriptionPayment({
   });
 
   return (
-    <section className="rounded-3xl border border-line bg-white p-6 shadow-card sm:p-8">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-bold tracking-[0.14em] text-brand">
-            MONTHLY SUPPORT
-          </p>
-          <h2 className="mt-2 font-maru text-xl font-bold text-ink">
-            維持費サブスク
-          </h2>
-        </div>
-        <Status
-          value={
-            approved ? (paid ? "支払い済み" : "許可済み・未払い") : "未許可"
-          }
-        />
-      </div>
-      <p className="mt-4 text-sm leading-7 text-ink-soft">
-        サイト公開後の維持・更新サポートに必要な月額費用です。
-      </p>
-      {approved ? (
-        <>
-          <div className="mt-6 rounded-2xl bg-cream p-5">
-            <p className="text-sm text-ink-soft">月額料金</p>
-            <p className="mt-1 font-maru text-3xl font-bold text-ink">
-              {yen(order.subscriptionPrice ?? maintenanceSubscriptionPrice)}
+    <section className="overflow-hidden rounded-3xl border border-line bg-white shadow-card">
+      <button
+        type="button"
+        aria-expanded={expanded}
+        onClick={() => setExpanded((value) => !value)}
+        className="flex min-h-36 w-full flex-col items-start justify-between gap-4 p-5 text-left transition hover:bg-cream/50 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-brand sm:p-6"
+      >
+        <div className="flex w-full items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold tracking-[0.14em] text-brand">
+              維持費サポート
             </p>
+            <h3 className="mt-2 font-maru text-lg font-bold text-ink">
+              {projectTitle(order)}
+            </h3>
           </div>
-          <ContractTermsBlock
-            disclosures={disclosures}
-            consent={consent}
-            agreed={agreed}
-            onAgreedChange={setAgreed}
-          >
-            {paid ? (
-              <PaidNotice
-                paidAt={order.paidAt}
-                amount={
-                  order.paidAmount ??
-                  order.subscriptionPrice ??
-                  maintenanceSubscriptionPrice
-                }
-              />
-            ) : (
-              <SquareInvoiceButton
-                kind="subscription"
-                projectId={order.id}
-                legacy={order.legacy}
-                label="同意して申し込む"
-                existing={order.subscriptionInvoice}
-                agreed={agreed}
-              />
+          <Status
+            value={
+              paid
+                ? "購入済み"
+                : approved
+                  ? "お支払い待ち"
+                  : "未許可"
+            }
+          />
+        </div>
+        <div className="flex w-full items-end justify-between gap-3">
+          <p className="text-sm text-ink-soft">
+            公開後の維持・更新サポート（月額）
+          </p>
+          <div className="flex shrink-0 flex-col items-end gap-1">
+            {!paid && approved && (
+              <span className="text-sm font-bold text-ink">
+                {yen(order.subscriptionPrice ?? maintenanceSubscriptionPrice)}
+                /月
+              </span>
             )}
-          </ContractTermsBlock>
-        </>
-      ) : (
-        <p className="mt-6 rounded-xl bg-cream px-4 py-3 text-sm text-ink-mute">
-          運営者によるサブスク許可待ちです。
-        </p>
+            <span className="text-xs font-bold text-brand">
+              {expanded ? "閉じる −" : "詳細を見る ＋"}
+            </span>
+          </div>
+        </div>
+      </button>
+      {expanded && (
+        <div className="border-t border-line bg-cream/30 p-5 sm:p-6">
+          {paid ? (
+            <PurchasedInvoice invoice={invoice} />
+          ) : approved ? (
+            <>
+              <div className="rounded-2xl border border-line bg-white p-4">
+                <p className="text-sm text-ink-soft">月額料金</p>
+                <p className="mt-1 font-maru text-3xl font-bold text-ink">
+                  {yen(order.subscriptionPrice ?? maintenanceSubscriptionPrice)}
+                </p>
+              </div>
+              <ContractTermsBlock
+                disclosures={disclosures}
+                consent={consent}
+                agreed={agreed}
+                onAgreedChange={setAgreed}
+                consentRequired={!invoiceAlreadyIssued}
+                kind="subscription"
+              >
+                <SquareInvoiceButton
+                  kind="subscription"
+                  projectId={order.id}
+                  legacy={order.legacy}
+                  label="取引条件に同意して請求書を発行"
+                  existing={invoice}
+                  agreed={agreed}
+                />
+              </ContractTermsBlock>
+            </>
+          ) : (
+            <p className="rounded-2xl bg-white px-4 py-4 text-sm leading-7 text-ink-soft">
+              運営者による維持費サポートの許可待ちです。
+            </p>
+          )}
+        </div>
       )}
     </section>
   );
@@ -323,19 +379,23 @@ function ContractTermsBlock({
   consent,
   agreed,
   onAgreedChange,
+  consentRequired,
+  kind,
   children,
 }: {
   disclosures: ContractDisclosure[];
   consent?: PurchaseConsent;
   agreed: boolean;
   onAgreedChange: (value: boolean) => void;
+  consentRequired: boolean;
+  kind: InvoiceKind;
   children: React.ReactNode;
 }) {
   return (
     <div className="mt-8 space-y-5">
       <section aria-labelledby="contract-disclosure-heading">
         <h3
-          id="contract-disclosure-heading"
+          id={`contract-disclosure-heading-${kind}`}
           className="font-maru text-base font-bold text-ink"
         >
           取引条件の明示（全8項目）
@@ -426,48 +486,54 @@ function ContractTermsBlock({
         </div>
       </details>
 
-      <div className="rounded-2xl border-2 border-brand/40 bg-brand-soft/40 p-4 sm:p-5">
-        <label className="flex items-start gap-3">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(event) => onAgreedChange(event.target.checked)}
-            aria-describedby="contract-consent-note"
-            className="mt-1 size-5 shrink-0 accent-brand"
-          />
-          <span className="text-sm leading-7 text-ink">
-            上記の取引条件（全8項目）と契約条件・注意事項、
-            <Link
-              href="/terms"
-              className="font-bold text-brand hover:text-brand-deep"
-            >
-              利用規約
-            </Link>
-            ・
-            <Link
-              href="/law"
-              className="font-bold text-brand hover:text-brand-deep"
-            >
-              特定商取引法に基づく表記
-            </Link>
-            ・
-            <Link
-              href="/privacy"
-              className="font-bold text-brand hover:text-brand-deep"
-            >
-              プライバシーポリシー
-            </Link>
-            に同意します。
-          </span>
-        </label>
-        <p
-          id="contract-consent-note"
-          className="mt-2 text-xs leading-6 text-ink-mute"
-        >
-          同意すると購入ボタンが押せるようになります。同意した日時・バージョン・お客さまの識別情報・明示した内容は、同意ログとしてサーバーに記録します。
+      {consentRequired ? (
+        <div className="rounded-2xl border-2 border-brand/40 bg-brand-soft/40 p-4 sm:p-5">
+          <label className="flex items-start gap-3">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(event) => onAgreedChange(event.target.checked)}
+              aria-describedby={`contract-consent-note-${kind}`}
+              className="mt-1 size-5 shrink-0 accent-brand"
+            />
+            <span className="text-sm leading-7 text-ink">
+              上記の取引条件（全8項目）と契約条件・注意事項、
+              <Link
+                href="/terms"
+                className="font-bold text-brand hover:text-brand-deep"
+              >
+                利用規約
+              </Link>
+              ・
+              <Link
+                href="/law"
+                className="font-bold text-brand hover:text-brand-deep"
+              >
+                特定商取引法に基づく表記
+              </Link>
+              ・
+              <Link
+                href="/privacy"
+                className="font-bold text-brand hover:text-brand-deep"
+              >
+                プライバシーポリシー
+              </Link>
+              に同意します。
+            </span>
+          </label>
+          <p
+            id={`contract-consent-note-${kind}`}
+            className="mt-2 text-xs leading-6 text-ink-mute"
+          >
+            同意すると請求書を発行できます。同意日時・条件は記録されます。
+          </p>
+        </div>
+      ) : (
+        <p className="rounded-2xl bg-brand-soft/50 px-4 py-3 text-xs leading-6 text-brand-deep">
+          請求書は発行済みです。下のボタンからSquareのお支払い画面を開けます。
         </p>
+      )}
         {children}
-      </div>
 
       <ConsentLog consent={consent} />
     </div>
@@ -527,13 +593,18 @@ function SquareInvoiceButton({
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [pending, setPending] = useState<SquareInvoiceInfo | null>(null);
-  // Firestore の内容（existing）を優先し、まだ反映されていない間は
-  // API の応答（pending）を表示します。
-  const invoice = existing ?? pending ?? undefined;
+  // API応答を先に使い、Firestoreへの反映待ちでも新しい請求書を表示します。
+  const invoice = pending ?? existing;
+  const invoiceAlreadyIssued = Boolean(
+    invoice?.id &&
+      !["CANCELED", "FAILED", "REFUNDED", "PARTIALLY_REFUNDED"].includes(
+        invoice.status ?? "",
+      ),
+  );
 
   async function requestInvoice() {
     // 契約条件に同意していない場合は送信しません（ボタンも押せません）。
-    if (!user || sending || !agreed) return;
+    if (!user || sending || !agreed || invoiceAlreadyIssued) return;
     setSending(true);
     setError("");
     setMessage("");
@@ -577,35 +648,40 @@ function SquareInvoiceButton({
     }
   }
 
-  const unpaid =
-    invoice &&
-    !["PAID", "CANCELED", "FAILED", "REFUNDED"].includes(invoice.status ?? "");
-
   return (
     <div className="mt-5">
-      <button
-        type="button"
-        onClick={requestInvoice}
-        disabled={sending || !user || !agreed}
-        title={agreed ? undefined : "契約条件への同意が必要です"}
-        className="w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        {sending
-          ? "請求書を発行しています..."
-          : invoice &&
-              ![
-                "CANCELED",
-                "FAILED",
-                "REFUNDED",
-                "PARTIALLY_REFUNDED",
-              ].includes(invoice.status ?? "")
-            ? "発行済みの請求書を確認する"
-            : label}
-      </button>
-      {!agreed && (
-        <p className="mt-2 text-center text-xs text-ink-mute">
-          上のチェックボックスで契約条件に同意すると押せるようになります。
-        </p>
+      {invoiceAlreadyIssued ? (
+        invoice?.publicUrl ? (
+          <a
+            href={invoice.publicUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="block rounded-full bg-brand px-5 py-3 text-center text-sm font-bold text-white transition hover:bg-brand-dark"
+          >
+            Squareのお支払い画面を開く
+          </a>
+        ) : (
+          <p className="rounded-xl bg-cream px-4 py-3 text-sm text-ink-soft">
+            請求書は発行済みです。お支払いページが表示されない場合は、チャットからお問い合わせください。
+          </p>
+        )
+      ) : (
+        <>
+          <button
+            type="button"
+            onClick={requestInvoice}
+            disabled={sending || !user || !agreed}
+            title={agreed ? undefined : "契約条件への同意が必要です"}
+            className="w-full rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {sending ? "請求書を発行しています..." : label}
+          </button>
+          {!agreed && (
+            <p className="mt-2 text-center text-xs text-ink-mute">
+              上記の条件に同意すると請求書を発行できます。
+            </p>
+          )}
+        </>
       )}
       {message && (
         <p className="mt-3 rounded-xl bg-brand-soft px-4 py-3 text-xs text-brand-deep">
@@ -624,22 +700,8 @@ function SquareInvoiceButton({
           </p>
           {invoice.dueDate && <p>支払期限: {invoice.dueDate}</p>}
           <p>ステータス: {invoiceStatusLabel(invoice.status)}</p>
-          {unpaid && invoice.publicUrl && (
-            <a
-              href={invoice.publicUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-2 inline-block font-bold text-brand hover:text-brand-deep"
-            >
-              Squareの決済ページを開く
-            </a>
-          )}
         </div>
       )}
-      <p className="mt-3 text-center text-xs text-ink-mute">
-        請求書は Square
-        からメールで届きます。お支払いの確認後、制作開始など次の手続きに進めます。
-      </p>
     </div>
   );
 }
@@ -694,15 +756,15 @@ function Status({ value }: { value: string }) {
   );
 }
 
-function PaidNotice({ paidAt, amount }: { paidAt?: unknown; amount: number }) {
-  const date = toDate(paidAt);
+function PurchasedInvoice({ invoice }: { invoice?: SquareInvoiceInfo }) {
   return (
-    <div className="mt-5 rounded-2xl bg-brand-soft px-5 py-4 text-sm text-brand-deep">
-      <p className="font-bold">お支払いを確認しました（{yen(amount)}）</p>
-      <p className="mt-1 text-xs">
-        {date ? `${date.toLocaleString("ja-JP")} に確認` : "お支払い確認済み"}
-        ／制作開始など次の手続きに進めます。チャットはお支払い前もご利用いただけます。
-      </p>
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-brand-soft px-4 py-4 text-sm text-brand-deep">
+      {invoice?.id && (
+        <p className="font-medium">
+          請求書番号: <span className="font-mono">{invoice.id}</span>
+        </p>
+      )}
+      <p className="rounded-full bg-white px-3 py-1 font-bold">購入済み</p>
     </div>
   );
 }
