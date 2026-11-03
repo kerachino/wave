@@ -9,6 +9,7 @@ const menuItems = [
   { href: "/dashboard", label: "概要", icon: "⌂" },
   { href: "/dashboard/payment", label: "お支払い", icon: "¥" },
   { href: "/dashboard/chat", label: "チャット", icon: "◌" },
+  { href: "/dashboard/profile", label: "登録情報", icon: "◎" },
 ];
 
 export function DashboardShell({ children }: { children: React.ReactNode }) {

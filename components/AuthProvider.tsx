@@ -38,10 +38,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       getDoc(userDoc)
         .then(async (snapshot) => {
           if (currentChangeId !== authChangeId) return;
+          const existing = snapshot.data();
           const profile = {
-            email: nextUser.email ?? "",
-            displayName: nextUser.displayName ?? "",
-            photoURL: nextUser.photoURL ?? "",
+            email: existing?.email || nextUser.email || "",
+            displayName: existing?.displayName || nextUser.displayName || "",
+            photoURL: existing?.photoURL || nextUser.photoURL || "",
           };
           if (!snapshot.exists()) {
             await setDoc(userDoc, {
@@ -51,14 +52,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               createdAt: serverTimestamp(),
             });
           } else if (
-            snapshot.data()?.email !== profile.email ||
-            snapshot.data()?.displayName !== profile.displayName ||
-            snapshot.data()?.photoURL !== profile.photoURL
+            existing?.email !== profile.email ||
+            existing?.displayName !== profile.displayName ||
+            existing?.photoURL !== profile.photoURL
           ) {
             await setDoc(userDoc, profile, { merge: true });
           }
           if (currentChangeId === authChangeId) {
-            setIsAdmin(snapshot.data()?.isAdmin === true);
+            setIsAdmin(existing?.isAdmin === true);
           }
         })
         .catch(() => {

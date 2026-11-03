@@ -114,7 +114,22 @@ service cloud.firestore {
       allow update: if isOwner(uid)
         && request.resource.data.isAdmin == resource.data.isAdmin
         && request.resource.data.diff(resource.data).affectedKeys()
-          .hasOnly(['email', 'displayName', 'photoURL']);
+          .hasOnly(['email', 'displayName', 'photoURL', 'companyName', 'phone'])
+        && (!('displayName' in request.resource.data)
+          || (request.resource.data.displayName is string
+            && request.resource.data.displayName.size() <= 100))
+        && (!('email' in request.resource.data)
+          || (request.resource.data.email is string
+            && request.resource.data.email.size() <= 254))
+        && (!('companyName' in request.resource.data)
+          || (request.resource.data.companyName is string
+            && request.resource.data.companyName.size() <= 100))
+        && (!('phone' in request.resource.data)
+          || (request.resource.data.phone is string
+            && request.resource.data.phone.size() <= 30))
+        && (!('photoURL' in request.resource.data)
+          || (request.resource.data.photoURL is string
+            && request.resource.data.photoURL.size() <= 2048));
       allow delete: if false;
     }
 
