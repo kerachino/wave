@@ -10,7 +10,9 @@ export function Container({
   children: ReactNode;
 }) {
   return (
-    <div className={`mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 ${className}`}>
+    <div
+      className={`mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 ${className}`}
+    >
       {children}
     </div>
   );
@@ -27,7 +29,7 @@ export function Section({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className={`py-16 sm:py-24 ${className}`}>
+    <section id={id} className={`py-4 sm:py-4 ${className}`}>
       <Container>{children}</Container>
     </section>
   );
@@ -57,7 +59,10 @@ export function SectionHeading({
             center ? "justify-center" : ""
           }`}
         >
-          <span aria-hidden="true" className="size-1.5 rounded-full bg-midori" />
+          <span
+            aria-hidden="true"
+            className="size-1.5 rounded-full bg-midori"
+          />
           {eyebrow}
         </p>
       )}
@@ -155,5 +160,3 @@ export function Badge({
     </span>
   );
 }
-
-
