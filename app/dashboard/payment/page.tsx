@@ -10,7 +10,7 @@
 // ============================================================
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
 import { ProjectSwitcher } from "@/components/ProjectSwitcher";
 import { useProjects } from "@/components/useProjects";
@@ -134,7 +134,7 @@ function ProjectPayment({
   customerName: string;
   customerEmail: string;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const invoice = order.projectInvoice;
   const paid =
     order.paymentStatus === "paid" || invoice?.status === "PAID";
@@ -160,8 +160,8 @@ function ProjectPayment({
     <section className="overflow-hidden rounded-3xl border border-line bg-white shadow-card">
       <button
         type="button"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((value) => !value)}
+        aria-haspopup="dialog"
+        onClick={() => setDetailsOpen(true)}
         className="flex min-h-36 w-full flex-col items-start justify-between gap-4 p-5 text-left transition hover:bg-cream/50 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-brand sm:p-6"
       >
         <div className="flex w-full items-start justify-between gap-3">
@@ -197,13 +197,16 @@ function ProjectPayment({
               </span>
             )}
             <span className="text-xs font-bold text-brand">
-              {expanded ? "閉じる −" : "詳細を見る ＋"}
+              内容を確認する →
             </span>
           </div>
         </div>
       </button>
-      {expanded && (
-        <div className="border-t border-line bg-cream/30 p-5 sm:p-6">
+      {detailsOpen && (
+        <DetailDialog
+          title={`本契約：${projectTitle(order)}`}
+          onClose={() => setDetailsOpen(false)}
+        >
           {paid ? (
             <PurchasedInvoice invoice={invoice} />
           ) : approved ? (
@@ -248,7 +251,7 @@ function ProjectPayment({
               運営者が購入内容と金額を確認中です。準備ができると、お支払い内容が表示されます。
             </p>
           )}
-        </div>
+        </DetailDialog>
       )}
     </section>
   );
@@ -263,7 +266,7 @@ function SubscriptionPayment({
   customerName: string;
   customerEmail: string;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const approved = Boolean(order.subscriptionApproved);
   const invoice = order.subscriptionInvoice;
   const paid =
@@ -289,8 +292,8 @@ function SubscriptionPayment({
     <section className="overflow-hidden rounded-3xl border border-line bg-white shadow-card">
       <button
         type="button"
-        aria-expanded={expanded}
-        onClick={() => setExpanded((value) => !value)}
+        aria-haspopup="dialog"
+        onClick={() => setDetailsOpen(true)}
         className="flex min-h-36 w-full flex-col items-start justify-between gap-4 p-5 text-left transition hover:bg-cream/50 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-brand sm:p-6"
       >
         <div className="flex w-full items-start justify-between gap-3">
@@ -324,13 +327,16 @@ function SubscriptionPayment({
               </span>
             )}
             <span className="text-xs font-bold text-brand">
-              {expanded ? "閉じる −" : "詳細を見る ＋"}
+              内容を確認する →
             </span>
           </div>
         </div>
       </button>
-      {expanded && (
-        <div className="border-t border-line bg-cream/30 p-5 sm:p-6">
+      {detailsOpen && (
+        <DetailDialog
+          title={`維持費サポート：${projectTitle(order)}`}
+          onClose={() => setDetailsOpen(false)}
+        >
           {paid ? (
             <PurchasedInvoice invoice={invoice} />
           ) : approved ? (
@@ -364,9 +370,73 @@ function SubscriptionPayment({
               運営者による維持費サポートの許可待ちです。
             </p>
           )}
-        </div>
+        </DetailDialog>
       )}
     </section>
+  );
+}
+
+function DetailDialog({
+  title,
+  onClose,
+  children,
+}: {
+  title: string;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const titleId = useId();
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, []);
+
+  return (
+    <div
+      role="presentation"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          onClose();
+        }
+      }}
+      className="fixed inset-0 z-[100] grid place-items-center bg-ink/50 p-4"
+    >
+      <section
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        className="flex max-h-[90dvh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-line bg-white shadow-lift"
+      >
+        <header className="flex shrink-0 items-start justify-between gap-4 border-b border-line bg-cream/60 px-5 py-4 sm:px-7">
+          <h2
+            id={titleId}
+            className="font-maru text-lg font-bold text-ink"
+          >
+            {title}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="詳細を閉じる"
+            autoFocus
+            className="grid size-9 shrink-0 place-items-center rounded-full border border-line bg-white text-xl text-ink-soft transition hover:bg-cream focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            ×
+          </button>
+        </header>
+        <div className="overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
+          {children}
+        </div>
+      </section>
+    </div>
   );
 }
 
