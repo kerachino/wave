@@ -173,18 +173,6 @@ export function ContactForm() {
     setForm((f) => ({ ...f, [key]: value }));
   }
 
-  function toggleInList(
-    key: "neededPages" | "requests" | "prepared",
-    option: string,
-  ) {
-    setForm((f) => ({
-      ...f,
-      [key]: f[key].includes(option)
-        ? f[key].filter((v) => v !== option)
-        : [...f[key], option],
-    }));
-  }
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setStatus("sending");

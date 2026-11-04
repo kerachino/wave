@@ -48,12 +48,6 @@ export async function POST(request: Request) {
     name,
     email,
     phone,
-    
-    neededPages,
-    pageCount,
-    color,
-    requests,
-    prepared,
     message,
     _spam,
   } = (body ?? {}) as {
@@ -74,9 +68,6 @@ export async function POST(request: Request) {
   }
 
   const errors: string[] = [];
-  if (typeof company !== "string" || company.trim() === "") {
-    errors.push("会社名・事業所名を入力してください。");
-  }
   if (typeof name !== "string" || name.trim() === "") {
     errors.push("お名前を入力してください。");
   }
@@ -89,56 +80,6 @@ export async function POST(request: Request) {
   if (typeof message === "string" && message.length > 5000) {
     errors.push("相談内容は5,000文字以内で入力してください。");
   }
-  // 任意項目：入力がある場合のみ形式を検証（分からない場合は空欄OK）
-  function checkSingle(
-    value: unknown,
-    allowed: readonly string[],
-    message: string,
-  ) {
-    if (typeof value === "string" && value !== "" && !allowed.includes(value)) {
-      errors.push(message);
-    }
-  }
-  function checkMulti(
-    value: unknown,
-    allowed: readonly string[],
-    message: string,
-  ): string[] {
-    if (!Array.isArray(value) || value.length === 0) return [];
-    const list = value.filter((v): v is string => typeof v === "string");
-    if (list.length !== value.length || list.some((v) => !allowed.includes(v))) {
-      errors.push(message);
-      return [];
-    }
-    return list;
-  }
-  function checkUrl(value: unknown, message: string): string {
-    if (typeof value !== "string" || value.trim() === "") return "";
-    try {
-      const parsed = new URL(value.trim());
-      if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-        errors.push(message);
-        return "";
-      }
-      return value.trim();
-    } catch {
-      errors.push(message);
-      return "";
-    }
-  }
-  
-  
-  
-    
-  
-  
-  
-    
-  
-    
-  
-  
-  
 
   if (errors.length > 0) {
     return NextResponse.json(
@@ -161,32 +102,14 @@ export async function POST(request: Request) {
     );
   }
 
-  const companyText = String(company).trim();
+  const companyText =
+    typeof company === "string" && company.trim() !== ""
+      ? company.trim()
+      : "（未入力）";
   const nameText = String(name).trim();
   const emailText = String(email).trim();
   const phoneText = typeof phone === "string" ? phone.trim() : "";
-  function textOrBlank(value: unknown): string {
-    return typeof value === "string" && value !== "" ? value : "（未回答）";
-  }
-  
-  
-    typeof target === "string" && target.trim() !== ""
-      ? 
-      : "（未回答）";
-  const neededPagesText =
-    ;
-  const ;
-  const ;
-  const requestsText =
-    ;
-  const preparedText =
-    ;
-  const ;
-  const ;
-   referenceUrlText !== "" ? referenceUrlText : "（未回答）";
   const messageText = String(message).trim();
-
-  const detailLines: string[] = [];
 
   const transcript =
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
@@ -196,7 +119,6 @@ export async function POST(request: Request) {
     `お名前　　　　　：${nameText}\n` +
     `メールアドレス　：${emailText}\n` +
     `電話番号　　　　：${phoneText || "（未入力）"}\n` +
-    (detailLines.length > 0 ? detailLines.join("\n") + "\n" : "") +
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
     `【相談内容】\n${messageText}\n` +
     `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
